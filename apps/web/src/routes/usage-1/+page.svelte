@@ -26,8 +26,8 @@
 
   const MODES: { id: Mode; label: string; desc: string }[] = [
     { id: 'vulgarisation', label: 'Vulgarisation',          desc: 'Langage accessible, première approche' },
-    { id: 'architecture',  label: 'Architecture mobilisée', desc: 'Niveaux et régimes MRC v5.4' },
-    { id: 'cadres',        label: 'Cadres théoriques',      desc: 'ANT, STS, commons, diplomatique' }
+    { id: 'architecture',  label: 'Architecture mobilisée', desc: 'Niveaux et régimes du modèle' },
+    { id: 'cadres',        label: 'Cadres théoriques',      desc: 'sociologie, comptabilité, etc.' }
   ];
 
   function getResponseText(exchange: Exchange, m: Mode): string {

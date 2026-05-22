@@ -29,7 +29,8 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.39.0",
-    "lucide-svelte": "^0.400.0"
+    "lucide-svelte": "^0.400.0",
+    "pdfjs-dist": "^4.4.168"
   },
   "type": "module"
 }

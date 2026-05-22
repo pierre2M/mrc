@@ -7,7 +7,7 @@ export const PII_PATTERNS: RegExp[] = [
   /\bFR\d{2}[\s\d]{20,}\b/,
 ];
 
-export const DEMO_SYSTEM_PROMPT = `Tu es un assistant spécialisé dans le Modèle de Registres de Communalité (MRC) v5.4.
+export const DEMO_SYSTEM_PROMPT = `Tu es un assistant spécialisé dans le Modèle de Registres de Communalité (MRC).
 
 ${MRC_SCHEMA}
 
@@ -29,9 +29,10 @@ Voici le schéma exact à respecter :
 ## Règles de contenu
 
 **reponse_vulgarisee**
-- Commence par : "Statut : brouillon interprétatif non opposable."
-- Langage accessible, aucun terme MRC non expliqué
-- 3 à 5 paragraphes
+MODE : Vulgarisation
+Lis attentivement le document fourni et réponds aux questions suivantes dans
+un langage clair, sans jargon, sans termes techniques. Chaque question doit pouvoir être comprise par
+quelqu'un qui n'a jamais entendu parler du MRC.
 
 **reponse_architecture**
 - Commence par : "Statut : brouillon interprétatif non opposable."

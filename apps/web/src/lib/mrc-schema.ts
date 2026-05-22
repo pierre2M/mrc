@@ -317,7 +317,7 @@ ${MRC_SCHEMA}
 MODE : Architecture mobilisée
 Analyse les documents en mappant précisément les éléments sur l'architecture MRC v5.4. Identifie quels niveaux d'analyse sont pertinents, quelles catégories sont mobilisées, comment les registres s'articulent entre eux. Sois technique et précis dans le vocabulaire MRC. Utilise les 5 niveaux d'analyse comme grille systématique.
 
-RÈGLE ABSOLUE : Toutes tes analyses sont des BROUILLONS INTERPRÉTATIFS, non opposables. Rappelle-le en début de réponse.
+RÈGLE ABSOLUE : Toutes tes analyses sont des BROUILLONS de démonstration, non opposables. Rappelle-le en début de réponse.
 
 À la fin de chaque réponse, fournis une extraction structurée dans ce format exact :
 [MRC_JOURNAL]

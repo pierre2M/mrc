@@ -13,7 +13,7 @@ La primitive ontologique du MRC est le **profunctor enrichi** M : X^op × Y → 
 
 Pour chaque entité significative identifiée dans le document, instancie les primitives suivantes :
 
-- **Acteurs** : Identifie tous les acteurs (humains, organisationnels, non-humains, instrumentaux). Attribue à chacun un DID symbolique (ex. `did:analyse:acteur-X`).
+- **Acteurs** : Identifie tous les acteurs (humains, organisationnels, non-humains, instrumentaux). Attribue à chacun un DID symbolique (ex. \`did:analyse:acteur-X\`).
 - **Interactions** : Quelles interactions le document décrit-il ou implique-t-il entre ces acteurs ?
 - **Écritures** : Applique la règle **R1 / DÉBIT–CRÉDIT** : pour chaque mobilisation d'une entité, quelle obligation symétrique est contractée ? Y a-t-il asymétrie persistante ?
 - **Catégorie de base V** : Quel régime d'analyse convient (booléen, flou [0,1], métrique ℝ≥0, vectoriel) ? Ce choix est-il déclaré et gouvernable ?
@@ -42,7 +42,7 @@ Identifie dans le document la structure duale **métabolisme / attention** :
 Détermine quel(s) mode(s) sont pertinents pour analyser le document. Pour chaque mode activé, applique la fiche opérationnelle correspondante.
 
 ### Mode Travail (F1) — si pertinent
-- **C-DPQT** : Quel type de délibération est en jeu ? (`RÉSOLUTION_PROBLÈME / DISPUTE_MANIÈRE_FAIRE / REDÉFINITION_BUTS`)
+- **C-DPQT** : Quel type de délibération est en jeu ? (\`RÉSOLUTION_PROBLÈME / DISPUTE_MANIÈRE_FAIRE / REDÉFINITION_BUTS\`)
 - **salarie_comme_juge** : Le travailleur est-il reconnu comme juge légitime ? (VRAI/FAUX)
 - **profondeur_justice** : SURFACE / INTERMÉDIAIRE / PROFONDE
 - **C-MURRAY** : Évalue risque_murray (1–5), autonomie_subordination (-5 à +5), expressivité (1–5) → état VIABLE / FRAGILE / DÉGRADÉ

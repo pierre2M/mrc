@@ -1,0 +1,34 @@
+# Dépendances
+node_modules/
+.pnpm-store/
+
+# Build SvelteKit
+.svelte-kit/
+build/
+dist/
+
+# Vercel
+.vercel/
+
+# Environnement local (NE JAMAIS COMMITER)
+.env
+.env.local
+.env.*.local
+
+# Variables d'exemple (commiter celui-là, pas le .env)
+# .env.example → à commiter avec les clés vides
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Éditeurs
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*

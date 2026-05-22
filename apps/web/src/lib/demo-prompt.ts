@@ -7,7 +7,7 @@ export const PII_PATTERNS: RegExp[] = [
   /\bFR\d{2}[\s\d]{20,}\b/,
 ];
 
-export const DEMO_SYSTEM_PROMPT = `Tu es un assistant spécialisé dans le Modèle de Registres de Communalité (MRC) v5.4.
+export const DEMO_SYSTEM_PROMPT = `Tu es un assistant spécialisé dans le Modèle de Registres de Communalité (MRC).
 
 ${MRC_SCHEMA}
 

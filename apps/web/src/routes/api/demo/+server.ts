@@ -68,9 +68,13 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
       model: 'claude-sonnet-4-6',
       max_tokens: 4096,
       system: DEMO_SYSTEM_PROMPT,
-      messages: [{ role: 'user', content: userContent }]
+      messages: [
+        { role: 'user', content: userContent },
+        { role: 'assistant', content: '{' }  // prefill : force la sortie JSON
+      ]
     });
-    raw = message.content[0].type === 'text' ? message.content[0].text : '';
+    // Le prefill '{' n'est pas répété dans la réponse, on le rajoute
+    raw = '{' + (message.content[0].type === 'text' ? message.content[0].text : '');
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     return json({ error: `Erreur API : ${msg}` }, 502);
@@ -78,8 +82,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress }) => {
 
   let parsed: Record<string, unknown>;
   try {
-    const cleaned = raw.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/i, '').trim();
-    parsed = JSON.parse(cleaned);
+    parsed = JSON.parse(raw);
   } catch {
     return json({ error: 'Réponse du modèle invalide. Réessayez.' }, 502);
   }

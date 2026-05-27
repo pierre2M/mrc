@@ -2,10 +2,15 @@
   import { tick } from 'svelte';
   import { marked } from 'marked';
   import MrcStatusBadge from '$lib/components/MrcStatusBadge.svelte';
+  import Turnstile from '$lib/components/Turnstile.svelte';
   import { extractTextFromFile } from '$lib/pdf-extract';
+  import { QUOTA_LIMIT } from '$lib/token-quota';
+  import { env } from '$env/dynamic/public';
 
   marked.use({ breaks: true, gfm: true });
   function renderMd(text: string): string { return marked(text) as string; }
+
+  const TURNSTILE_SITE_KEY: string = env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
 
   // ── Types ──────────────────────────────────────────────────────────────────
 
@@ -85,6 +90,12 @@
   let chatContainer: HTMLElement;
   let fileInputEl: HTMLInputElement;
 
+  // ── Turnstile & quota ─────────────────────────────────────────────────────
+  let turnstileToken = '';
+  let turnstileRef: Turnstile;
+  let quotaUsed = 0;
+  let quotaExhausted = false;
+
   // ── Gestion des fichiers ──────────────────────────────────────────────────
 
   async function loadFile(file: File) {
@@ -135,10 +146,18 @@
           question,
           document: documentText || undefined,
           mode,
+          turnstileToken,
         }),
       });
 
       const data = await res.json();
+
+      const used = parseInt(res.headers.get('X-Quota-Used') ?? '0', 10);
+      if (used > 0) { quotaUsed = used; quotaExhausted = used >= QUOTA_LIMIT; }
+
+      turnstileRef?.reset();
+      turnstileToken = '';
+
       if (!res.ok) { error = data.error ?? `Erreur ${res.status}`; return; }
 
       const newSignaux: Signal[] = ((data.signaux as Signal[]) ?? []).map(s => ({
@@ -179,7 +198,7 @@
 
   // ── Réactif ───────────────────────────────────────────────────────────────
 
-  $: canSend = attestation && input.trim().length > 0 && !isLoading;
+  $: canSend = attestation && input.trim().length > 0 && !isLoading && !!turnstileToken && !quotaExhausted;
   $: validatedCount = allSignals.filter(s => s.valide).length;
   $: showJournal = mode !== 'decouverte';
   $: showFileZone = mode !== 'decouverte';
@@ -356,6 +375,38 @@
           {/if}
         </span>
       </label>
+
+      <!-- Vérification anti-bot -->
+      {#if TURNSTILE_SITE_KEY}
+        <div class="mt-4">
+          <Turnstile
+            bind:this={turnstileRef}
+            sitekey={TURNSTILE_SITE_KEY}
+            on:token={(e) => { turnstileToken = e.detail; }}
+            on:expired={() => { turnstileToken = ''; }}
+          />
+        </div>
+      {/if}
+
+      <!-- Quota journalier -->
+      {#if quotaUsed > 0 || quotaExhausted}
+        <div class="mt-4">
+          <div class="mb-1 flex items-center justify-between text-xs text-mrc-500">
+            <span>Usage journalier</span>
+            <span>{quotaUsed.toLocaleString('fr')} / {QUOTA_LIMIT.toLocaleString('fr')}</span>
+          </div>
+          <div class="h-1.5 w-full overflow-hidden rounded-full bg-mrc-100">
+            <div
+              class="h-full rounded-full transition-all
+                     {quotaExhausted ? 'bg-red-500' : quotaUsed / QUOTA_LIMIT > 0.8 ? 'bg-amber-400' : 'bg-mrc-500'}"
+              style="width: {Math.min(100, (quotaUsed / QUOTA_LIMIT) * 100)}%"
+            ></div>
+          </div>
+          {#if quotaExhausted}
+            <p class="mt-1.5 text-xs text-red-600">Quota journalier atteint. Revenez demain.</p>
+          {/if}
+        </div>
+      {/if}
     </aside>
 
     <!-- ── Colonne 2 : Conversation ────────────────────────────────────── -->

@@ -98,6 +98,32 @@
   let quotaUsed = 0;
   let quotaExhausted = false;
 
+  // ── Formulaire de contact (quota épuisé) ──────────────────────────────────
+  let contactDismissed = false;
+  let contactSent = false;
+  let contactName = '';
+  let contactEmail = '';
+  let contactMessage = '';
+  let contactLoading = false;
+  let contactError: string | null = null;
+
+  async function submitContact() {
+    if (!contactName.trim() || !contactEmail.trim()) return;
+    contactLoading = true;
+    contactError = null;
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: contactName, email: contactEmail, message: contactMessage }),
+      });
+      const data = await res.json();
+      if (res.ok) { contactSent = true; }
+      else { contactError = data.error ?? 'Erreur lors de l\'envoi. Réessayez.'; }
+    } catch { contactError = 'Erreur réseau.'; }
+    finally { contactLoading = false; }
+  }
+
   // ── Gestion des fichiers ──────────────────────────────────────────────────
 
   async function loadFile(file: File) {
@@ -160,7 +186,14 @@
       turnstileRef?.reset();
       turnstileToken = '';
 
-      if (!res.ok) { error = data.error ?? `Erreur ${res.status}`; return; }
+      if (!res.ok) {
+        if (res.status === 429 && data.quotaLimit !== undefined) {
+          quotaUsed = data.quotaUsed ?? QUOTA_LIMIT;
+          quotaExhausted = true;
+        }
+        error = data.error ?? `Erreur ${res.status}`;
+        return;
+      }
 
       const newSignaux: Signal[] = ((data.signaux as Signal[]) ?? []).map(s => ({
         ...s,
@@ -616,3 +649,134 @@
 
   </div>
 </div>
+
+<!-- ── Modal formulaire de contact (quota épuisé) ────────────────────────── -->
+{#if quotaExhausted && !contactDismissed}
+  <div
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="contact-title"
+  >
+    <div class="w-full max-w-md rounded-2xl bg-white shadow-2xl">
+
+      {#if contactSent}
+        <!-- ── État succès ── -->
+        <div class="px-8 py-10 text-center">
+          <div class="mb-4 text-4xl text-mrc-200">◈</div>
+          <h2 class="mb-2 text-lg font-bold text-mrc-900">Message envoyé !</h2>
+          <p class="mb-6 text-sm text-mrc-500 leading-relaxed">
+            Merci {contactName} — nous reviendrons vers vous rapidement
+            pour organiser une démonstration approfondie du MRC.
+          </p>
+          <button
+            on:click={() => { contactDismissed = true; }}
+            class="rounded-xl bg-mrc-700 px-6 py-2.5 text-sm font-medium text-white
+                   hover:bg-mrc-800 focus:outline-none focus:ring-2 focus:ring-mrc-400"
+          >
+            Fermer
+          </button>
+        </div>
+
+      {:else}
+        <!-- ── Formulaire ── -->
+        <div class="px-8 pt-8 pb-2">
+          <div class="mb-1 text-2xl text-mrc-200">◈</div>
+          <h2 id="contact-title" class="text-lg font-bold text-mrc-900">
+            Merci pour votre intérêt !
+          </h2>
+          <p class="mt-2 text-sm text-mrc-500 leading-relaxed">
+            Vous avez atteint la limite d'usage quotidienne du démonstrateur.
+            Laissez-nous vos coordonnées pour organiser une démonstration approfondie
+            du Modèle de Registres de Communalité avec Pierre Musseau-Milesi.
+          </p>
+        </div>
+
+        <form
+          on:submit|preventDefault={submitContact}
+          class="px-8 pb-8 pt-5 space-y-4"
+        >
+          <!-- Nom -->
+          <div>
+            <label for="contact-name" class="block mb-1.5 text-xs font-medium text-mrc-700">
+              Nom <span class="text-red-500">*</span>
+            </label>
+            <input
+              id="contact-name"
+              type="text"
+              bind:value={contactName}
+              required
+              autocomplete="name"
+              placeholder="Prénom Nom"
+              class="w-full rounded-lg border border-mrc-200 px-3.5 py-2 text-sm text-mrc-800
+                     placeholder-mrc-300 focus:border-mrc-400 focus:outline-none focus:ring-1
+                     focus:ring-mrc-200 transition-colors"
+            />
+          </div>
+
+          <!-- Email -->
+          <div>
+            <label for="contact-email" class="block mb-1.5 text-xs font-medium text-mrc-700">
+              Email <span class="text-red-500">*</span>
+            </label>
+            <input
+              id="contact-email"
+              type="email"
+              bind:value={contactEmail}
+              required
+              autocomplete="email"
+              placeholder="vous@exemple.fr"
+              class="w-full rounded-lg border border-mrc-200 px-3.5 py-2 text-sm text-mrc-800
+                     placeholder-mrc-300 focus:border-mrc-400 focus:outline-none focus:ring-1
+                     focus:ring-mrc-200 transition-colors"
+            />
+          </div>
+
+          <!-- Message -->
+          <div>
+            <label for="contact-message" class="block mb-1.5 text-xs font-medium text-mrc-700">
+              Contexte de votre intérêt <span class="text-mrc-300">(optionnel)</span>
+            </label>
+            <textarea
+              id="contact-message"
+              bind:value={contactMessage}
+              rows="3"
+              placeholder="Votre organisation, votre projet, ce que vous souhaitez explorer…"
+              class="w-full resize-none rounded-lg border border-mrc-200 px-3.5 py-2 text-sm
+                     text-mrc-800 placeholder-mrc-300 focus:border-mrc-400 focus:outline-none
+                     focus:ring-1 focus:ring-mrc-200 transition-colors"
+            ></textarea>
+          </div>
+
+          {#if contactError}
+            <p class="text-xs text-red-600" role="alert">{contactError}</p>
+          {/if}
+
+          <div class="flex items-center justify-between gap-3 pt-1">
+            <button
+              type="button"
+              on:click={() => { contactDismissed = true; }}
+              class="text-xs text-mrc-400 underline underline-offset-2 hover:text-mrc-600
+                     focus:outline-none focus:text-mrc-600"
+            >
+              Plus tard
+            </button>
+            <button
+              type="submit"
+              disabled={contactLoading || !contactName.trim() || !contactEmail.trim()}
+              class="flex items-center gap-2 rounded-xl bg-mrc-700 px-6 py-2.5 text-sm font-medium
+                     text-white hover:bg-mrc-800 focus:outline-none focus:ring-2 focus:ring-mrc-400
+                     disabled:cursor-not-allowed disabled:opacity-40 transition-colors"
+            >
+              {#if contactLoading}
+                <span class="h-3.5 w-3.5 animate-spin rounded-full border-2 border-white/30 border-t-white" aria-hidden="true"></span>
+              {/if}
+              Envoyer
+            </button>
+          </div>
+        </form>
+
+      {/if}
+    </div>
+  </div>
+{/if}

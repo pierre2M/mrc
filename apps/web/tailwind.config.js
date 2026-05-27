@@ -39,6 +39,6 @@ export default {
     }
   },
   plugins: [
-    // Décommenter après installation : require('@tailwindcss/typography')
+    require('@tailwindcss/typography')
   ]
 };

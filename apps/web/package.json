@@ -29,7 +29,9 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.39.0",
+    "@tailwindcss/typography": "^0.5.19",
     "lucide-svelte": "^0.400.0",
+    "marked": "^18.0.4",
     "pdfjs-dist": "^4.4.168"
   },
   "type": "module"

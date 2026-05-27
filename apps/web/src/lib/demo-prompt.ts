@@ -87,21 +87,24 @@ ${VERIF_COHERENCE_COMPACT}
 ## Instruction de sortie
 
 Retourne UNIQUEMENT un objet JSON valide, sans texte avant ni après.
-Schéma exact :
+Le JSON doit respecter exactement ce schéma (les valeurs ci-dessous sont des exemples) :
 
 {
-  "reponse": "string — analyse structurée en 4 étapes selon le protocole MRC ci-dessus, avec signaux [PLAUSIBLE, NON VÉRIFIÉ] et section [LACUNES ET LIMITES] si nécessaire",
+  "reponse": "## Brouillon interprétatif\\n\\n### ÉTAPE 1 — Acteurs\\n...",
   "signaux": [
-    { "texte": "description concise du signal repéré", "type": "acteur|interaction|ecriture", "valide": false }
+    { "texte": "Nom ou description de l'acteur principal", "type": "acteur", "valide": false },
+    { "texte": "Relation de mobilisation entre deux acteurs", "type": "interaction", "valide": false },
+    { "texte": "Acte d'inscription ou de stabilisation repéré", "type": "ecriture", "valide": false }
   ],
   "alerte_donnees_personnelles": false
 }
 
-Règles :
-- "reponse" : texte structuré (markdown autorisé), suit les 4 étapes du protocole
-- "signaux" : 3 à 8 entrées représentant les acteurs, interactions ou écritures saillants
-- "alerte_donnees_personnelles" : true si le document contient des données personnelles identifiantes
-- Toutes les analyses sont des BROUILLONS INTERPRÉTATIFS, non opposables. Rappelle-le en début de "reponse".
+Règles strictes :
+- "reponse" : chaîne markdown, newlines échappés en \\n, suit les 4 étapes du protocole MRC
+- "signaux" : OBLIGATOIRE — entre 3 et 8 objets ; chaque "type" doit être exactement
+  "acteur", "interaction" ou "ecriture" (une seule valeur, pas de barre oblique)
+- "alerte_donnees_personnelles" : true uniquement si données personnelles identifiantes détectées
+- Toutes les analyses sont des BROUILLONS INTERPRÉTATIFS, non opposables — le dire en début de "reponse"
 
 Retourne UNIQUEMENT le JSON. Pas de \`\`\`json, pas de commentaire.`;
 
@@ -118,21 +121,25 @@ ${VERIF_COHERENCE_FULL}
 ## Instruction de sortie
 
 Retourne UNIQUEMENT un objet JSON valide, sans texte avant ni après.
-Schéma exact :
+Le JSON doit respecter exactement ce schéma (les valeurs ci-dessous sont des exemples) :
 
 {
-  "reponse": "string — analyse complète en 9 étapes selon le protocole MRC, avec signaux [PLAUSIBLE, NON VÉRIFIÉ], [ENGAGEMENT SANS SYMÉTRIE], etc. et section [LACUNES ET LIMITES DE CETTE RÉPONSE]",
+  "reponse": "## Brouillon interprétatif\\n\\n### ÉTAPE 1 — Acteurs\\n...",
   "signaux": [
-    { "texte": "description concise du signal repéré", "type": "acteur|interaction|ecriture", "valide": false }
+    { "texte": "Nom ou description de l'acteur principal", "type": "acteur", "valide": false },
+    { "texte": "Relation de mobilisation entre deux entités", "type": "interaction", "valide": false },
+    { "texte": "Acte d'inscription stabilisateur repéré", "type": "ecriture", "valide": false },
+    { "texte": "Autre acteur secondaire identifié", "type": "acteur", "valide": false }
   ],
   "alerte_donnees_personnelles": false
 }
 
-Règles :
-- "reponse" : texte structuré (markdown), suit les 9 étapes, signaux inline du régime vérifiabilité
-- "signaux" : 5 à 12 entrées représentant les acteurs, interactions ou écritures saillants
-- "alerte_donnees_personnelles" : true si données personnelles identifiantes détectées
-- Toutes les analyses sont des BROUILLONS INTERPRÉTATIFS, non opposables.
+Règles strictes :
+- "reponse" : chaîne markdown, newlines échappés en \\n, suit les 9 étapes du protocole MRC expert
+- "signaux" : OBLIGATOIRE — entre 5 et 12 objets ; chaque "type" doit être exactement
+  "acteur", "interaction" ou "ecriture" (une seule valeur, pas de barre oblique)
+- "alerte_donnees_personnelles" : true uniquement si données personnelles identifiantes détectées
+- Toutes les analyses sont des BROUILLONS INTERPRÉTATIFS, non opposables — le dire en début de "reponse"
 
 Retourne UNIQUEMENT le JSON. Pas de \`\`\`json, pas de commentaire.`;
 

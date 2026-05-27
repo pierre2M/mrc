@@ -144,7 +144,7 @@ export const POST: RequestHandler = async ({ request, getClientAddress, cookies 
     if (useJson) {
       const message = await client.messages.create({
         model: 'claude-sonnet-4-6',
-        max_tokens: mode === 'expert' ? 6144 : 3072,
+        max_tokens: mode === 'expert' ? 8192 : 2048,
         system: SYSTEM_PROMPTS[mode],
         messages: [{ role: 'user', content: userContent }],
       });
@@ -202,13 +202,25 @@ export const POST: RequestHandler = async ({ request, getClientAddress, cookies 
   try {
     parsed = JSON.parse(extracted);
   } catch {
-    // Attempt to repair common LLM JSON issues (unescaped newlines, trailing commas…)
     try {
       parsed = JSON.parse(jsonrepair(extracted));
     } catch {
+      console.error('[demo] JSON parse failed. Raw output (first 500):', rawText.slice(0, 500));
       return json({ error: 'Réponse du modèle invalide. Réessayez.' }, 502);
     }
   }
+
+  // Normalise signaux: ensure array exists with correct shape
+  if (!Array.isArray(parsed.signaux)) parsed.signaux = [];
+  parsed.signaux = (parsed.signaux as unknown[]).filter(
+    (s): s is Record<string, unknown> => s !== null && typeof s === 'object',
+  ).map(s => ({
+    texte:  typeof s.texte === 'string'  ? s.texte  : String(s.texte ?? ''),
+    type:   ['acteur', 'interaction', 'ecriture'].includes(s.type as string)
+              ? s.type
+              : 'acteur',
+    valide: false,
+  }));
 
   if (parsed.alerte_donnees_personnelles === true) {
     return json(

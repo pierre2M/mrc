@@ -1,1 +1,1 @@
-export const QUOTA_LIMIT = 10_000;
+export const QUOTA_LIMIT = 20_000;

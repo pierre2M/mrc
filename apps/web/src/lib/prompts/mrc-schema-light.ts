@@ -63,14 +63,4 @@ Pour chaque mode activé, développe : état d'habitabilité, signaux actifs, ni
 | **G-COMMUNALITE** (Ostrom) | OUI/NON | Faisceaux de droits, degré de communalité |
 | **G-JUSTICE** (Nussbaum, Fricker) | OUI/NON | Capabilités plancher, injustice épistémique |
 | **G-MIMETIQUE** (Girard) | OUI/NON | Crise mimétique, bouc-émissaire, méconnaissance |
-
----
-
-## FORMAT DE SORTIE
-
-Analyse structurée en 4 étapes. Pour les champs non renseignables, indique :
-"non renseignable — information absente du document".
-Conclus par une synthèse courte (3 à 6 lignes) : modes activés, signaux prioritaires,
-grammaires les plus éclairantes, phase C-ENQUÊTE recommandée
-(PROBLÈME / ENQUÊTE / RÉVISION_CONCEPTUELLE / DÉLIBÉRATION / CONVENTION / MISE_EN_ŒUVRE).
 `;

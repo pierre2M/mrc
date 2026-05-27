@@ -122,8 +122,14 @@ export const POST: RequestHandler = async ({ request, getClientAddress, cookies 
   }
 
   // ── Construction du message utilisateur ───────────────────────────────────
-  const userContent = docContent?.trim()
-    ? `Document soumis :\n\n${docContent.trim()}\n\n---\n\nQuestion : ${question.trim()}`
+  const MAX_DOC_CHARS = 12_000;
+  const doc = docContent?.trim() ?? '';
+  const docTruncated = doc.length > MAX_DOC_CHARS
+    ? doc.slice(0, MAX_DOC_CHARS) + '\n\n[…document tronqué à 12 000 caractères pour limiter la consommation de tokens]'
+    : doc;
+
+  const userContent = docTruncated
+    ? `Document soumis :\n\n${docTruncated}\n\n---\n\nQuestion : ${question.trim()}`
     : question.trim();
 
   // ── Appel Anthropic ───────────────────────────────────────────────────────

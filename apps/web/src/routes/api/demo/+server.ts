@@ -1,5 +1,6 @@
 import { env } from '$env/dynamic/private';
 import Anthropic from '@anthropic-ai/sdk';
+import { jsonrepair } from 'jsonrepair';
 import {
   SYSTEM_PROMPTS,
   PII_PATTERNS,
@@ -191,14 +192,22 @@ export const POST: RequestHandler = async ({ request, getClientAddress, cookies 
     );
   }
 
-  // Strip accidental markdown fences the model may add despite instructions
-  const cleaned = rawText.trim().replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/, '').trim();
+  // Extract JSON: strip fences, find first { … last }
+  const fenceless = rawText.trim().replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/, '').trim();
+  const start = fenceless.indexOf('{');
+  const end   = fenceless.lastIndexOf('}');
+  const extracted = start !== -1 && end > start ? fenceless.slice(start, end + 1) : fenceless;
 
   let parsed: Record<string, unknown>;
   try {
-    parsed = JSON.parse(cleaned);
+    parsed = JSON.parse(extracted);
   } catch {
-    return json({ error: 'Réponse du modèle invalide. Réessayez.' }, 502);
+    // Attempt to repair common LLM JSON issues (unescaped newlines, trailing commas…)
+    try {
+      parsed = JSON.parse(jsonrepair(extracted));
+    } catch {
+      return json({ error: 'Réponse du modèle invalide. Réessayez.' }, 502);
+    }
   }
 
   if (parsed.alerte_donnees_personnelles === true) {

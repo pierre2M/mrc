@@ -1,9 +1,15 @@
 import { env } from '$env/dynamic/private';
 import Anthropic from '@anthropic-ai/sdk';
-import { DEMO_SYSTEM_PROMPT, PII_PATTERNS } from '$lib/demo-prompt';
+import {
+  SYSTEM_PROMPTS,
+  PII_PATTERNS,
+  isJsonMode,
+  type Mode,
+} from '$lib/demo-prompt';
 import type { RequestHandler } from './$types';
 
-// Best-effort in-memory rate limiter (not cross-instance on serverless)
+// ─── Rate limiter en mémoire (best-effort, non cross-instance) ────────────────
+
 const rateLimitMap = new Map<string, number[]>();
 
 function isRateLimited(ip: string): boolean {
@@ -15,6 +21,8 @@ function isRateLimited(ip: string): boolean {
   return false;
 }
 
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
 function hasPii(text: string): boolean {
   return PII_PATTERNS.some(p => p.test(text));
 }
@@ -22,76 +30,114 @@ function hasPii(text: string): boolean {
 function json(body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { 'Content-Type': 'application/json' }
+    headers: { 'Content-Type': 'application/json' },
   });
 }
+
+const VALID_MODES: Mode[] = ['decouverte', 'analyse', 'expert'];
+
+// ─── Handler principal ────────────────────────────────────────────────────────
 
 export const POST: RequestHandler = async ({ request, getClientAddress }) => {
   if (isRateLimited(getClientAddress())) {
     return new Response(
       JSON.stringify({ error: 'Trop de requêtes — réessayez dans une minute.' }),
-      { status: 429, headers: { 'Content-Type': 'application/json', 'Retry-After': '60' } }
+      { status: 429, headers: { 'Content-Type': 'application/json', 'Retry-After': '60' } },
     );
   }
 
   const apiKey = env.ANTHROPIC_API_KEY;
   if (!apiKey) return json({ error: 'Clé API non configurée.' }, 500);
 
-  let body: { question?: string; document?: string };
+  // ── Parsing du corps ──────────────────────────────────────────────────────
+  let body: { question?: string; document?: string; mode?: string };
   try {
     body = await request.json();
   } catch {
     return json({ error: 'Corps de requête invalide.' }, 400);
   }
 
-  const { question, document: docContent } = body;
+  const { question, document: docContent, mode: rawMode } = body;
+
   if (!question?.trim()) return json({ error: 'Question manquante.' }, 400);
 
-  // Layer 1: regex pre-screen before calling Claude
+  const mode: Mode = VALID_MODES.includes(rawMode as Mode)
+    ? (rawMode as Mode)
+    : 'decouverte';
+
+  // ── Détection PII niveau 1 (regex) ────────────────────────────────────────
   const fullText = [question, docContent].filter(Boolean).join('\n');
   if (hasPii(fullText)) {
     return json(
-      { error: 'Le texte soumis contient des données personnelles identifiantes (email, téléphone, NIR, IBAN…). Anonymisez le document avant de le soumettre.' },
-      422
+      {
+        error:
+          'Le texte soumis contient des données personnelles identifiantes (email, téléphone, NIR, IBAN…). Anonymisez le document avant de le soumettre.',
+      },
+      422,
     );
   }
 
-  const userContent = docContent?.trim()
-    ? `Document soumis :\n\n${docContent.trim()}\n\n---\n\nQuestion : ${question.trim()}`
-    : question.trim();
+  // ── Construction du message utilisateur ───────────────────────────────────
+  const userContent =
+    docContent?.trim()
+      ? `Document soumis :\n\n${docContent.trim()}\n\n---\n\nQuestion : ${question.trim()}`
+      : question.trim();
 
+  // ── Appel Anthropic ───────────────────────────────────────────────────────
   const client = new Anthropic({ apiKey });
+  const useJson = isJsonMode(mode);
 
-  let raw: string;
+  let rawText: string;
   try {
-    const message = await client.messages.create({
-      model: 'claude-sonnet-4-6',
-      max_tokens: 4096,
-      system: DEMO_SYSTEM_PROMPT,
-      messages: [
-        { role: 'user', content: userContent },
-        { role: 'assistant', content: '{' }  // prefill : force la sortie JSON
-      ]
-    });
-    // Le prefill '{' n'est pas répété dans la réponse, on le rajoute
-    raw = '{' + (message.content[0].type === 'text' ? message.content[0].text : '');
+    if (useJson) {
+      // Préfill JSON pour forcer la sortie structurée
+      const message = await client.messages.create({
+        model: 'claude-sonnet-4-6',
+        max_tokens: useJson && mode === 'expert' ? 6144 : 3072,
+        system: SYSTEM_PROMPTS[mode],
+        messages: [
+          { role: 'user', content: userContent },
+          { role: 'assistant', content: '{' },
+        ],
+      });
+      rawText = '{' + (message.content[0].type === 'text' ? message.content[0].text : '');
+    } else {
+      // Mode découverte : texte libre
+      const message = await client.messages.create({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 1024,
+        system: SYSTEM_PROMPTS[mode],
+        messages: [{ role: 'user', content: userContent }],
+      });
+      rawText = message.content[0].type === 'text' ? message.content[0].text : '';
+    }
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
     return json({ error: `Erreur API : ${msg}` }, 502);
   }
 
+  // ── Traitement de la réponse ──────────────────────────────────────────────
+  if (!useJson) {
+    // Mode découverte : on renvoie le texte brut dans le même enveloppe JSON
+    return json({ reponse: rawText, signaux: [], alerte_donnees_personnelles: false });
+  }
+
+  // Modes analyse/expert : on parse le JSON
   let parsed: Record<string, unknown>;
   try {
-    parsed = JSON.parse(raw);
+    parsed = JSON.parse(rawText);
   } catch {
     return json({ error: 'Réponse du modèle invalide. Réessayez.' }, 502);
   }
 
-  // Layer 2: Claude's own PII assessment
+  // Détection PII niveau 2 (évaluation du modèle)
   if (parsed.alerte_donnees_personnelles === true) {
     return json(
-      { error: 'Le modèle a détecté des données personnelles dans votre document. Anonymisez-le avant de le soumettre.' },
-      422
+      {
+        error:
+          'Le modèle a détecté des données personnelles dans votre document. Anonymisez-le avant de le soumettre.',
+      },
+      422,
     );
   }
 

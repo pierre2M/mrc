@@ -1,6 +1,7 @@
-import { createHmac, timingSafeEqual } from 'crypto';
+import { createHmac, timingSafeEqual } from 'node:crypto';
+import { QUOTA_LIMIT } from '$lib/quota-limit';
 
-export const QUOTA_LIMIT = 10_000;
+export { QUOTA_LIMIT };
 
 interface QuotaData {
   used: number;

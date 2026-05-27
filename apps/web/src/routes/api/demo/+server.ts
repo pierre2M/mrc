@@ -6,7 +6,7 @@ import {
   isJsonMode,
   type Mode,
 } from '$lib/demo-prompt';
-import { readQuota, encodeQuota, QUOTA_LIMIT } from '$lib/token-quota';
+import { readQuota, encodeQuota, QUOTA_LIMIT } from '$lib/server/token-quota';
 import type { RequestHandler } from './$types';
 
 // ─── Rate limiter en mémoire (best-effort, non cross-instance) ────────────────

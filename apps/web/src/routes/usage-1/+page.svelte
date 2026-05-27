@@ -4,7 +4,7 @@
   import MrcStatusBadge from '$lib/components/MrcStatusBadge.svelte';
   import Turnstile from '$lib/components/Turnstile.svelte';
   import { extractTextFromFile } from '$lib/pdf-extract';
-  import { QUOTA_LIMIT } from '$lib/token-quota';
+  import { QUOTA_LIMIT } from '$lib/quota-limit';
   import { env } from '$env/dynamic/public';
 
   marked.use({ breaks: true, gfm: true });

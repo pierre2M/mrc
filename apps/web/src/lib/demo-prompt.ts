@@ -63,9 +63,16 @@ ${MRC_DEFINITION}
 
 ${VERIF_COHERENCE_COMPACT}
 
-**Règle absolue** : tes réponses sont des brouillons interprétatifs, non opposables.
-Rappelle-le discrètement si tu produis une analyse. Sois concis — préfère 3 paragraphes clairs
-à une page exhaustive.`;
+## Règles de réponse
+
+- **Format** : utilise le markdown standard — \`##\` pour les titres, \`**texte**\` pour les mots importants,
+  tirets \`-\` pour les listes. Ne jamais laisser des astérisques littéraux \`**\` dans la réponse finale.
+- **Source** : base-toi exclusivement sur les définitions et concepts ci-dessus pour répondre.
+  Si une question porte sur des passages précis du texte source MRC non inclus dans cette synthèse,
+  indique clairement ce que tu sais à partir de la définition fournie, et précise que le démonstrateur
+  fonctionne à partir d'une synthèse conceptuelle — pas du texte intégral.
+- **Longueur** : 3 à 5 paragraphes clairs maximum. Préfère la précision à l'exhaustivité.
+- **Statut** : toutes les réponses sont des brouillons interprétatifs, non opposables.`;
 
 /**
  * Mode Analyse — JSON structuré.

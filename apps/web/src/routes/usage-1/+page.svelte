@@ -1,14 +1,16 @@
 <script lang="ts">
   import { tick } from 'svelte';
   import { marked } from 'marked';
-  import MrcStatusBadge from '$lib/components/MrcStatusBadge.svelte';
   import Turnstile from '$lib/components/Turnstile.svelte';
   import { extractTextFromFile } from '$lib/pdf-extract';
   import { QUOTA_LIMIT } from '$lib/quota-limit';
   import { env } from '$env/dynamic/public';
 
   marked.use({ breaks: true, gfm: true });
-  function renderMd(text: string): string { return marked(text) as string; }
+  function renderMd(text: string): string {
+    const result = marked.parse(text);
+    return typeof result === 'string' ? result : '';
+  }
 
   const TURNSTILE_SITE_KEY: string = env.PUBLIC_TURNSTILE_SITE_KEY ?? '';
 
@@ -453,9 +455,11 @@
 
           <!-- Réponse MRC -->
           <div class="flex flex-col gap-2">
-            <div class="flex items-center gap-3">
-              <MrcStatusBadge statut="non-valide" modele="claude-sonnet" />
-              <span class="rounded-full border border-mrc-100 bg-white px-2 py-0.5 text-xs text-mrc-500">
+            <div class="flex items-center gap-2">
+              <span class="rounded-full border border-mrc-200 bg-white px-2.5 py-0.5 text-xs text-mrc-500">
+                Modèle : claude-sonnet
+              </span>
+              <span class="rounded-full border border-mrc-200 bg-mrc-50 px-2.5 py-0.5 text-xs font-medium text-mrc-600">
                 {MODES.find(m => m.id === exchange.mode)?.label ?? ''}
               </span>
             </div>

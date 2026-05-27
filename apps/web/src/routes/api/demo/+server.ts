@@ -139,12 +139,9 @@ export const POST: RequestHandler = async ({ request, getClientAddress, cookies 
         model: 'claude-sonnet-4-6',
         max_tokens: mode === 'expert' ? 6144 : 3072,
         system: SYSTEM_PROMPTS[mode],
-        messages: [
-          { role: 'user', content: userContent },
-          { role: 'assistant', content: '{' },
-        ],
+        messages: [{ role: 'user', content: userContent }],
       });
-      rawText = '{' + (message.content[0].type === 'text' ? message.content[0].text : '');
+      rawText = message.content[0].type === 'text' ? message.content[0].text : '';
       tokensUsed = message.usage.input_tokens + message.usage.output_tokens;
     } else {
       const message = await client.messages.create({
@@ -188,9 +185,12 @@ export const POST: RequestHandler = async ({ request, getClientAddress, cookies 
     );
   }
 
+  // Strip accidental markdown fences the model may add despite instructions
+  const cleaned = rawText.trim().replace(/^```(?:json)?\s*/i, '').replace(/\s*```\s*$/, '').trim();
+
   let parsed: Record<string, unknown>;
   try {
-    parsed = JSON.parse(rawText);
+    parsed = JSON.parse(cleaned);
   } catch {
     return json({ error: 'Réponse du modèle invalide. Réessayez.' }, 502);
   }

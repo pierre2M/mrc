@@ -6,7 +6,7 @@ import {
   PII_PATTERNS,
   isJsonMode,
   type Mode,
-} from '$lib/demo-prompt';
+} from '$lib/prompts/demo-prompt';
 import { readQuota, encodeQuota, QUOTA_LIMIT } from '$lib/server/token-quota';
 import type { RequestHandler } from './$types';
 

@@ -4,11 +4,11 @@
   const usages = [
     {
       id: 1,
-      titre: 'Interroger un corpus',
-      accroche: 'Déposez un document et interrogez-le à travers la grille MRC. L\'agent structure l\'analyse sans valider.',
+      titre: 'Découvrir et interroger',
+      accroche: 'Posez des questions sur le MRC, ses grammaires ou le régime de vérifiabilité-cohérence. Testez le démonstrateur en mode Découverte ou Analyse.',
       niveau: 'Heuristique',
       href: '/usage-1',
-      icon: '📄',
+      icon: '🔍',
       couleur: 'border-blue-200 hover:border-blue-400'
     },
     {
@@ -17,7 +17,7 @@
       accroche: 'Suivez la chronologie d\'un registre d\'enquête contrôlé : ingestion, staging, vérification, validation délibérative.',
       niveau: 'Méthodologique',
       href: '/usage-2',
-      icon: '🔍',
+      icon: '📋',
       couleur: 'border-amber-200 hover:border-amber-400'
     },
     {
@@ -34,19 +34,19 @@
   const publics = [
     {
       titre: 'Chercheurs et académiques',
-      description: 'Cadre théorique complet, neuf grammaires, bibliographie BibTeX, lignée des versions v4 à v5.4.',
+      description: 'Dix grammaires transversales avec fiches, bibliographie BibTeX, notes théoriques (NT) versionnées, régime vérifiabilité-cohérence.',
       href: '/grammaires',
       cta: 'Accéder aux grammaires →'
     },
     {
       titre: 'Praticiens et collectifs',
-      description: 'Cas d\'usage tangibles, démonstrateur interactif, exemples sectoriels (alimentation, habitat, communs).',
+      description: 'Démonstrateur interactif en trois modes (Découverte, Analyse, Expert), exemples d\'analyse sur document réel.',
       href: '/usage-1',
       cta: 'Essayer le démonstrateur →'
     },
     {
       titre: 'Partenaires institutionnels',
-      description: 'Principes de gouvernance, conformité RGPD, articulation avec vos propres référentiels.',
+      description: 'Principes de gouvernance, conformité RGPD, R-INCAPACITE-LLM-VALIDER, articulation avec vos propres référentiels.',
       href: '/gouvernance',
       cta: 'Lire la note de gouvernance →'
     }
@@ -54,7 +54,7 @@
 </script>
 
 <svelte:head>
-  <title>Registres de communalité — MRC v5.4</title>
+  <title>Registres de communalité — MRC v5.x</title>
 </svelte:head>
 
 <!-- Hero -->
@@ -74,8 +74,8 @@
 
     <p class="mt-4 text-base text-mrc-600 md:text-lg">
       Entre des humains, des organisations, des vivants non-humains et des dispositifs techniques.
-      Cette vitrine montre comment un registre de communalité peut être interrogé, construit ou structuré,
-      selon trois usages distincts.
+      Il opère en régime de vérifiabilité-cohérence : chaque énoncé est ancré dans une source déclarée
+      ou explicitement marqué comme inférence.
     </p>
 
     <div class="mt-8 flex flex-wrap justify-center gap-3">
@@ -87,6 +87,27 @@
       </a>
     </div>
 
+  </div>
+</section>
+
+<!-- Trois distinctions fondamentales -->
+<section class="border-b border-mrc-100 bg-mrc-50 py-10">
+  <div class="mx-auto max-w-3xl px-4">
+    <p class="text-center text-sm font-medium text-mrc-500 mb-6 uppercase tracking-wide">Trois distinctions fondamentales</p>
+    <div class="grid gap-4 md:grid-cols-3 text-sm">
+      <div class="rounded-lg bg-white p-4 border border-mrc-100">
+        <p class="font-semibold text-mrc-800 mb-1">Analyser ≠ valider</p>
+        <p class="text-mrc-600">Un LLM peut produire une esquisse MRC. Il ne peut pas valider une écriture. La validation est toujours humaine et délibérative.</p>
+      </div>
+      <div class="rounded-lg bg-white p-4 border border-mrc-100">
+        <p class="font-semibold text-mrc-800 mb-1">Esquisse ≠ registre</p>
+        <p class="text-mrc-600">Les sorties du démonstrateur sont des brouillons interprétatifs. Un registre MRC opposable nécessite des acteurs nommés, des interactions traçables, une délibération.</p>
+      </div>
+      <div class="rounded-lg bg-white p-4 border border-mrc-100">
+        <p class="font-semibold text-mrc-800 mb-1">Plausible ≠ vérifiable</p>
+        <p class="text-mrc-600">Le MRC distingue ce qui est ancré dans une source déclarée, ce qui est inféré, et ce qui est simplement [PLAUSIBLE, NON VÉRIFIÉ].</p>
+      </div>
+    </div>
   </div>
 </section>
 

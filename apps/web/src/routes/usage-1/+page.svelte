@@ -1,5 +1,6 @@
 <script lang="ts">
   import { tick } from 'svelte';
+  import { marked } from 'marked';
   import MrcStatusBadge from '$lib/components/MrcStatusBadge.svelte';
   import { extractTextFromFile } from '$lib/pdf-extract';
 
@@ -200,20 +201,29 @@
           '"Analyse les grammaires transversales activées."',
           '"Complète le tableau C-DROITS."',
         ];
+
+  // Rendu Markdown avec mise en valeur des signaux MRC entre crochets
+  function renderMarkdown(text: string): string {
+    const html = marked.parse(text) as string;
+    return html.replace(
+      /\[([^\]\n]{3,80})\]/g,
+      '<span class="inline-block rounded bg-amber-50 border border-amber-200 px-1.5 py-0.5 text-xs font-mono text-amber-800 leading-tight">[$1]</span>',
+    );
+  }
 </script>
 
 <svelte:head>
   <title>Démonstrateur Usage 1 — Registres de communalité</title>
 </svelte:head>
 
-<div class="flex h-[calc(100vh-57px)] flex-col">
+<div class="flex flex-col lg:h-[calc(100vh-57px)]">
 
   <!-- ── En-tête ─────────────────────────────────────────────────────────── -->
   <div class="border-b border-mrc-100 bg-white px-6 py-3">
     <div class="mx-auto flex max-w-full items-center justify-between">
       <div>
         <div class="text-xs font-medium text-mrc-500">Expérimenter · Usage 1</div>
-        <h1 class="text-lg font-bold text-mrc-900">Démonstrateur conversationnel MRC v5.5</h1>
+        <h1 class="text-lg font-bold text-mrc-900">Démonstrateur conversationnel MRC 5.x</h1>
       </div>
       {#if exchanges.length > 0}
         <button
@@ -228,11 +238,11 @@
   </div>
 
   <!-- ── Corps : 2 ou 3 colonnes ────────────────────────────────────────── -->
-  <div class="flex flex-1 overflow-hidden">
+  <div class="flex flex-col lg:flex-row lg:flex-1 lg:overflow-hidden">
 
     <!-- ── Colonne 1 : Préparer ────────────────────────────────────────── -->
     <aside
-      class="w-64 flex-shrink-0 overflow-y-auto border-r border-mrc-100 bg-white p-4"
+      class="border-b border-mrc-100 bg-white p-4 lg:w-64 lg:flex-shrink-0 lg:overflow-y-auto lg:border-b-0 lg:border-r"
       aria-label="Préparer la session"
     >
       <h2 class="mb-4 text-xs font-semibold uppercase tracking-wide text-mrc-500">
@@ -356,14 +366,14 @@
 
     <!-- ── Colonne 2 : Conversation ────────────────────────────────────── -->
     <main
-      class="flex flex-1 flex-col overflow-hidden"
+      class="flex flex-col lg:flex-1 lg:overflow-hidden"
       aria-label="Zone de conversation"
     >
 
       <!-- Messages -->
       <div
         bind:this={chatContainer}
-        class="flex-1 overflow-y-auto px-6 py-4 space-y-5"
+        class="min-h-64 px-6 py-4 space-y-5 lg:flex-1 lg:overflow-y-auto"
         aria-live="polite"
         aria-atomic="false"
       >
@@ -408,22 +418,7 @@
               class="prose prose-sm max-w-none rounded-xl rounded-tl-sm border border-mrc-100
                      bg-white px-4 py-3 text-sm leading-relaxed text-mrc-800"
             >
-              <!-- Rendu markdown simplifié : preserve line breaks -->
-              {#each exchange.reponse.split('\n') as line}
-                {#if line.startsWith('## ')}
-                  <h2 class="mt-3 mb-1 text-sm font-semibold text-mrc-900">{line.slice(3)}</h2>
-                {:else if line.startsWith('### ')}
-                  <h3 class="mt-2 mb-1 text-xs font-semibold text-mrc-700 uppercase tracking-wide">{line.slice(4)}</h3>
-                {:else if line.startsWith('**') && line.endsWith('**')}
-                  <p class="font-semibold text-mrc-800">{line.slice(2, -2)}</p>
-                {:else if line.startsWith('[') && (line.includes('NON VÉRIFIÉ') || line.includes('SYMÉTRIE') || line.includes('COUCHES') || line.includes('LACUNES') || line.includes('AUTORÉFÉRENTIEL') || line.includes('DÉCOUPLAGE') || line.includes('APPROXIMATIVE'))}
-                  <p class="my-1 rounded bg-amber-50 border border-amber-200 px-2 py-1 text-xs font-mono text-amber-800">{line}</p>
-                {:else if line.trim() === ''}
-                  <div class="h-2"></div>
-                {:else}
-                  <p>{line}</p>
-                {/if}
-              {/each}
+              {@html renderMarkdown(exchange.reponse)}
             </div>
           </div>
         {/each}
@@ -488,7 +483,7 @@
         </div>
 
         <p class="mt-2 text-xs text-mrc-400">
-          Brouillons interprétatifs · non opposables · MRC v5.5
+          Brouillons interprétatifs · non opposables · MRC 5.x
           {#if mode === 'expert'} · Régime vérifiabilité-cohérence activé{/if}
         </p>
       </div>
@@ -497,7 +492,7 @@
     <!-- ── Colonne 3 : Journal MRC — visible uniquement en modes analyse/expert ── -->
     {#if showJournal}
       <aside
-        class="w-72 flex-shrink-0 overflow-y-auto border-l border-mrc-100 bg-white p-4"
+        class="border-t border-mrc-100 bg-white p-4 lg:w-72 lg:flex-shrink-0 lg:overflow-y-auto lg:border-t-0 lg:border-l"
         aria-label="Journal MRC"
       >
         <div class="mb-4 flex items-center justify-between">

@@ -168,7 +168,7 @@ Un registre qui prétend être neutre sur la justice choisit de ne pas voir ce q
       id: 'g9',
       code: 'G9',
       nom: 'Affectif',
-      auteurs: 'MRC v5.5 — note NT-G9',
+      auteurs: 'MRC 5.x — note NT-G9',
       statut: 'fiche en préparation',
       question: "Comment inscrire les régimes affectifs qui structurent les interactions sans les réduire à des données psychologiques individuelles ?",
       apport: "G9 rend inscriptibles les conditions affectives d'un commun (travail émotionnel, reconnaissance, défenses de métier, mésentente) comme variables d'état du registre, en qualifiant un régime collectif sans psychologiser les individus.",
@@ -179,7 +179,7 @@ Un registre qui prétend être neutre sur la justice choisit de ne pas voir ce q
       id: 'g10',
       code: 'G10',
       nom: 'Démocratie épistémique',
-      auteurs: 'Anderson (2006), Landemore (2012), MRC v5.5',
+      auteurs: 'Anderson (2006), Landemore (2012), MRC 5.x',
       statut: 'fiche en préparation',
       question: "Comment concevoir un registre qui soit lui-même un dispositif de démocratie épistémique — où la diversité des savoirs améliore la qualité des décisions collectives ?",
       apport: "G10 pose que la légitimité d'un registre dépend de sa capacité à intégrer des savoirs hétérogènes sans les réduire à un seul cadre. Elle active les signaux de parité délibérative et d'injustice herméneutique comme conditions de validité, non comme considérations optionnelles.",
@@ -190,7 +190,7 @@ Un registre qui prétend être neutre sur la justice choisit de ne pas voir ce q
       id: 'g11',
       code: 'G11',
       nom: 'Travail (qualité et capabilité)',
-      auteurs: 'Zimmermann & Didry, Murray — MRC v5.5 (NT-G11)',
+      auteurs: 'Zimmermann & Didry, Murray — MRC 5.x (NT-G11)',
       statut: 'fiche en préparation',
       question: "Comment inscrire la qualité du travail non comme un indicateur RH parmi d'autres, mais comme une capabilité — la possibilité réelle, pour le travailleur, d'exercer un métier dont il est reconnu juge légitime ?",
       apport: "Nouveauté v5.5 : G-TRAVAIL accueille les sources de sociologie/économie du travail jusque-là portées par la fiche F1. Elle distingue trois registres : la qualité du travail comme objet de délibération (DPQT, Zimmermann & Didry — salarié reconnu juge légitime), la position du travailleur sur les axes risque / autonomie / expressivité (Murray), et le travail comme commun de capabilités dont la gouvernance peut être stable, instable ou en transition (signal COMMUN_GOUVERNE_FRAGILE).",
@@ -201,7 +201,7 @@ Un registre qui prétend être neutre sur la justice choisit de ne pas voir ce q
       id: 'g12',
       code: 'G12',
       nom: 'Valuation (comptabilité & valuemètres)',
-      auteurs: 'Richard, Bensadon & Rambaud (2024), Rambaud (2019, CARE), Dumeaux (2025), Bahougne (2020), CNoCP — MRC v5.5 (NT-G12)',
+      auteurs: 'Richard, Bensadon & Rambaud (2024), Rambaud (2019, CARE), Dumeaux (2025), Bahougne (2020), CNoCP — MRC 5.x (NT-G12)',
       statut: 'fiche en préparation',
       question: "Comment inscrire le geste comptable lui-même comme dispositif gouvernable — de sorte qu'un seuil ou un prix ne soit jamais un instrument performatif non gouverné ?",
       apport: "Nouveauté v5.5 : G-VALUATION accueille toutes les sources comptables et de valuation jusque-là portées par la fiche F8 et devient le porteur de Couche 3 de la gouvernance des valuemètres (chantier B4). Quatre blocs : mouvements comptables et équation du bilan (Richard, Bensadon & Rambaud 2024, [VÉRIFIÉ]) ; comptabilité CARE et capitaux à préserver (Rambaud 2019) ; juste prix écologique (Dumeaux 2025) ; droit et normalisation de la comptabilité publique (Bahougne, CNoCP). Tout valuemètre déclare sa source (DID) et sa convention d'attribution.",
@@ -210,8 +210,8 @@ Un registre qui prétend être neutre sur la justice choisit de ne pas voir ce q
     }
   ];
 
-  // Codes pour lesquels une note de vulgarisation est disponible
-  const codesAvecNote = new Set(['G1', 'G2', 'G7']);
+  // Codes pour lesquels une note de vulgarisation est disponible (incluant NT-ARCH)
+  const codesAvecNote = new Set(['G1', 'G2', 'G7', 'ARCH']);
 
   function couleurStatut(statut: Statut): string {
     if (statut === 'fiche disponible')    return 'bg-emerald-50 text-emerald-700';
@@ -230,7 +230,7 @@ Un registre qui prétend être neutre sur la justice choisit de ne pas voir ce q
     <div class="mb-2 text-sm font-medium text-mrc-500">Comprendre · Cadres théoriques</div>
     <h1 class="text-3xl font-bold text-mrc-900">Grammaires transversales</h1>
     <p class="mt-3 text-mrc-600 max-w-2xl">
-      Les douze grammaires transversales du MRC v5.5 (NT-G1 à NT-G12) — lentilles théoriques
+      Les douze grammaires transversales du MRC 5.x (NT-G1 à NT-G12) — lentilles théoriques
       mobilisées en Couche 3 pour analyser ce qui fait communalité dans un collectif. Chacune pose
       une question structurante distincte et s'articule aux autres selon des tensions documentées.
       Pour une lecture pas à pas, voir <a href="/pedagogie" class="underline hover:text-mrc-900">Comprendre, pas à pas</a>.
@@ -263,6 +263,50 @@ Un registre qui prétend être neutre sur la justice choisit de ne pas voir ce q
       traçable, délibérable et réfutable ? Les contenus restent l'affaire des grammaires G1–G10 et de la délibération collective.
     </p>
     <p class="mt-3 text-xs text-mrc-400 italic">NT-ARCH v5.6 (ébauche) — 31 mai 2026 / 1er juin 2026</p>
+
+    <!-- Formulaire NT-ARCH -->
+    <div class="mt-4 pt-4 border-t border-mrc-200">
+      <button
+        class="text-sm text-mrc-600 hover:text-mrc-800 underline underline-offset-2 transition-colors"
+        on:click={(e) => ouvrirFormulaire('nt-arch', e)}
+      >
+        {formulaireOuvert === 'nt-arch' ? 'Fermer' : 'Recevoir la note complète NT-ARCH →'}
+      </button>
+
+      {#if formulaireOuvert === 'nt-arch'}
+        <div class="mt-3 rounded-lg border border-mrc-100 bg-white px-4 py-4">
+          <p class="text-sm text-mrc-700 mb-3">
+            Recevoir la note théorique <strong>NT-ARCH — Architecture transversale des obligations</strong> par email.
+          </p>
+          {#if envoi === 'ok'}
+            <p class="text-sm text-emerald-700 font-medium">✓ Note envoyée à {dernierEnvoi}.</p>
+          {:else}
+            <form
+              class="flex flex-col sm:flex-row gap-2"
+              on:submit|preventDefault={() => envoyerNote('ARCH')}
+            >
+              <input
+                type="email"
+                bind:value={emailInput}
+                placeholder="votre@email.fr"
+                required
+                class="flex-1 rounded-md border border-mrc-200 bg-white px-3 py-2 text-sm text-mrc-900 placeholder-mrc-400 focus:outline-none focus:ring-2 focus:ring-mrc-300"
+              />
+              <button
+                type="submit"
+                disabled={envoi === 'sending'}
+                class="shrink-0 rounded-md bg-mrc-600 px-4 py-2 text-sm font-medium text-white hover:bg-mrc-700 disabled:opacity-60 transition-colors"
+              >
+                {envoi === 'sending' ? 'Envoi…' : 'Envoyer'}
+              </button>
+            </form>
+            {#if envoi === 'error'}
+              <p class="mt-2 text-xs text-red-600">{erreurEnvoi}</p>
+            {/if}
+          {/if}
+        </div>
+      {/if}
+    </div>
   </div>
 
   <!-- Légende statuts -->

@@ -35,6 +35,15 @@
   function select(id: string) {
     selectionId = id;
     related = relatedSet(id);
+    if (typeof window !== 'undefined' && window.innerWidth < 1024) {
+      setTimeout(() => {
+        document.getElementById('detail-panel')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 50);
+    }
+  }
+
+  function scrollBackToCard(id: string) {
+    document.getElementById(`card-${id}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 
   function cardClass(id: string): string {
@@ -59,10 +68,10 @@
 </script>
 
 <svelte:head>
-  <title>Comprendre, pas à pas — MRC v5.5</title>
+  <title>Comprendre, pas à pas — MRC 5.x</title>
   <meta
     name="description"
-    content="Lecture en langage clair du Modèle de Registres de Communalité (MRC v5.5) : à quoi sert chaque objet, comment il s'articule aux autres, et des exemples concrets."
+    content="Lecture en langage clair du Modèle de Registres de Communalité (MRC 5.x) : à quoi sert chaque objet, comment il s'articule aux autres, et des exemples concrets."
   />
 </svelte:head>
 
@@ -71,7 +80,7 @@
 <div class="mx-auto max-w-6xl px-4 py-10">
   <!-- En-tête -->
   <header class="mb-8">
-    <p class="text-xs font-semibold uppercase tracking-wide text-mrc-500">Pédagogie · MRC v5.5</p>
+    <p class="text-xs font-semibold uppercase tracking-wide text-mrc-500">Pédagogie · MRC 5.x</p>
     <h1 class="mt-1 text-3xl font-bold text-mrc-900">Comprendre, pas à pas</h1>
     <p class="mt-3 max-w-3xl text-mrc-600">
       Une lecture en langage clair du Modèle de Registres de Communalité : à quoi sert chaque objet,
@@ -115,6 +124,7 @@
                     {#each branche.ids as id}
                       {@const o = objetsById[id]}
                       <button
+                        id="card-{id}"
                         type="button"
                         on:click={() => select(id)}
                         class="w-52 rounded-xl border border-mrc-100 bg-slate-50 p-3 text-left transition hover:-translate-y-0.5 hover:shadow-md {cardClass(id)}"
@@ -133,6 +143,7 @@
             <div class="flex flex-wrap gap-3 p-4">
               {#each objetsDeCouche(L) as o}
                 <button
+                  id="card-{o.id}"
                   type="button"
                   on:click={() => select(o.id)}
                   class="w-52 rounded-xl border border-mrc-100 bg-slate-50 p-3 text-left transition hover:-translate-y-0.5 hover:shadow-md {cardClass(o.id)}"
@@ -150,7 +161,7 @@
     </div>
 
     <!-- Panneau latéral -->
-    <aside class="lg:sticky lg:top-24 lg:self-start">
+    <aside id="detail-panel" class="lg:sticky lg:top-24 lg:self-start">
       <div class="rounded-2xl border border-mrc-100 bg-white p-5 shadow-sm">
         {#if !selection}
           <p class="py-12 text-center text-sm leading-relaxed text-mrc-400">
@@ -160,6 +171,13 @@
           </p>
         {:else}
           {@const m = layerMeta[selection.layer]}
+          <button
+            type="button"
+            on:click={() => scrollBackToCard(selection.id)}
+            class="lg:hidden mb-3 flex items-center gap-1.5 text-xs text-mrc-500 hover:text-mrc-800 transition-colors"
+          >
+            ↑ Revenir à la carte
+          </button>
           <p class="text-xs font-semibold uppercase tracking-wide text-mrc-500">{m.title}</p>
           <h3 class="mt-1 flex items-center gap-2 text-xl font-bold text-mrc-900">
             <span>{selection.ico}</span><span>{selection.name}</span>
@@ -206,7 +224,7 @@
 
   <!-- Avertissement de régime -->
   <footer class="mt-10 rounded-xl border border-mrc-100 bg-slate-50 p-4 text-xs leading-relaxed text-mrc-500">
-    <b class="text-mrc-700">[LACUNES ET LIMITES]</b> Vulgarisation dérivée du set MRC v5.5. Les exemples
+    <b class="text-mrc-700">[LACUNES ET LIMITES]</b> Vulgarisation dérivée du set MRC 5.x. Les exemples
     concrets sont des illustrations pédagogiques (régime procédural, non calcul formel) : ils montrent la
     logique de traitement, pas un résultat chiffré certifié. Les exemples [K3] reprennent la structure du
     cas « bassins versants » mais les valeurs précises restent à recouper sur la note K3. Plusieurs sources

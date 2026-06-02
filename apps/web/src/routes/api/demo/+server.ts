@@ -36,22 +36,6 @@ function json(body: unknown, status = 200, extra?: HeadersInit): Response {
   });
 }
 
-async function verifyTurnstile(token: string, ip: string, secret: string): Promise<boolean> {
-  // Cloudflare test secret key → always passes (dev / CI)
-  if (secret === '1x0000000000000000000000000000000AA') return true;
-  try {
-    const res = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ secret, response: token, remoteip: ip }),
-    });
-    const data = await res.json() as { success: boolean };
-    return data.success === true;
-  } catch {
-    return false;
-  }
-}
-
 const VALID_MODES: Mode[] = ['decouverte', 'analyse', 'expert'];
 
 // ─── Handler principal ────────────────────────────────────────────────────────
@@ -66,34 +50,22 @@ export const POST: RequestHandler = async ({ request, getClientAddress, cookies 
     );
   }
 
-  const apiKey            = env.ANTHROPIC_API_KEY;
-  const quotaSecret       = env.QUOTA_SECRET;
-  const turnstileSecret   = env.TURNSTILE_SECRET_KEY;
+  const apiKey      = env.ANTHROPIC_API_KEY;
+  const quotaSecret = env.QUOTA_SECRET;
 
   if (!apiKey) return json({ error: 'Clé API non configurée.' }, 500);
 
   // ── Parsing du corps ──────────────────────────────────────────────────────
-  let body: { question?: string; document?: string; mode?: string; turnstileToken?: string };
+  let body: { question?: string; document?: string; mode?: string };
   try {
     body = await request.json();
   } catch {
     return json({ error: 'Corps de requête invalide.' }, 400);
   }
 
-  const { question, document: docContent, mode: rawMode, turnstileToken } = body;
+  const { question, document: docContent, mode: rawMode } = body;
 
   if (!question?.trim()) return json({ error: 'Question manquante.' }, 400);
-
-  // ── Vérification Turnstile ────────────────────────────────────────────────
-  if (turnstileSecret) {
-    if (!turnstileToken) {
-      return json({ error: 'Vérification anti-bot manquante. Rechargez la page.' }, 403);
-    }
-    const ok = await verifyTurnstile(turnstileToken, ip, turnstileSecret);
-    if (!ok) {
-      return json({ error: 'Vérification anti-bot échouée. Rechargez la page et réessayez.' }, 403);
-    }
-  }
 
   // ── Vérification quota ────────────────────────────────────────────────────
   const quotaData = quotaSecret

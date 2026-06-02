@@ -17,7 +17,7 @@
     <!-- Logo / identité -->
     <a href="/" class="flex items-center gap-2 text-mrc-800 hover:text-mrc-900">
       <span class="text-sm font-bold tracking-tight">Registres de communalité</span>
-      <span class="rounded bg-mrc-100 px-1.5 py-0.5 text-xs font-medium text-mrc-600">MRC v5.5</span>
+      <span class="rounded bg-mrc-100 px-1.5 py-0.5 text-xs font-medium text-mrc-600">MRC 5.x</span>
     </a>
 
     <!-- Navigation principale -->

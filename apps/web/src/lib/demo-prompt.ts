@@ -14,7 +14,7 @@
 
 import { VERIF_COHERENCE_COMPACT } from './prompts/verif-coherence-compact';
 import { VERIF_COHERENCE_FULL }    from './prompts/verif-coherence-full';
-import { MRC_DEFINITION }          from './prompts/mrc-definition';
+import { MRC_DEFINITION }          from './mrc-definition';
 import { MRC_SCHEMA_LIGHT }        from './prompts/mrc-schema-light';
 import { MRC_SCHEMA_FULL }         from './prompts/mrc-schema-full';
 

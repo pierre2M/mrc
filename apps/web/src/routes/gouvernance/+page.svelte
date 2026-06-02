@@ -18,7 +18,7 @@
     <div class="mb-2 text-sm font-medium text-mrc-500">Ressources</div>
     <h1 class="text-3xl font-bold text-mrc-900">Gouvernance & RGPD</h1>
     <p class="mt-3 text-mrc-600">
-      Principes de gouvernance du prototype MRC v5.4 — transparence, protection des données, limites du dispositif.
+      Principes de gouvernance du prototype MRC v5.5 — transparence, protection des données, limites du dispositif.
     </p>
   </div>
 
@@ -49,7 +49,7 @@
       <a href="mailto:contact@registre-communalite.org" class="text-mrc-700 underline">contact@registre-communalite.org</a>
     </p>
     <p class="mt-3 text-mrc-600 text-sm">
-      Code source disponible sur GitHub · Licence MIT · Version MRC : 5.4 (mai 2026)
+      Code source disponible sur GitHub · Licence MIT · Version MRC : 5.5 (mai 2026)
     </p>
   </section>
 

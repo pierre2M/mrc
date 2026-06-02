@@ -1,5 +1,5 @@
 <script>
-  const mrcVersion = 'v5.4';
+  const mrcVersion = 'v5.5';
   const year = new Date().getFullYear();
 </script>
 

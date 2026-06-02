@@ -1,6 +1,6 @@
 # mrc-site
 
-Site web de présentation et d'expérimentation du **Modèle de Registres de Communalité (MRC) v5.4**.
+Site web de présentation et d'expérimentation du **Modèle de Registres de Communalité (MRC) v5.5**.
 
 > Prototype scientifique en accès ouvert — ce site ne valide rien. Toutes les sorties IA sont des brouillons interprétatifs, non opposables.
 
@@ -51,10 +51,10 @@ pnpm build
 
 | Sprint | Contenu | Statut |
 |--------|---------|--------|
-| S1 — Squelette éditorial | Pages statiques + déploiement Vercel preview | 🟡 En cours |
-| S2 — Démonstrateur Usage 1 | Backend serverless + 3 modes de réponse | ⬜ À venir |
-| S3 — Vitrines Usages 2 & 3 | Démonstrations interactives | ⬜ À venir |
-| S4 — Grammaires + mise en ligne | Explorateur + bascule domaine public | ⬜ À venir |
+| S1 — Squelette éditorial | Pages statiques + déploiement Vercel preview | ✅ Fait |
+| S2 — Démonstrateur Usage 1 | Backend serverless + 3 modes de réponse | ✅ Fait |
+| S3 — Actualisation v5.5 + interface pédagogique | Bascule v5.4→v5.5, grammaires G1–G12, route `/pedagogie` (« Comprendre, pas à pas ») intégrée à la charte du site | 🟡 En cours |
+| S4 — Vitrines Usages 2 & 3 + mise en ligne | Démonstrations interactives, explorateur, bascule domaine public | ⬜ À venir |
 
 ## Variables d'environnement
 
@@ -66,5 +66,5 @@ ANTHROPIC_API_KEY=sk-ant-...
 
 ## Licence
 
-MIT · MRC v5.4 · Mai 2026
+MIT · MRC v5.5 · Juin 2026
 # mrc

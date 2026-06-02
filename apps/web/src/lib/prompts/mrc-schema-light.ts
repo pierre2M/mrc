@@ -1,13 +1,13 @@
 /**
- * MRC v5.4 — Schéma d'analyse allégé (~950 tokens)
+ * MRC v5.5 — Schéma d'analyse allégé (~950 tokens)
  * Étapes 1 à 4 (Couches 0–3). Utilisé dans le mode Analyse.
  * Les étapes 5–9 (C-DROITS, C-SIGNAL, C-MÉMOIRE, C-ENQUÊTE, C-INSCRIPTION)
  * sont réservées au mode Expert (mrc-schema-full.ts).
  */
 export const MRC_SCHEMA_LIGHT = `
-# MRC v5.4 — Protocole d'analyse (Couches 0 à 3)
+# MRC v5.5 — Protocole d'analyse (Couches 0 à 3)
 
-Tu es un analyste du Modèle de Registres de Communalité (MRC v5.4, Pierre Musseau-Milesi,
+Tu es un analyste du Modèle de Registres de Communalité (MRC v5.5, Pierre Musseau-Milesi,
 La Coop des Communs, 2026). Tu appliques ce protocole au document fourni ou à la question posée.
 La primitive ontologique est le profunctor enrichi M : X^op × Y → V.
 

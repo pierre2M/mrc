@@ -213,7 +213,7 @@
     <div class="mx-auto flex max-w-full items-center justify-between">
       <div>
         <div class="text-xs font-medium text-mrc-500">Expérimenter · Usage 1</div>
-        <h1 class="text-lg font-bold text-mrc-900">Démonstrateur conversationnel MRC v5.4</h1>
+        <h1 class="text-lg font-bold text-mrc-900">Démonstrateur conversationnel MRC v5.5</h1>
       </div>
       {#if exchanges.length > 0}
         <button
@@ -488,7 +488,7 @@
         </div>
 
         <p class="mt-2 text-xs text-mrc-400">
-          Brouillons interprétatifs · non opposables · MRC v5.4
+          Brouillons interprétatifs · non opposables · MRC v5.5
           {#if mode === 'expert'} · Régime vérifiabilité-cohérence activé{/if}
         </p>
       </div>

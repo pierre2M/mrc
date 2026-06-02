@@ -1,17 +1,18 @@
 <script>
   const versions = [
-    { version: 'v5.4', date: 'Mai 2026', statut: 'En cours', notes: 'Site web, démonstrateur conversationnel, cas chiffrés, fiche F8, note régime affectif.' },
-    { version: 'v5.3', date: '2025', statut: 'Stable', notes: 'Consolidation des 9 grammaires, Annexe K2 OpenLLM France, architecture multi-agents v3.' },
+    { version: 'v5.5', date: 'Juin 2026', statut: 'En cours', notes: 'Set consolidé remplaçant la v5.3 : 12 grammaires transversales (ajout NT-G11 Travail et NT-G12 Valuation), annexe méthodologique, architecture transversale NT-ARCH, interface pédagogique « Pas à pas », 30 théorèmes ProfReg vérifiés (Lean 4).' },
+    { version: 'v5.4', date: 'Mai 2026', statut: 'Archive', notes: 'Site web, démonstrateur conversationnel, cas chiffrés, fiche F8, note régime affectif.' },
+    { version: 'v5.3', date: '2025', statut: 'Archive', notes: 'Consolidation des 9 grammaires, Annexe K2 OpenLLM France, architecture multi-agents v3.' },
     { version: 'v5.2', date: '2025', statut: 'Archive', notes: 'Intégration des usages 2 et 3, première version de la fiche registre notarié.' },
     { version: 'v5.0–v5.1', date: '2024', statut: 'Archive', notes: 'Refondation architecturale, introduction des régimes et modes.' },
     { version: 'v4.0', date: '2023', statut: 'Archive', notes: 'Version fondatrice reconstruite — base du modèle ANT / CARE.' }
   ];
 
   const ressources = [
-    { titre: 'Note de cadrage consolidée v5.4', format: 'DOCX', href: '#', desc: 'Document de référence pour la v5.4 — programme de travail, principes, grammaires.' },
+    { titre: 'Index du set consolidé MRC v5.5', format: 'DOCX', href: '#', desc: 'Document de référence pour la v5.5 — 12 grammaires (NT-G1 à NT-G12) + annexe méthodologique.' },
     { titre: 'Bibliographie BibTeX (CERCES, CCE, ICGS, CDM)', format: 'BIB', href: '#', desc: 'Références primaires et spécifiques à chaque grammaire — nettoyage en cours.' },
     { titre: 'Architecture multi-agents v3', format: 'DOCX', href: '#', desc: 'Spécification technique du système multi-agents MRC v5.1.' },
-    { titre: 'Cas chiffré MRC v5.4', format: 'DOCX', href: '#', desc: 'Illustration chiffrée de l\'usage 3 (registre comptable de communalité).' }
+    { titre: 'Cas chiffré MRC (bassins versants, GRET)', format: 'DOCX', href: '#', desc: 'Illustration chiffrée de l\'usage 3 (registre comptable de communalité).' }
   ];
 </script>
 

@@ -5,7 +5,7 @@
 </script>
 
 <svelte:head>
-  <meta name="description" content="Prototype scientifique du Modèle de Registres de Communalité (MRC) v5.4 — présentation, démonstrateur conversationnel, grammaires." />
+  <meta name="description" content="Prototype scientifique du Modèle de Registres de Communalité (MRC) v5.5 — présentation, démonstrateur conversationnel, grammaires." />
 </svelte:head>
 
 <div class="flex min-h-screen flex-col">

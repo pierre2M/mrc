@@ -1,8 +1,58 @@
 <script lang="ts">
+  import { browser } from '$app/environment';
+
   let ouvert: string | null = null;
+  let formulaireOuvert: string | null = null;
+  let emailInput = '';
+  let envoi: 'idle' | 'sending' | 'ok' | 'error' = 'idle';
+  let erreurEnvoi = '';
+  let dernierEnvoi: string | null = null;
 
   function toggle(id: string) {
     ouvert = ouvert === id ? null : id;
+    if (formulaireOuvert && formulaireOuvert !== id) {
+      formulaireOuvert = null;
+    }
+  }
+
+  function ouvrirFormulaire(id: string, event: MouseEvent) {
+    event.stopPropagation();
+    formulaireOuvert = formulaireOuvert === id ? null : id;
+    if (browser) {
+      emailInput = localStorage.getItem('mrc_email') || '';
+    }
+    envoi = 'idle';
+    erreurEnvoi = '';
+  }
+
+  async function envoyerNote(code: string) {
+    const email = emailInput.trim();
+    if (!email) return;
+    envoi = 'sending';
+    erreurEnvoi = '';
+    try {
+      const res = await fetch('/api/send-note', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, code }),
+      });
+      const data = await res.json();
+      if (data.ok) {
+        if (browser) localStorage.setItem('mrc_email', email);
+        dernierEnvoi = email;
+        envoi = 'ok';
+        setTimeout(() => {
+          formulaireOuvert = null;
+          envoi = 'idle';
+        }, 3000);
+      } else {
+        erreurEnvoi = data.error || 'Erreur lors de l\'envoi.';
+        envoi = 'error';
+      }
+    } catch {
+      erreurEnvoi = 'Erreur réseau.';
+      envoi = 'error';
+    }
   }
 
   type Statut = 'fiche disponible' | 'fiche en préparation' | 'en cours';
@@ -118,10 +168,10 @@ Un registre qui prétend être neutre sur la justice choisit de ne pas voir ce q
       id: 'g9',
       code: 'G9',
       nom: 'Affectif',
-      auteurs: 'MRC v5.4 — en cours de formalisation',
-      statut: 'en cours',
+      auteurs: 'MRC v5.5 — note NT-G9',
+      statut: 'fiche en préparation',
       question: "Comment inscrire les régimes affectifs qui structurent les interactions sans les réduire à des données psychologiques individuelles ?",
-      apport: "G9 est en cours de formalisation dans le MRC v5.4. Elle vise à tracer les états affectifs collectifs comme variables d'état du registre, distinctes des positions individuelles.",
+      apport: "G9 rend inscriptibles les conditions affectives d'un commun (travail émotionnel, reconnaissance, défenses de métier, mésentente) comme variables d'état du registre, en qualifiant un régime collectif sans psychologiser les individus.",
       tensions: "En cours d'articulation avec G3 (Soin) et G8 (Mimétique).",
       signal: 'en cours de définition'
     },
@@ -129,14 +179,39 @@ Un registre qui prétend être neutre sur la justice choisit de ne pas voir ce q
       id: 'g10',
       code: 'G10',
       nom: 'Démocratie épistémique',
-      auteurs: 'Anderson (2006), Landemore (2012), MRC v5.4',
+      auteurs: 'Anderson (2006), Landemore (2012), MRC v5.5',
       statut: 'fiche en préparation',
       question: "Comment concevoir un registre qui soit lui-même un dispositif de démocratie épistémique — où la diversité des savoirs améliore la qualité des décisions collectives ?",
       apport: "G10 pose que la légitimité d'un registre dépend de sa capacité à intégrer des savoirs hétérogènes sans les réduire à un seul cadre. Elle active les signaux de parité délibérative et d'injustice herméneutique comme conditions de validité, non comme considérations optionnelles.",
       tensions: "En tension productive avec G4 (Performativité) sur la notion de savoir légitime, et avec G7 (Justice) sur les conditions d'entrée dans la délibération.",
       signal: 'parité_délibérative, TOKEN_MARGINAL_NON_ENTENDU, diversité_épistémique'
+    },
+    {
+      id: 'g11',
+      code: 'G11',
+      nom: 'Travail (qualité et capabilité)',
+      auteurs: 'Zimmermann & Didry, Murray — MRC v5.5 (NT-G11)',
+      statut: 'fiche en préparation',
+      question: "Comment inscrire la qualité du travail non comme un indicateur RH parmi d'autres, mais comme une capabilité — la possibilité réelle, pour le travailleur, d'exercer un métier dont il est reconnu juge légitime ?",
+      apport: "Nouveauté v5.5 : G-TRAVAIL accueille les sources de sociologie/économie du travail jusque-là portées par la fiche F1. Elle distingue trois registres : la qualité du travail comme objet de délibération (DPQT, Zimmermann & Didry — salarié reconnu juge légitime), la position du travailleur sur les axes risque / autonomie / expressivité (Murray), et le travail comme commun de capabilités dont la gouvernance peut être stable, instable ou en transition (signal COMMUN_GOUVERNE_FRAGILE).",
+      tensions: "Distincte de G3 (Soin), qui porte le travail attentionnel et reproductif (care), et de G7 (Justice), qui porte la reconnaissance comme plancher de dignité. Décision actée : G-TRAVAIL est maintenue comme grammaire distincte de NT-G7.",
+      signal: 'salarie_comme_juge, profondeur_justice (SURFACE/INTERMEDIAIRE/PROFONDE), risque_murray, autonomie_subordination, expressivite, COMMUN_GOUVERNE_FRAGILE'
+    },
+    {
+      id: 'g12',
+      code: 'G12',
+      nom: 'Valuation (comptabilité & valuemètres)',
+      auteurs: 'Richard, Bensadon & Rambaud (2024), Rambaud (2019, CARE), Dumeaux (2025), Bahougne (2020), CNoCP — MRC v5.5 (NT-G12)',
+      statut: 'fiche en préparation',
+      question: "Comment inscrire le geste comptable lui-même comme dispositif gouvernable — de sorte qu'un seuil ou un prix ne soit jamais un instrument performatif non gouverné ?",
+      apport: "Nouveauté v5.5 : G-VALUATION accueille toutes les sources comptables et de valuation jusque-là portées par la fiche F8 et devient le porteur de Couche 3 de la gouvernance des valuemètres (chantier B4). Quatre blocs : mouvements comptables et équation du bilan (Richard, Bensadon & Rambaud 2024, [VÉRIFIÉ]) ; comptabilité CARE et capitaux à préserver (Rambaud 2019) ; juste prix écologique (Dumeaux 2025) ; droit et normalisation de la comptabilité publique (Bahougne, CNoCP). Tout valuemètre déclare sa source (DID) et sa convention d'attribution.",
+      tensions: "Articulée à G4 (Performativité) — un seuil sans convention déclarée constitue ce qu'il prétend mesurer — et à G2 (Responsabilité) pour le chiffrage de la dette. Références primaires Rambaud 2019 et Dumeaux 2025 : [PLAUSIBLE, NON VÉRIFIÉ].",
+      signal: 'regime_comptable (IFRS/PCG/CARE), ecart_juste_prix, valuemètre_source_déclarée, INSTRUMENT_PERFORMATIF_NON_GOUVERNE'
     }
   ];
+
+  // Codes pour lesquels une note de vulgarisation est disponible
+  const codesAvecNote = new Set(['G1', 'G2', 'G7']);
 
   function couleurStatut(statut: Statut): string {
     if (statut === 'fiche disponible')    return 'bg-emerald-50 text-emerald-700';
@@ -155,10 +230,39 @@ Un registre qui prétend être neutre sur la justice choisit de ne pas voir ce q
     <div class="mb-2 text-sm font-medium text-mrc-500">Comprendre · Cadres théoriques</div>
     <h1 class="text-3xl font-bold text-mrc-900">Grammaires transversales</h1>
     <p class="mt-3 text-mrc-600 max-w-2xl">
-      Les dix grammaires du MRC v5.x — lentilles théoriques mobilisées en Couche 3 pour analyser
-      ce qui fait communalité dans un collectif. Chacune pose une question structurante distincte
-      et s'articule aux autres selon des tensions documentées.
+      Les douze grammaires transversales du MRC v5.5 (NT-G1 à NT-G12) — lentilles théoriques
+      mobilisées en Couche 3 pour analyser ce qui fait communalité dans un collectif. Chacune pose
+      une question structurante distincte et s'articule aux autres selon des tensions documentées.
+      Pour une lecture pas à pas, voir <a href="/pedagogie" class="underline hover:text-mrc-900">Comprendre, pas à pas</a>.
     </p>
+  </div>
+
+  <!-- Résumé NT-ARCH -->
+  <div class="mb-10 rounded-xl border border-mrc-200 bg-mrc-50 px-6 py-5">
+    <div class="flex items-center gap-2 mb-3">
+      <span class="inline-block rounded-md bg-mrc-100 text-mrc-700 text-xs font-bold px-2 py-1">NT-ARCH</span>
+      <p class="text-sm font-semibold text-mrc-800">Architecture transversale des obligations</p>
+    </div>
+    <p class="text-sm text-mrc-700 leading-relaxed mb-3">
+      Avant les dix grammaires, le MRC pose une question architecturale : <em>que faire quand une obligation n'a pas encore de porteur ?</em>
+      NT-ARCH répond par trois régimes d'obligation déclarés explicitement dans le registre —
+      <strong>ACTORIEL</strong> (porteur identifié), <strong>SYSTEMIQUE</strong> (sans porteur, en attente),
+      <strong>HYBRIDE</strong> — et une machine d'états qui interdit de traiter une dette comme urgente
+      avant qu'une délibération ait tenté de l'attribuer.
+    </p>
+    <p class="text-sm text-mrc-700 leading-relaxed mb-3">
+      Quatre contraintes concrètes : (1) tout régime d'obligation doit être déclaré — une dette sans porteur ne peut pas être traitée
+      comme si elle en avait un ; (2) une dette systémique non attribuée ne peut jamais déclencher directement le niveau CRITIQUE ;
+      (3) toute représentation d'acteurs absents (générations futures, entités non-humaines) doit déclarer son principe de référence
+      et sa condition de réfutabilité ; (4) une asymétrie à portée planétaire déclenche une obligation de légitimité représentative
+      spécifique (<code class="text-xs bg-white px-1 rounded">planetaireNonDesignee</code>).
+    </p>
+    <p class="text-sm text-mrc-600 leading-relaxed">
+      NT-ARCH ne tranche pas <em>qui</em> est responsable ni quelle théorie de la justice intergénérationnelle est la bonne.
+      Elle tranche une question plus étroite : quelles propriétés une obligation inscrite doit-elle avoir pour être
+      traçable, délibérable et réfutable ? Les contenus restent l'affaire des grammaires G1–G10 et de la délibération collective.
+    </p>
+    <p class="mt-3 text-xs text-mrc-400 italic">NT-ARCH v5.6 (ébauche) — 31 mai 2026 / 1er juin 2026</p>
   </div>
 
   <!-- Légende statuts -->
@@ -233,6 +337,66 @@ Un registre qui prétend être neutre sur la justice choisit de ne pas voir ce q
                 Note théorique complète disponible dans le corpus MRC interne — vulgarisation site-vitrine à venir.
               </p>
             {/if}
+
+            <!-- Lien "plus de contenu" -->
+            <div class="mt-5 pt-4 border-t border-mrc-50">
+              {#if codesAvecNote.has(g.code)}
+                <button
+                  class="text-sm text-mrc-600 hover:text-mrc-800 underline underline-offset-2 transition-colors"
+                  on:click={(e) => ouvrirFormulaire(g.id, e)}
+                >
+                  {formulaireOuvert === g.id ? 'Fermer' : 'Plus de contenu sur cette fiche →'}
+                </button>
+
+                {#if formulaireOuvert === g.id}
+                  <div class="mt-3 rounded-lg border border-mrc-100 bg-mrc-50 px-4 py-4">
+                    <p class="text-sm text-mrc-700 mb-3">
+                      Recevoir la note de vulgarisation complète de <strong>{g.nom}</strong> par email.
+                    </p>
+
+                    {#if envoi === 'ok'}
+                      <p class="text-sm text-emerald-700 font-medium">
+                        ✓ Note envoyée à {dernierEnvoi}.
+                      </p>
+                    {:else}
+                      <form
+                        class="flex flex-col sm:flex-row gap-2"
+                        on:submit|preventDefault={() => envoyerNote(g.code)}
+                      >
+                        <input
+                          type="email"
+                          bind:value={emailInput}
+                          placeholder="votre@email.fr"
+                          required
+                          class="flex-1 rounded-md border border-mrc-200 bg-white px-3 py-2 text-sm text-mrc-900 placeholder-mrc-400 focus:outline-none focus:ring-2 focus:ring-mrc-300"
+                        />
+                        <button
+                          type="submit"
+                          disabled={envoi === 'sending'}
+                          class="shrink-0 rounded-md bg-mrc-600 px-4 py-2 text-sm font-medium text-white hover:bg-mrc-700 disabled:opacity-60 transition-colors"
+                        >
+                          {envoi === 'sending' ? 'Envoi…' : 'Envoyer'}
+                        </button>
+                      </form>
+
+                      {#if envoi === 'error'}
+                        <p class="mt-2 text-xs text-red-600">{erreurEnvoi}</p>
+                      {/if}
+                    {/if}
+                  </div>
+                {/if}
+
+              {:else}
+                <button
+                  class="text-sm text-mrc-400 cursor-default"
+                  disabled
+                  title="Note de vulgarisation en préparation"
+                >
+                  Plus de contenu sur cette fiche — note de vulgarisation à venir
+                </button>
+              {/if}
+            </div>
+
           </div>
         {/if}
 

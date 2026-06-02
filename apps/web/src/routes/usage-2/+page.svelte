@@ -174,6 +174,32 @@
     ecritures = ecritures.map((e) => (e.id === id ? { ...e, statut: 'ambre' } : e));
   }
 
+  // Désigner un porteur en phase DÉLIBÉRATION fait passer la dette de
+  // SYSTÉMIQUE à ATTRIBUÉE (machine-états) : on produit alors une écriture
+  // d'attribution nommant ce porteur, à valider en phase CONVENTION.
+  const ID_PORTEUR = 'e-porteur';
+  function upsertEcriturePorteur() {
+    const nom = porteurDette.trim();
+    if (!nom) return;
+    const texte = `Écriture : attribution de la dette de care à « ${nom} » (porteur désigné en délibération).`;
+    const idx = ecritures.findIndex((e) => e.id === ID_PORTEUR);
+    if (idx === -1) {
+      ecritures = [
+        ...ecritures,
+        {
+          id: ID_PORTEUR, type: 'acteur', fiche: 'F2', statut: 'rouge', texte,
+          source: 'Désignation en phase DÉLIBÉRATION (machine-états : régime d’obligation SYSTÉMIQUE → ATTRIBUÉE).'
+        }
+      ];
+    } else if (ecritures[idx].statut === 'rouge') {
+      // le porteur a été renommé avant validation : on met à jour le texte
+      ecritures = ecritures.map((e) => (e.id === ID_PORTEUR ? { ...e, texte } : e));
+    }
+  }
+
+  // Déclenchée à l'entrée en phase CONVENTION (index 4) et au-delà.
+  $: if (phaseIdx >= 4) upsertEcriturePorteur();
+
   $: bilan = {
     opposables: ecritures.filter((e) => e.statut === 'vert').length,
     archivees: ecritures.filter((e) => e.statut === 'archive').length,

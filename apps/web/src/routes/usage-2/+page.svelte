@@ -126,21 +126,21 @@
   ): { ok: boolean; raison?: string } {
     switch (PHASES[idx].id) {
       case ‘probleme’:
-        if (!_inventaireConfirme) return { ok: false, raison: ‘Confirmez l’inventaire des affectés avant de continuer.’ };
-        if (!_inventaireNonVide) return { ok: false, raison: ‘[BLOCAGE] InventaireNonVide : la liste des entités affectées ne peut pas être vide.’ };
+        if (!_inventaireConfirme) return { ok: false, raison: "Confirmez l’inventaire des affectés avant de continuer." };
+        if (!_inventaireNonVide) return { ok: false, raison: "[BLOCAGE] InventaireNonVide : la liste des entités affectées ne peut pas être vide." };
         return { ok: true };
       case ‘enquete’:
-        if (!_enqueteLancee) return { ok: false, raison: ‘Lancez le staging pour produire les propositions d’écriture.’ };
+        if (!_enqueteLancee) return { ok: false, raison: "Lancez le staging pour produire les propositions d’écriture." };
         return { ok: true };
       case ‘revision’:
-        if (!_basesStabilisees) return { ok: false, raison: ‘Déclarez les primitives de base (Couche 0) avant de continuer.’ };
+        if (!_basesStabilisees) return { ok: false, raison: "Déclarez les primitives de base (Couche 0) avant de continuer." };
         return { ok: true };
       case ‘deliberation’:
-        if (_deliberationBloquee) return { ok: false, raison: ‘[BLOCAGE R-HERMENEUTIQUE] Des entités sans voix propre sont affectées : franchissez d’abord la représentation prospective.’ };
-        if (!_porteurDette.trim()) return { ok: false, raison: ‘[BLOCAGE machine-états] Aucun porteur de dette désigné : pas de passage au niveau critique.’ };
+        if (_deliberationBloquee) return { ok: false, raison: "[BLOCAGE R-HERMENEUTIQUE] Des entités sans voix propre sont affectées : franchissez d’abord la représentation prospective." };
+        if (!_porteurDette.trim()) return { ok: false, raison: "[BLOCAGE machine-états] Aucun porteur de dette désigné : pas de passage au niveau critique." };
         return { ok: true };
       case ‘convention’:
-        if (_ecritures.some((e) => e.statut === ‘rouge’)) return { ok: false, raison: ‘Arbitrez chaque proposition (valider ou archiver) avant de clore la convention.’ };
+        if (_ecritures.some((e) => e.statut === ‘rouge’)) return { ok: false, raison: "Arbitrez chaque proposition (valider ou archiver) avant de clore la convention." };
         return { ok: true };
       default:
         return { ok: true };

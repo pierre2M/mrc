@@ -6,6 +6,7 @@
     { href: '/presentation',  label: 'Comprendre' },
     { href: '/pedagogie',     label: 'Pas à pas' },
     { href: '/usage-1',       label: 'Démonstrateur' },
+    { href: '/usage-2',       label: 'Enquête' },
     { href: '/grammaires',    label: 'Grammaires' },
     { href: '/documentation', label: 'Documentation' },
   ];

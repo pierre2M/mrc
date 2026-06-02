@@ -458,6 +458,19 @@ export const objets: MrcObjet[] = [
     ex: [
       { t: "Qui a posé ce seuil ?", k: 'K3', p: "Un seuil de prélèvement « acceptable » est fixé quelque part par quelqu'un.", r: "La grammaire exige que tout valuemètre déclare sa source et sa convention, pour qu'un seuil ne soit jamais un instrument performatif non gouverné." }
     ]
+  },
+  // ---------------- COUCHE 2 — champ mobilisé par le Parcours ----------------
+  {
+    id: 'C-MILIEU-VECU', layer: 2, ico: '🌍', name: "L'état vécu du milieu", code: 'C-MILIEU-VECU · F2', branch: 'milieu',
+    what: "Renseigne la texture vécue de l'habitabilité d'un milieu : ce que vivre là veut concrètement dire.",
+    how: "Champ de la fiche F2 (mode milieu). Garde les dimensions de l'état du milieu sans les réduire à un seul chiffre ; sert de base aux signaux de co-dégradation et de care non-humain.",
+    rel: [
+      { to: 'F2', text: "est l'un des champs nommés de la fiche F2" },
+      { to: 'G-MESOLOGIE', text: "la grammaire qui pense le milieu comme relation s'en sert" }
+    ],
+    ex: [
+      { t: "L'état vécu d'une nappe", k: 'K3', p: "Au-delà du niveau piézométrique, ce que la baisse de la nappe change pour ceux qui en dépendent.", r: "La fiche inscrit l'habitabilité vécue, pas seulement la mesure : la dégradation devient lisible comme perte de milieu, pas comme simple variable." }
+    ]
   }
 ];
 
@@ -483,3 +496,93 @@ export function relatedSet(id: string): Set<string> {
   }
   return s;
 }
+
+// ════════════════════════════════════════════════════════════════════════════
+// PARCOURS GUIDÉ — « la vie d'une obligation », étape par étape.
+// Transcription fidèle du set v5.5 (mrc_v55_complet.html, onglet Parcours).
+// Régime : vulgarisation procédurale, non calcul formel.
+// ════════════════════════════════════════════════════════════════════════════
+
+/** Référence légère affichable quand l'id n'est pas un objet de la carte
+ *  (cas des signaux R-*, que le set pédago « carte » n'expose pas). */
+export interface RefLegere {
+  id: string;
+  ico: string;
+  name: string;
+  what: string;
+}
+
+/** Signaux mobilisés par le Parcours, absents de la carte (couches 0–3). */
+export const signauxParcours: Record<string, RefLegere> = {
+  'R-CARE': {
+    id: 'R-CARE', ico: '🚨', name: 'Le soin effectivement assumé',
+    what: "Satisfait seulement si ceux qui bénéficient d'un milieu ou d'un commun assument des charges de préservation mesurables — pas seulement déclarées."
+  },
+  'R-CODEGRADATION': {
+    id: 'R-CODEGRADATION', ico: '🚨', name: 'Travail et milieu qui se dégradent ensemble',
+    what: "Inscrit, date et attribue les dégradations subies par le milieu, en lien avec les conditions de travail. Contrepartie du soin (R-CARE)."
+  },
+  'R-HABITABILITE-CAPABILITE': {
+    id: 'R-HABITABILITE-CAPABILITE', ico: '🚨', name: 'Vivable pour le système ET pour chacun',
+    what: "Le couplage clé : une situation doit rester habitable globalement et garantir le minimum de chacun. L'habitabilité systémique ne rachète pas une perte de capabilité individuelle."
+  },
+  'R-INTERDIT-ABSOLU': {
+    id: 'R-INTERDIT-ABSOLU', ico: '🚨', name: "L'interdit qu'on ne franchit pas",
+    what: "Une limite non négociable ; en régime systémique elle déclenche la délibération, pas l'urgence directe."
+  }
+};
+
+/** Résout un id en objet affichable (carte d'abord, puis signaux du parcours). */
+export function refParcours(id: string): MrcObjet | RefLegere | null {
+  return objetsById[id] ?? signauxParcours[id] ?? null;
+}
+
+export interface ParcoursEtape {
+  n: string;
+  t: string;
+  txt: string;
+  ids: string[];
+}
+
+export const parcours: ParcoursEtape[] = [
+  {
+    n: 'Étape 1 · Couche 0', t: 'Un collectif décide quelque chose qui affecte des tiers',
+    txt: "Une coopérative arbitre l'usage d'une ressource. La décision touche des absents : milieu, voisins, générations futures. On commence par déclarer, avec les briques de base, à qui revient la responsabilité — et personne ne peut être inventé ni effacé.",
+    ids: ['regimeobligation', 'fractionactorielle', 'collectifhybridedeclare']
+  },
+  {
+    n: 'Étape 2 · Couche 1', t: "Rien ne s'inscrit sans contrepartie",
+    txt: "La règle débit/crédit force à inscrire, en face de tout gain, ce qu'il coûte. La dette qui en résulte reçoit un statut : a-t-elle un débiteur, ou pas encore ?",
+    ids: ['R1', 'C-STATUT-DETTE']
+  },
+  {
+    n: 'Étape 3 · Couche 1', t: "Sans responsable, on délibère — on ne décrète pas l'urgence",
+    txt: "Si la dette n'a pas de porteur, la machine d'états interdit de sauter au niveau « critique ». Elle force le passage par la délibération, qui doit produire un responsable avant toute mobilisation de l'urgence.",
+    ids: ['machine-etats']
+  },
+  {
+    n: 'Étape 4 · Couche 1', t: "On dresse l'inventaire de tout ce qui est affecté",
+    txt: "Avant de conclure, on liste les entités touchées — y compris non-humaines (la nappe, les zones humides), avec leur seuil d'entrée dans la communauté morale. La liste ne peut pas être vide.",
+    ids: ['InventaireNonVide', 'REPRESENTATION-PROSPECTIVE', 'principeintergenerationnel']
+  },
+  {
+    n: 'Étape 5 · Couche 2', t: 'Une fiche applique tout ça à un domaine concret',
+    txt: "Selon le terrain, un mode d'emploi s'active : ici le mode milieu (F2) pour un bassin versant, qui garde les dimensions de l'état du milieu, ou le mode comptable (F8) pour gouverner les chiffres.",
+    ids: ['F2', 'F8', 'C-MILIEU-VECU']
+  },
+  {
+    n: 'Étape 6 · Couche 3', t: "Une grammaire qualifie l'obligation",
+    txt: "La grammaire Responsabilité lit l'obligation, couplée à la grammaire Justice : une situation doit rester habitable pour le système ET garantir le minimum de chacun. Le couplage doit tenir dans les deux sens.",
+    ids: ['G-RESPONSABILITE', 'G-JUSTICE', 'G-MESOLOGIE']
+  },
+  {
+    n: 'Étape 7 · Signaux', t: 'Les alertes se déclenchent',
+    txt: "Le registre lève automatiquement ses signaux : co-dégradation travail/milieu, soin réellement assumé ou non, habitabilité-capabilité. Et tout chiffre mobilisé doit déclarer sa source.",
+    ids: ['R-CODEGRADATION', 'R-CARE', 'R-HABITABILITE-CAPABILITE', 'R-INTERDIT-ABSOLU']
+  },
+  {
+    n: 'Étape 8 · Bouclage', t: 'Traçable, gouvernable, réfutable',
+    txt: "L'obligation est désormais inscrite, attribuée (ou explicitement en attente), instrumentée et qualifiée — avec, à chaque étape, une contrepartie réfutable et des lacunes déclarées. C'est le passage de la plausibilité à la vérifiabilité-cohérence.",
+    ids: ['G-VALUATION', 'G-DEMO-EPISTEMIQUE']
+  }
+];

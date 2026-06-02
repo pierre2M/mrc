@@ -6,9 +6,25 @@
     relatedSet,
     layerMeta,
     branchesCouche2,
+    parcours,
+    refParcours,
     type Layer,
-    type MrcObjet
+    type MrcObjet,
+    type RefLegere
   } from '$lib/pedago-data';
+  import Stepper from '$lib/components/Stepper.svelte';
+
+  // Vue active : carte (architecture par couches) ou parcours (vie d'une obligation).
+  let vue: 'carte' | 'parcours' = 'carte';
+  let pas = 0;
+
+  $: etape = parcours[pas];
+  $: stepsParcours = parcours.map((e, i) => ({ num: i + 1, label: e.n.split('·')[1]?.trim() ?? e.n }));
+
+  /** Vrai si la réf est un objet complet de la carte (avec exemples cliquables). */
+  function estObjet(o: MrcObjet | RefLegere | null): o is MrcObjet {
+    return !!o && 'layer' in o;
+  }
 
   const couleurs: Record<Layer, string> = {
     0: 'sky',
@@ -94,6 +110,21 @@
     </p>
   </header>
 
+  <!-- Bascule de vue -->
+  <div class="mb-6 inline-flex rounded-lg border border-mrc-200 bg-white p-1 text-sm">
+    <button
+      type="button"
+      class="rounded-md px-4 py-1.5 font-medium transition-colors {vue === 'carte' ? 'bg-mrc-700 text-white' : 'text-mrc-600 hover:bg-mrc-50'}"
+      on:click={() => (vue = 'carte')}
+    >🗺️ La carte</button>
+    <button
+      type="button"
+      class="rounded-md px-4 py-1.5 font-medium transition-colors {vue === 'parcours' ? 'bg-mrc-700 text-white' : 'text-mrc-600 hover:bg-mrc-50'}"
+      on:click={() => (vue = 'parcours')}
+    >▶️ Le parcours</button>
+  </div>
+
+  {#if vue === 'carte'}
   <!-- Légende -->
   <div class="mb-6 flex flex-wrap gap-x-6 gap-y-2 text-xs text-mrc-600">
     <span class="flex items-center gap-2"><i class="h-3 w-3 rounded-sm {accent[0].dot}"></i>Couche 0 — Les briques de base</span>
@@ -221,6 +252,51 @@
       </div>
     </aside>
   </div>
+
+  {:else}
+  <!-- ───────────────── VUE PARCOURS — la vie d'une obligation ───────────────── -->
+  <p class="mb-5 max-w-3xl text-sm text-mrc-600">
+    Le même modèle, suivi comme une histoire : comment une obligation naît, reçoit une contrepartie,
+    se voit attribuer (ou non) un responsable, puis est instrumentée et qualifiée — étape par étape,
+    de la Couche 0 au bouclage vérifiabilité-cohérence.
+  </p>
+
+  <Stepper steps={stepsParcours} bind:current={pas} accent="mrc">
+    <div class="rounded-2xl border border-mrc-100 bg-white p-6 shadow-sm">
+      <p class="text-xs font-semibold uppercase tracking-wide text-mrc-500">{etape.n}</p>
+      <h2 class="mt-1 text-xl font-bold text-mrc-900">{etape.t}</h2>
+      <p class="mt-3 text-mrc-700">{etape.txt}</p>
+
+      <h3 class="mt-6 mb-2 text-xs font-semibold uppercase tracking-wide text-mrc-500">
+        Objets mobilisés — cliquez un objet de la carte pour ses exemples
+      </h3>
+      <div class="flex flex-wrap gap-3">
+        {#each etape.ids as id}
+          {@const o = refParcours(id)}
+          {#if o}
+            {#if estObjet(o)}
+              <button
+                type="button"
+                on:click={() => { vue = 'carte'; select(o.id); if (o.ex.length) openEx(o.id); }}
+                class="w-60 rounded-xl border border-mrc-100 bg-slate-50 p-3 text-left transition hover:-translate-y-0.5 hover:shadow-md"
+              >
+                <div class="flex items-center gap-2 text-sm font-semibold text-mrc-800"><span>{o.ico}</span><span>{o.name}</span></div>
+                <div class="mt-1 text-xs text-mrc-500">{o.what.length > 90 ? o.what.slice(0, 88) + '…' : o.what}</div>
+                <div class="mt-1 font-mono text-[10px] text-mrc-400">{o.id}</div>
+              </button>
+            {:else}
+              <div class="w-60 rounded-xl border border-red-100 bg-red-50/40 p-3">
+                <div class="flex items-center gap-2 text-sm font-semibold text-red-800"><span>{o.ico}</span><span>{o.name}</span></div>
+                <div class="mt-1 text-xs text-mrc-600">{o.what.length > 110 ? o.what.slice(0, 108) + '…' : o.what}</div>
+                <div class="mt-1 font-mono text-[10px] text-mrc-400">{o.id} · signal</div>
+              </div>
+            {/if}
+          {/if}
+        {/each}
+      </div>
+    </div>
+  </Stepper>
+  {/if}
 
   <!-- Avertissement de régime -->
   <footer class="mt-10 rounded-xl border border-mrc-100 bg-slate-50 p-4 text-xs leading-relaxed text-mrc-500">

@@ -172,12 +172,12 @@ RÈGLE ABSOLUE : Toutes tes analyses sont des BROUILLONS INTERPRÉTATIFS, non op
 {"acteurs": ["liste des acteurs identifiés"], "interactions": ["types d'interactions"], "signaux": ["signaux repérés"], "ecritures": ["types d'écritures"]}
 [/MRC_JOURNAL]`,
 
-  architecture: `Tu es un assistant spécialisé dans le Modèle de Registres de Communalité (MRC) v5.4.
+  architecture: `Tu es un assistant spécialisé dans le Modèle de Registres de Communalité (MRC) v5.5.
 
 ${MRC_SCHEMA}
 
 MODE : Architecture mobilisée
-Analyse les documents en mappant précisément les éléments sur l'architecture MRC v5.4. Identifie quels niveaux d'analyse sont pertinents, quelles catégories sont mobilisées, comment les registres s'articulent entre eux. Sois technique et précis dans le vocabulaire MRC. Utilise les 5 niveaux d'analyse comme grille systématique.
+Analyse les documents en mappant précisément les éléments sur l'architecture MRC v5.5. Identifie quels niveaux d'analyse sont pertinents, quelles catégories sont mobilisées, comment les registres s'articulent entre eux. Sois technique et précis dans le vocabulaire MRC. Utilise les 5 niveaux d'analyse comme grille systématique.
 
 RÈGLE ABSOLUE : Toutes tes analyses sont des BROUILLONS de démonstration, non opposables. Rappelle-le en début de réponse.
 
@@ -186,7 +186,7 @@ RÈGLE ABSOLUE : Toutes tes analyses sont des BROUILLONS de démonstration, non 
 {"acteurs": ["liste des acteurs identifiés"], "interactions": ["types d'interactions"], "signaux": ["signaux repérés"], "ecritures": ["types d'écritures"]}
 [/MRC_JOURNAL]`,
 
-  cadres: `Tu es un assistant spécialisé dans le Modèle de Registres de Communalité (MRC) v5.4.
+  cadres: `Tu es un assistant spécialisé dans le Modèle de Registres de Communalité (MRC) v5.5.
 
 ${MRC_SCHEMA}
 

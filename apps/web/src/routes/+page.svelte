@@ -82,8 +82,11 @@
       <a href="/presentation" class="rounded-lg bg-mrc-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-mrc-800 transition-colors">
         Comprendre le MRC
       </a>
+      <a href="/pedagogie" class="rounded-lg border border-mrc-200 bg-white px-5 py-2.5 text-sm font-medium text-mrc-700 hover:bg-mrc-50 transition-colors">
+        Pas à pas
+      </a>
       <a href="/usage-1" class="rounded-lg border border-mrc-200 bg-white px-5 py-2.5 text-sm font-medium text-mrc-700 hover:bg-mrc-50 transition-colors">
-        Essayer le démonstrateur
+        Démonstrateur
       </a>
     </div>
 

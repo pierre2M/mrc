@@ -137,11 +137,16 @@ Les grammaires ne s'excluent pas — elles s'articulent et entrent en tension pr
 
   <!-- CTA vers le démonstrateur -->
   <div class="rounded-xl border border-mrc-200 bg-mrc-50 p-6 text-center">
-    <p class="mb-2 font-medium text-mrc-800">Prêt à éprouver le MRC sur un document réel ?</p>
-    <p class="mb-4 text-sm text-mrc-600">Le démonstrateur propose trois modes : Découverte, Analyse, Expert.</p>
-    <a href="/usage-1" class="rounded-lg bg-mrc-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-mrc-800 transition-colors">
-      Accéder au démonstrateur →
-    </a>
+    <p class="mb-2 font-medium text-mrc-800">Prêt à aller plus loin ?</p>
+    <p class="mb-4 text-sm text-mrc-600">Explorez chaque objet pas à pas, ou éprouvez le MRC sur un document réel.</p>
+    <div class="flex flex-wrap justify-center gap-3">
+      <a href="/pedagogie" class="rounded-lg border border-mrc-300 bg-white px-5 py-2.5 text-sm font-medium text-mrc-700 hover:bg-mrc-100 transition-colors">
+        Lire pas à pas →
+      </a>
+      <a href="/usage-1" class="rounded-lg bg-mrc-700 px-5 py-2.5 text-sm font-medium text-white hover:bg-mrc-800 transition-colors">
+        Accéder au démonstrateur →
+      </a>
+    </div>
   </div>
 
 </div>

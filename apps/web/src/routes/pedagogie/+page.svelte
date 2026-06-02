@@ -35,6 +35,15 @@
   function select(id: string) {
     selectionId = id;
     related = relatedSet(id);
+    if (typeof window !== 'undefined' && window.innerWidth < 1024) {
+      setTimeout(() => {
+        document.getElementById('detail-panel')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 50);
+    }
+  }
+
+  function scrollBackToCard(id: string) {
+    document.getElementById(`card-${id}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 
   function cardClass(id: string): string {
@@ -115,6 +124,7 @@
                     {#each branche.ids as id}
                       {@const o = objetsById[id]}
                       <button
+                        id="card-{id}"
                         type="button"
                         on:click={() => select(id)}
                         class="w-52 rounded-xl border border-mrc-100 bg-slate-50 p-3 text-left transition hover:-translate-y-0.5 hover:shadow-md {cardClass(id)}"
@@ -133,6 +143,7 @@
             <div class="flex flex-wrap gap-3 p-4">
               {#each objetsDeCouche(L) as o}
                 <button
+                  id="card-{o.id}"
                   type="button"
                   on:click={() => select(o.id)}
                   class="w-52 rounded-xl border border-mrc-100 bg-slate-50 p-3 text-left transition hover:-translate-y-0.5 hover:shadow-md {cardClass(o.id)}"
@@ -150,7 +161,7 @@
     </div>
 
     <!-- Panneau latéral -->
-    <aside class="lg:sticky lg:top-24 lg:self-start">
+    <aside id="detail-panel" class="lg:sticky lg:top-24 lg:self-start">
       <div class="rounded-2xl border border-mrc-100 bg-white p-5 shadow-sm">
         {#if !selection}
           <p class="py-12 text-center text-sm leading-relaxed text-mrc-400">
@@ -160,6 +171,13 @@
           </p>
         {:else}
           {@const m = layerMeta[selection.layer]}
+          <button
+            type="button"
+            on:click={() => scrollBackToCard(selection.id)}
+            class="lg:hidden mb-3 flex items-center gap-1.5 text-xs text-mrc-500 hover:text-mrc-800 transition-colors"
+          >
+            ↑ Revenir à la carte
+          </button>
           <p class="text-xs font-semibold uppercase tracking-wide text-mrc-500">{m.title}</p>
           <h3 class="mt-1 flex items-center gap-2 text-xl font-bold text-mrc-900">
             <span>{selection.ico}</span><span>{selection.name}</span>

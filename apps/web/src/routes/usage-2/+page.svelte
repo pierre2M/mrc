@@ -20,6 +20,7 @@
     source: string;         // extrait justificatif (cas fictif)
     statut: Statut;
     motif?: string;         // motif d'archivage / renvoi
+    signal?: string;        // signal MRC ouvert si l'écriture est validée
   }
 
   interface Phase {
@@ -83,10 +84,10 @@
     { id: 'e2', type: 'interaction', fiche: 'F2', statut: 'rouge',
       texte: "Interaction : prélèvement agricole → nappe (mobilisation d'un capital non-humain).",
       source: '« la coopérative prélève 220 000 m³/an » (délibération du 12 mars)' },
-    { id: 'e3', type: 'ecriture', fiche: 'F2', statut: 'rouge',
+    { id: 'e3', type: 'ecriture', fiche: 'F2', statut: 'rouge', signal: 'R-CARE — soin envers la nappe non encore attesté',
       texte: 'Écriture : dette de care envers la nappe, contre-écriture du gain de production.',
       source: 'R-CARE branche non-humain + R-CODEGRADATION (→ NT-G3)' },
-    { id: 'e4', type: 'ecriture', fiche: 'F2', statut: 'rouge',
+    { id: 'e4', type: 'ecriture', fiche: 'F2', statut: 'rouge', signal: 'R-CODEGRADATION — dégradation couplée travail / milieu',
       texte: 'Écriture : co-dégradation travail maraîcher / milieu (signal R-CODEGRADATION).',
       source: '« les maraîchers en aval signalent des sols plus secs » (compte-rendu atelier)' },
     { id: 'e5', type: 'acteur', fiche: 'F2', statut: 'rouge',
@@ -176,7 +177,7 @@
   $: bilan = {
     opposables: ecritures.filter((e) => e.statut === 'vert').length,
     archivees: ecritures.filter((e) => e.statut === 'archive').length,
-    signaux: ecritures.filter((e) => e.statut === 'vert' && e.type === 'ecriture').length
+    signauxList: ecritures.filter((e) => e.statut === 'vert' && e.signal)
   };
 
   const statutMeta: Record<Statut, { label: string; cls: string; dot: string }> = {
@@ -351,10 +352,27 @@
                   <div class="text-xs text-slate-600">propositions archivées</div>
                 </div>
                 <div class="rounded-lg border border-amber-200 bg-amber-50 p-3">
-                  <div class="text-2xl font-bold text-amber-700">{bilan.signaux}</div>
+                  <div class="text-2xl font-bold text-amber-700">{bilan.signauxList.length}</div>
                   <div class="text-xs text-amber-700">signaux ouverts</div>
                 </div>
               </div>
+
+              {#if bilan.signauxList.length}
+                <div class="mt-4 rounded-lg border border-amber-200 bg-amber-50 p-3">
+                  <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-amber-700">Signaux ouverts — à suivre</p>
+                  <ul class="space-y-1.5">
+                    {#each bilan.signauxList as e}
+                      <li class="text-sm text-amber-900">
+                        <span class="font-medium">{e.signal}</span>
+                        <span class="block text-xs text-amber-700/80">{e.texte}</span>
+                      </li>
+                    {/each}
+                  </ul>
+                </div>
+              {:else}
+                <p class="mt-4 text-sm text-mrc-500">Aucun signal ouvert : aucune écriture porteuse de signal n'a été validée.</p>
+              {/if}
+
               <p class="mt-4 text-xs text-mrc-500">
                 Engagement à horizon potentiellement irréversible (capitaux non-humains, générations
                 futures) : toute annulation ultérieure produira une nouvelle écriture, jamais une suppression.

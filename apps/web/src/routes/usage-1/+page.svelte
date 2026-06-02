@@ -154,7 +154,7 @@
   <title>Démonstrateur Usage 1 — Registres de communalité</title>
 </svelte:head>
 
-<div class="flex h-[calc(100vh-57px)] flex-col">
+<div class="flex flex-col lg:h-[calc(100vh-57px)]">
 
   <!-- En-tête -->
   <div class="border-b border-mrc-100 bg-white px-6 py-3">
@@ -175,20 +175,20 @@
     </div>
   </div>
 
-  <!-- Corps : 3 colonnes -->
-  <div class="flex flex-1 overflow-hidden">
+  <!-- Corps : 3 colonnes sur desktop, empilement sur mobile -->
+  <div class="flex flex-col lg:flex-row lg:flex-1 lg:overflow-hidden">
 
     <!-- ── Colonne 1 : Préparer ── -->
     <aside
-      class="w-64 flex-shrink-0 overflow-y-auto border-r border-mrc-100 bg-white p-4"
+      class="border-b border-mrc-100 bg-white p-4 lg:w-64 lg:flex-shrink-0 lg:overflow-y-auto lg:border-b-0 lg:border-r"
       aria-label="Préparer la session"
     >
       <h2 class="mb-4 text-xs font-semibold uppercase tracking-wide text-mrc-500">
         Préparer la session
       </h2>
 
-      <!-- Mode de réponse -->
-      <fieldset class="mb-5">
+      <!-- Mode de réponse — masqué sur mobile (les pills dans la saisie suffisent) -->
+      <fieldset class="mb-5 hidden lg:block">
         <legend class="mb-2 text-xs font-medium text-mrc-700">Mode de réponse</legend>
         <div class="space-y-2">
           {#each MODES as m}
@@ -276,12 +276,12 @@
     </aside>
 
     <!-- ── Colonne 2 : Conversation ── -->
-    <main class="flex flex-1 flex-col overflow-hidden" aria-label="Zone de conversation">
+    <main class="flex flex-col lg:flex-1 lg:overflow-hidden" aria-label="Zone de conversation">
 
       <!-- Messages -->
       <div
         bind:this={chatContainer}
-        class="flex-1 overflow-y-auto px-6 py-4 space-y-5"
+        class="min-h-64 px-6 py-4 space-y-5 lg:flex-1 lg:overflow-y-auto"
         aria-live="polite"
         aria-atomic="false"
       >
@@ -349,7 +349,7 @@
       <div class="border-t border-mrc-100 bg-white px-6 py-4">
 
         <!-- Basculeur de mode rapide -->
-        <div class="mb-3 flex items-center gap-2" role="group" aria-label="Mode d'affichage">
+        <div class="mb-3 flex flex-wrap items-center gap-2" role="group" aria-label="Mode d'affichage">
           {#each MODES as m}
             <button
               on:click={() => (mode = m.id)}
@@ -364,7 +364,7 @@
             </button>
           {/each}
           {#if exchanges.length > 0}
-            <span class="ml-auto text-xs text-mrc-400">Basculer ne relance pas l'API</span>
+            <span class="ml-auto hidden sm:inline text-xs text-mrc-400">Basculer ne relance pas l'API</span>
           {/if}
         </div>
 
@@ -411,7 +411,7 @@
 
     <!-- ── Colonne 3 : Journal MRC ── -->
     <aside
-      class="w-72 flex-shrink-0 overflow-y-auto border-l border-mrc-100 bg-white p-4"
+      class="border-t border-mrc-100 bg-white p-4 lg:w-72 lg:flex-shrink-0 lg:overflow-y-auto lg:border-t-0 lg:border-l"
       aria-label="Journal MRC"
     >
       <div class="mb-4 flex items-center justify-between">

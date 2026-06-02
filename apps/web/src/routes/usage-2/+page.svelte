@@ -110,32 +110,53 @@
   $: aNonHumainSansVoix = inventaire.some((e) => e.inclus && e.type === 'non-humain');
   $: deliberationBloquee = aNonHumainSansVoix && !representationProspective;
 
-  // Conditions de franchissement par phase (la machine d'états)
-  function peutAvancer(idx: number): { ok: boolean; raison?: string } {
+  // Conditions de franchissement par phase (la machine d’états).
+  // Tous les deps sont passés en paramètres pour que la déclaration réactive
+  // $: garde = peutAvancer(...) les suive explicitement — Svelte 4 ne traque
+  // pas les variables lues à l’intérieur du corps d’une fonction appelée.
+  function peutAvancer(
+    idx: number,
+    _inventaireConfirme: boolean,
+    _inventaireNonVide: boolean,
+    _enqueteLancee: boolean,
+    _basesStabilisees: boolean,
+    _deliberationBloquee: boolean,
+    _porteurDette: string,
+    _ecritures: Ecriture[]
+  ): { ok: boolean; raison?: string } {
     switch (PHASES[idx].id) {
-      case 'probleme':
-        if (!inventaireConfirme) return { ok: false, raison: 'Confirmez l’inventaire des affectés avant de continuer.' };
-        if (!inventaireNonVide) return { ok: false, raison: '[BLOCAGE] InventaireNonVide : la liste des entités affectées ne peut pas être vide.' };
+      case ‘probleme’:
+        if (!_inventaireConfirme) return { ok: false, raison: ‘Confirmez l’inventaire des affectés avant de continuer.’ };
+        if (!_inventaireNonVide) return { ok: false, raison: ‘[BLOCAGE] InventaireNonVide : la liste des entités affectées ne peut pas être vide.’ };
         return { ok: true };
-      case 'enquete':
-        if (!enqueteLancee) return { ok: false, raison: 'Lancez le staging pour produire les propositions d’écriture.' };
+      case ‘enquete’:
+        if (!_enqueteLancee) return { ok: false, raison: ‘Lancez le staging pour produire les propositions d’écriture.’ };
         return { ok: true };
-      case 'revision':
-        if (!basesStabilisees) return { ok: false, raison: 'Déclarez les primitives de base (Couche 0) avant de continuer.' };
+      case ‘revision’:
+        if (!_basesStabilisees) return { ok: false, raison: ‘Déclarez les primitives de base (Couche 0) avant de continuer.’ };
         return { ok: true };
-      case 'deliberation':
-        if (deliberationBloquee) return { ok: false, raison: '[BLOCAGE R-HERMENEUTIQUE] Des entités sans voix propre sont affectées : franchissez d’abord la représentation prospective.' };
-        if (!porteurDette.trim()) return { ok: false, raison: '[BLOCAGE machine-états] Aucun porteur de dette désigné : pas de passage au niveau critique.' };
+      case ‘deliberation’:
+        if (_deliberationBloquee) return { ok: false, raison: ‘[BLOCAGE R-HERMENEUTIQUE] Des entités sans voix propre sont affectées : franchissez d’abord la représentation prospective.’ };
+        if (!_porteurDette.trim()) return { ok: false, raison: ‘[BLOCAGE machine-états] Aucun porteur de dette désigné : pas de passage au niveau critique.’ };
         return { ok: true };
-      case 'convention':
-        if (ecritures.some((e) => e.statut === 'rouge')) return { ok: false, raison: 'Arbitrez chaque proposition (valider ou archiver) avant de clore la convention.' };
+      case ‘convention’:
+        if (_ecritures.some((e) => e.statut === ‘rouge’)) return { ok: false, raison: ‘Arbitrez chaque proposition (valider ou archiver) avant de clore la convention.’ };
         return { ok: true };
       default:
         return { ok: true };
     }
   }
 
-  $: garde = peutAvancer(phaseIdx);
+  $: garde = peutAvancer(
+    phaseIdx,
+    inventaireConfirme,
+    inventaireNonVide,
+    enqueteLancee,
+    basesStabilisees,
+    deliberationBloquee,
+    porteurDette,
+    ecritures
+  );
   $: stepsBar = PHASES.map((p) => ({ num: p.num, label: p.label }));
 
   function lancerStaging() {

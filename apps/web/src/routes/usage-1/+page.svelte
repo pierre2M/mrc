@@ -206,7 +206,7 @@
   <title>Démonstrateur Usage 1 — Registres de communalité</title>
 </svelte:head>
 
-<div class="flex h-[calc(100vh-57px)] flex-col">
+<div class="flex flex-col lg:h-[calc(100vh-57px)]">
 
   <!-- ── En-tête ─────────────────────────────────────────────────────────── -->
   <div class="border-b border-mrc-100 bg-white px-6 py-3">
@@ -228,11 +228,11 @@
   </div>
 
   <!-- ── Corps : 2 ou 3 colonnes ────────────────────────────────────────── -->
-  <div class="flex flex-1 overflow-hidden">
+  <div class="flex flex-col lg:flex-row lg:flex-1 lg:overflow-hidden">
 
     <!-- ── Colonne 1 : Préparer ────────────────────────────────────────── -->
     <aside
-      class="w-64 flex-shrink-0 overflow-y-auto border-r border-mrc-100 bg-white p-4"
+      class="border-b border-mrc-100 bg-white p-4 lg:w-64 lg:flex-shrink-0 lg:overflow-y-auto lg:border-b-0 lg:border-r"
       aria-label="Préparer la session"
     >
       <h2 class="mb-4 text-xs font-semibold uppercase tracking-wide text-mrc-500">
@@ -356,14 +356,14 @@
 
     <!-- ── Colonne 2 : Conversation ────────────────────────────────────── -->
     <main
-      class="flex flex-1 flex-col overflow-hidden"
+      class="flex flex-col lg:flex-1 lg:overflow-hidden"
       aria-label="Zone de conversation"
     >
 
       <!-- Messages -->
       <div
         bind:this={chatContainer}
-        class="flex-1 overflow-y-auto px-6 py-4 space-y-5"
+        class="min-h-64 px-6 py-4 space-y-5 lg:flex-1 lg:overflow-y-auto"
         aria-live="polite"
         aria-atomic="false"
       >
@@ -497,7 +497,7 @@
     <!-- ── Colonne 3 : Journal MRC — visible uniquement en modes analyse/expert ── -->
     {#if showJournal}
       <aside
-        class="w-72 flex-shrink-0 overflow-y-auto border-l border-mrc-100 bg-white p-4"
+        class="border-t border-mrc-100 bg-white p-4 lg:w-72 lg:flex-shrink-0 lg:overflow-y-auto lg:border-t-0 lg:border-l"
         aria-label="Journal MRC"
       >
         <div class="mb-4 flex items-center justify-between">

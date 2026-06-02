@@ -1,8 +1,50 @@
 <script lang="ts">
   let ouvert: string | null = null;
+  let formOuvert: string | null = null;
+  let formNom = '';
+  let formEmail = '';
+  let formEnCours = false;
+  let formEnvoyes = new Set<string>();
+  let formErreur: string | null = null;
 
   function toggle(id: string) {
     ouvert = ouvert === id ? null : id;
+    if (ouvert !== id) formOuvert = null;
+  }
+
+  function toggleForm(noteId: string, e: Event) {
+    e.stopPropagation();
+    if (formOuvert === noteId) {
+      formOuvert = null;
+    } else {
+      formOuvert = noteId;
+      formNom = '';
+      formEmail = '';
+      formErreur = null;
+    }
+  }
+
+  async function demanderNote(noteCode: string, noteLabel: string) {
+    formEnCours = true;
+    formErreur = null;
+    try {
+      const res = await fetch('/api/request-note', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: formNom, email: formEmail, noteCode, noteLabel }),
+      });
+      const data = await res.json();
+      if (!res.ok || data.error) {
+        formErreur = data.error ?? "Erreur lors de l'envoi.";
+      } else {
+        formEnvoyes = new Set([...formEnvoyes, noteCode]);
+        formOuvert = null;
+      }
+    } catch {
+      formErreur = 'Erreur réseau. Réessayez.';
+    } finally {
+      formEnCours = false;
+    }
   }
 
   type Statut = 'fiche disponible' | 'fiche en préparation' | 'en cours';
@@ -161,6 +203,151 @@ Un registre qui prétend être neutre sur la justice choisit de ne pas voir ce q
     </p>
   </div>
 
+  <!-- NT-Arch : Note Théorique sur l'architecture transversale -->
+  <div class="mb-10 rounded-xl border-2 border-mrc-200 bg-gradient-to-br from-mrc-50 to-white overflow-hidden">
+
+    <button
+      class="w-full flex items-start gap-4 p-5 text-left hover:bg-mrc-50 transition-colors"
+      on:click={() => toggle('nt-arch')}
+      aria-expanded={ouvert === 'nt-arch'}
+    >
+      <span class="shrink-0 flex items-center justify-center w-9 h-9 rounded-lg bg-mrc-700 text-white text-xs font-bold leading-tight text-center">
+        NT<br>Arch
+      </span>
+      <div class="flex-1 min-w-0">
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="font-semibold text-mrc-900">Architecture transversale des Couches 0 et 1</span>
+          <span class="rounded-full px-2 py-0.5 text-xs font-medium bg-mrc-100 text-mrc-700">Note Théorique fondatrice</span>
+        </div>
+        <p class="text-xs text-mrc-500 mt-0.5">Musseau-Milesi (La Coop des Communs, 2026) — MRC v5.x</p>
+      </div>
+      <span class="shrink-0 text-mrc-400 text-lg leading-none mt-0.5">
+        {ouvert === 'nt-arch' ? '−' : '+'}
+      </span>
+    </button>
+
+    {#if ouvert === 'nt-arch'}
+      <div class="px-5 pb-5 border-t border-mrc-100">
+
+        <!-- Couche 0 -->
+        <div class="mt-4">
+          <p class="text-xs font-semibold uppercase tracking-wide text-mrc-400 mb-2">Couche 0 — Primitives ontologiques</p>
+          <div class="grid sm:grid-cols-2 gap-3">
+            <div class="rounded-lg bg-white border border-mrc-100 px-4 py-3">
+              <p class="text-xs font-semibold text-mrc-700 mb-1">Quatre objets fondamentaux</p>
+              <ul class="text-sm text-mrc-600 space-y-1">
+                <li><span class="font-medium">Acteurs</span> — humains, organisations, non-humains, instruments</li>
+                <li><span class="font-medium">Interactions</span> — relations asymétriques de mobilisation entre acteurs</li>
+                <li><span class="font-medium">Écritures</span> — actes d'inscription stabilisant ou déstabilisant un registre</li>
+                <li><span class="font-medium">Signaux</span> — indicateurs non validés, porteurs d'hypothèses à vérifier</li>
+              </ul>
+            </div>
+            <div class="rounded-lg bg-white border border-mrc-100 px-4 py-3">
+              <p class="text-xs font-semibold text-mrc-700 mb-1">Primitive formelle &amp; règle fondamentale</p>
+              <p class="text-sm text-mrc-600 mb-2">
+                Tout acteur, interaction et écriture est analysé comme
+                <span class="font-mono text-xs bg-mrc-50 rounded px-1">profunctor enrichi M : X<sup>op</sup> × Y → V</span>
+                — une relation asymétrique entre ce qui est mobilisé et ce qui est contracté en retour.
+              </p>
+              <p class="text-xs font-mono text-mrc-700 bg-mrc-50 rounded px-3 py-2">R1 / DÉBIT–CRÉDIT</p>
+              <p class="text-xs text-mrc-500 mt-1">Règle procédurale universelle : toute écriture doit désigner son débit et son crédit avant d'être validée.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Couche 1 -->
+        <div class="mt-4">
+          <p class="text-xs font-semibold uppercase tracking-wide text-mrc-400 mb-2">Couche 1 — Régimes et couplage</p>
+          <div class="grid sm:grid-cols-2 gap-3">
+            <div class="rounded-lg bg-white border border-mrc-100 px-4 py-3">
+              <p class="text-xs font-semibold text-mrc-700 mb-1">Dualité des régimes</p>
+              <div class="space-y-2 text-sm text-mrc-600">
+                <div>
+                  <span class="font-medium">Régime métabolique</span> — prélèvement, transformation, production.
+                  Ce que le collectif extrait et transforme pour fonctionner.
+                </div>
+                <div>
+                  <span class="font-medium">Régime attentionnel</span> — soin, maintenance, cartographie.
+                  Ce que le collectif entretient et rend visible pour durer.
+                </div>
+              </div>
+            </div>
+            <div class="rounded-lg bg-white border border-mrc-100 px-4 py-3">
+              <p class="text-xs font-semibold text-mrc-700 mb-1">Règles de couplage</p>
+              <ul class="text-sm text-mrc-600 space-y-1.5">
+                <li>
+                  <span class="font-mono text-xs text-mrc-700">R-COUPLAGE</span>
+                  <span class="text-mrc-500"> — condition nécessaire d'habitabilité : les deux régimes doivent être en couplage actif.</span>
+                </li>
+                <li>
+                  <span class="font-mono text-xs text-mrc-700">appel_entendu</span>
+                  <span class="text-mrc-500"> — signal de reconnaissance d'une demande de soin dans le registre.</span>
+                </li>
+                <li>
+                  <span class="font-mono text-xs text-mrc-700">R-HABITABILITE</span>
+                  <span class="text-mrc-500"> — contrainte systémique déclenchée quand un régime est dégradé sans compensation.</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Demande de note -->
+        <div class="mt-5 pt-4 border-t border-mrc-100">
+          {#if formEnvoyes.has('NT-ARCH')}
+            <p class="text-sm text-emerald-700 bg-emerald-50 rounded-lg px-4 py-3">
+              ✓ Demande envoyée — vous recevrez la note théorique complète par retour de contact.
+            </p>
+          {:else if formOuvert === 'nt-arch'}
+            <div class="rounded-lg bg-mrc-50 px-4 py-4">
+              <p class="text-sm font-medium text-mrc-800 mb-3">Recevoir la note théorique NT-Arch complète</p>
+              <div class="flex flex-col sm:flex-row gap-2 mb-2">
+                <input
+                  type="text"
+                  bind:value={formNom}
+                  placeholder="Votre nom"
+                  class="flex-1 rounded-lg border border-mrc-200 bg-white px-3 py-2 text-sm text-mrc-900 placeholder:text-mrc-400 focus:outline-none focus:ring-2 focus:ring-mrc-400"
+                />
+                <input
+                  type="email"
+                  bind:value={formEmail}
+                  placeholder="Votre adresse e-mail"
+                  class="flex-1 rounded-lg border border-mrc-200 bg-white px-3 py-2 text-sm text-mrc-900 placeholder:text-mrc-400 focus:outline-none focus:ring-2 focus:ring-mrc-400"
+                />
+              </div>
+              {#if formErreur}
+                <p class="text-xs text-red-600 mb-2">{formErreur}</p>
+              {/if}
+              <div class="flex gap-2">
+                <button
+                  on:click={() => demanderNote('NT-ARCH', 'Architecture transversale des Couches 0 et 1')}
+                  disabled={formEnCours || !formNom.trim() || !formEmail.trim()}
+                  class="rounded-lg bg-mrc-700 text-white text-sm px-4 py-2 hover:bg-mrc-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                >
+                  {formEnCours ? 'Envoi…' : 'Envoyer la demande'}
+                </button>
+                <button
+                  on:click={(e) => toggleForm('nt-arch', e)}
+                  class="rounded-lg border border-mrc-200 text-mrc-600 text-sm px-4 py-2 hover:bg-white transition-colors"
+                >
+                  Annuler
+                </button>
+              </div>
+            </div>
+          {:else}
+            <button
+              on:click={(e) => toggleForm('nt-arch', e)}
+              class="text-sm text-mrc-600 hover:text-mrc-800 underline underline-offset-2 transition-colors"
+            >
+              Recevoir la note théorique complète →
+            </button>
+          {/if}
+        </div>
+
+      </div>
+    {/if}
+  </div>
+
   <!-- Légende statuts -->
   <div class="mb-8 flex flex-wrap gap-3 text-xs">
     <span class="flex items-center gap-1.5"><span class="inline-block rounded-full px-2 py-0.5 bg-emerald-50 text-emerald-700">fiche disponible</span> contenu vulgarisé accessible</span>
@@ -233,6 +420,59 @@ Un registre qui prétend être neutre sur la justice choisit de ne pas voir ce q
                 Note théorique complète disponible dans le corpus MRC interne — vulgarisation site-vitrine à venir.
               </p>
             {/if}
+
+            <!-- Formulaire de demande de note -->
+            <div class="mt-5 pt-4 border-t border-mrc-50">
+              {#if formEnvoyes.has(g.code)}
+                <p class="text-sm text-emerald-700 bg-emerald-50 rounded-lg px-4 py-3">
+                  ✓ Demande envoyée — vous recevrez la note de vulgarisation {g.code} par retour de contact.
+                </p>
+              {:else if formOuvert === g.id}
+                <div class="rounded-lg bg-mrc-50 px-4 py-4">
+                  <p class="text-sm font-medium text-mrc-800 mb-3">Recevoir la note de vulgarisation — {g.code} {g.nom}</p>
+                  <div class="flex flex-col sm:flex-row gap-2 mb-2">
+                    <input
+                      type="text"
+                      bind:value={formNom}
+                      placeholder="Votre nom"
+                      class="flex-1 rounded-lg border border-mrc-200 bg-white px-3 py-2 text-sm text-mrc-900 placeholder:text-mrc-400 focus:outline-none focus:ring-2 focus:ring-mrc-400"
+                    />
+                    <input
+                      type="email"
+                      bind:value={formEmail}
+                      placeholder="Votre adresse e-mail"
+                      class="flex-1 rounded-lg border border-mrc-200 bg-white px-3 py-2 text-sm text-mrc-900 placeholder:text-mrc-400 focus:outline-none focus:ring-2 focus:ring-mrc-400"
+                    />
+                  </div>
+                  {#if formErreur}
+                    <p class="text-xs text-red-600 mb-2">{formErreur}</p>
+                  {/if}
+                  <div class="flex gap-2">
+                    <button
+                      on:click={() => demanderNote(g.code, `${g.code} ${g.nom}`)}
+                      disabled={formEnCours || !formNom.trim() || !formEmail.trim()}
+                      class="rounded-lg bg-mrc-700 text-white text-sm px-4 py-2 hover:bg-mrc-800 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    >
+                      {formEnCours ? 'Envoi…' : 'Envoyer la demande'}
+                    </button>
+                    <button
+                      on:click={(e) => toggleForm(g.id, e)}
+                      class="rounded-lg border border-mrc-200 text-mrc-600 text-sm px-4 py-2 hover:bg-white transition-colors"
+                    >
+                      Annuler
+                    </button>
+                  </div>
+                </div>
+              {:else}
+                <button
+                  on:click={(e) => toggleForm(g.id, e)}
+                  class="text-sm text-mrc-600 hover:text-mrc-800 underline underline-offset-2 transition-colors"
+                >
+                  Recevoir la note de vulgarisation →
+                </button>
+              {/if}
+            </div>
+
           </div>
         {/if}
 

@@ -1,5 +1,6 @@
 <script lang="ts">
   import { tick } from 'svelte';
+  import { marked } from 'marked';
   import MrcStatusBadge from '$lib/components/MrcStatusBadge.svelte';
   import { extractTextFromFile } from '$lib/pdf-extract';
 
@@ -200,6 +201,15 @@
           '"Analyse les grammaires transversales activées."',
           '"Complète le tableau C-DROITS."',
         ];
+
+  // Rendu Markdown avec mise en valeur des signaux MRC entre crochets
+  function renderMarkdown(text: string): string {
+    const html = marked.parse(text) as string;
+    return html.replace(
+      /\[([^\]\n]{3,80})\]/g,
+      '<span class="inline-block rounded bg-amber-50 border border-amber-200 px-1.5 py-0.5 text-xs font-mono text-amber-800 leading-tight">[$1]</span>',
+    );
+  }
 </script>
 
 <svelte:head>
@@ -408,22 +418,7 @@
               class="prose prose-sm max-w-none rounded-xl rounded-tl-sm border border-mrc-100
                      bg-white px-4 py-3 text-sm leading-relaxed text-mrc-800"
             >
-              <!-- Rendu markdown simplifié : preserve line breaks -->
-              {#each exchange.reponse.split('\n') as line}
-                {#if line.startsWith('## ')}
-                  <h2 class="mt-3 mb-1 text-sm font-semibold text-mrc-900">{line.slice(3)}</h2>
-                {:else if line.startsWith('### ')}
-                  <h3 class="mt-2 mb-1 text-xs font-semibold text-mrc-700 uppercase tracking-wide">{line.slice(4)}</h3>
-                {:else if line.startsWith('**') && line.endsWith('**')}
-                  <p class="font-semibold text-mrc-800">{line.slice(2, -2)}</p>
-                {:else if line.startsWith('[') && (line.includes('NON VÉRIFIÉ') || line.includes('SYMÉTRIE') || line.includes('COUCHES') || line.includes('LACUNES') || line.includes('AUTORÉFÉRENTIEL') || line.includes('DÉCOUPLAGE') || line.includes('APPROXIMATIVE'))}
-                  <p class="my-1 rounded bg-amber-50 border border-amber-200 px-2 py-1 text-xs font-mono text-amber-800">{line}</p>
-                {:else if line.trim() === ''}
-                  <div class="h-2"></div>
-                {:else}
-                  <p>{line}</p>
-                {/if}
-              {/each}
+              {@html renderMarkdown(exchange.reponse)}
             </div>
           </div>
         {/each}

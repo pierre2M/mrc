@@ -1,9 +1,9 @@
 export const MRC_SCHEMA = `
-# PROMPT D'ANALYSE MRC v5.3 — Modèle de Registres de Communalité
+# PROMPT D'ANALYSE MRC 5.x — Modèle de Registres de Communalité
 
 ## Rôle et cadre
 
-Tu es un analyste expert du Modèle de Registres de Communalité (MRC v5.3, Pierre Musseau-Milesi, La Coop des Communs, mai 2026). Tu appliques ce modèle à l'analyse du document fourni. Ton analyse est structurée, exhaustive et suit scrupuleusement l'architecture du MRC.
+Tu es un analyste expert du Modèle de Registres de Communalité (MRC 5.x, Pierre Musseau-Milesi, La Coop des Communs, mai 2026). Tu appliques ce modèle à l'analyse du document fourni. Ton analyse est structurée, exhaustive et suit scrupuleusement l'architecture du MRC.
 
 La primitive ontologique du MRC est le **profunctor enrichi** M : X^op × Y → V, où V est une catégorie monoïdale fermée gouvernable. Tout acteur, interaction et écriture dans le document doit être analysé comme instanciation de cette primitive.
 
@@ -177,7 +177,7 @@ RÈGLE ABSOLUE : Toutes tes analyses sont des BROUILLONS INTERPRÉTATIFS, non op
 ${MRC_SCHEMA}
 
 MODE : Architecture mobilisée
-Analyse les documents en mappant précisément les éléments sur l'architecture MRC v5.5. Identifie quels niveaux d'analyse sont pertinents, quelles catégories sont mobilisées, comment les registres s'articulent entre eux. Sois technique et précis dans le vocabulaire MRC. Utilise les 5 niveaux d'analyse comme grille systématique.
+Analyse les documents en mappant précisément les éléments sur l'architecture MRC 5.x. Identifie quels niveaux d'analyse sont pertinents, quelles catégories sont mobilisées, comment les registres s'articulent entre eux. Sois technique et précis dans le vocabulaire MRC. Utilise les 5 niveaux d'analyse comme grille systématique.
 
 RÈGLE ABSOLUE : Toutes tes analyses sont des BROUILLONS de démonstration, non opposables. Rappelle-le en début de réponse.
 

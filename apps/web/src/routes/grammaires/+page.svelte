@@ -168,7 +168,7 @@ Un registre qui prétend être neutre sur la justice choisit de ne pas voir ce q
       id: 'g9',
       code: 'G9',
       nom: 'Affectif',
-      auteurs: 'MRC v5.5 — note NT-G9',
+      auteurs: 'MRC 5.x — note NT-G9',
       statut: 'fiche en préparation',
       question: "Comment inscrire les régimes affectifs qui structurent les interactions sans les réduire à des données psychologiques individuelles ?",
       apport: "G9 rend inscriptibles les conditions affectives d'un commun (travail émotionnel, reconnaissance, défenses de métier, mésentente) comme variables d'état du registre, en qualifiant un régime collectif sans psychologiser les individus.",
@@ -179,7 +179,7 @@ Un registre qui prétend être neutre sur la justice choisit de ne pas voir ce q
       id: 'g10',
       code: 'G10',
       nom: 'Démocratie épistémique',
-      auteurs: 'Anderson (2006), Landemore (2012), MRC v5.5',
+      auteurs: 'Anderson (2006), Landemore (2012), MRC 5.x',
       statut: 'fiche en préparation',
       question: "Comment concevoir un registre qui soit lui-même un dispositif de démocratie épistémique — où la diversité des savoirs améliore la qualité des décisions collectives ?",
       apport: "G10 pose que la légitimité d'un registre dépend de sa capacité à intégrer des savoirs hétérogènes sans les réduire à un seul cadre. Elle active les signaux de parité délibérative et d'injustice herméneutique comme conditions de validité, non comme considérations optionnelles.",
@@ -190,7 +190,7 @@ Un registre qui prétend être neutre sur la justice choisit de ne pas voir ce q
       id: 'g11',
       code: 'G11',
       nom: 'Travail (qualité et capabilité)',
-      auteurs: 'Zimmermann & Didry, Murray — MRC v5.5 (NT-G11)',
+      auteurs: 'Zimmermann & Didry, Murray — MRC 5.x (NT-G11)',
       statut: 'fiche en préparation',
       question: "Comment inscrire la qualité du travail non comme un indicateur RH parmi d'autres, mais comme une capabilité — la possibilité réelle, pour le travailleur, d'exercer un métier dont il est reconnu juge légitime ?",
       apport: "Nouveauté v5.5 : G-TRAVAIL accueille les sources de sociologie/économie du travail jusque-là portées par la fiche F1. Elle distingue trois registres : la qualité du travail comme objet de délibération (DPQT, Zimmermann & Didry — salarié reconnu juge légitime), la position du travailleur sur les axes risque / autonomie / expressivité (Murray), et le travail comme commun de capabilités dont la gouvernance peut être stable, instable ou en transition (signal COMMUN_GOUVERNE_FRAGILE).",
@@ -201,7 +201,7 @@ Un registre qui prétend être neutre sur la justice choisit de ne pas voir ce q
       id: 'g12',
       code: 'G12',
       nom: 'Valuation (comptabilité & valuemètres)',
-      auteurs: 'Richard, Bensadon & Rambaud (2024), Rambaud (2019, CARE), Dumeaux (2025), Bahougne (2020), CNoCP — MRC v5.5 (NT-G12)',
+      auteurs: 'Richard, Bensadon & Rambaud (2024), Rambaud (2019, CARE), Dumeaux (2025), Bahougne (2020), CNoCP — MRC 5.x (NT-G12)',
       statut: 'fiche en préparation',
       question: "Comment inscrire le geste comptable lui-même comme dispositif gouvernable — de sorte qu'un seuil ou un prix ne soit jamais un instrument performatif non gouverné ?",
       apport: "Nouveauté v5.5 : G-VALUATION accueille toutes les sources comptables et de valuation jusque-là portées par la fiche F8 et devient le porteur de Couche 3 de la gouvernance des valuemètres (chantier B4). Quatre blocs : mouvements comptables et équation du bilan (Richard, Bensadon & Rambaud 2024, [VÉRIFIÉ]) ; comptabilité CARE et capitaux à préserver (Rambaud 2019) ; juste prix écologique (Dumeaux 2025) ; droit et normalisation de la comptabilité publique (Bahougne, CNoCP). Tout valuemètre déclare sa source (DID) et sa convention d'attribution.",
@@ -230,7 +230,7 @@ Un registre qui prétend être neutre sur la justice choisit de ne pas voir ce q
     <div class="mb-2 text-sm font-medium text-mrc-500">Comprendre · Cadres théoriques</div>
     <h1 class="text-3xl font-bold text-mrc-900">Grammaires transversales</h1>
     <p class="mt-3 text-mrc-600 max-w-2xl">
-      Les douze grammaires transversales du MRC v5.5 (NT-G1 à NT-G12) — lentilles théoriques
+      Les douze grammaires transversales du MRC 5.x (NT-G1 à NT-G12) — lentilles théoriques
       mobilisées en Couche 3 pour analyser ce qui fait communalité dans un collectif. Chacune pose
       une question structurante distincte et s'articule aux autres selon des tensions documentées.
       Pour une lecture pas à pas, voir <a href="/pedagogie" class="underline hover:text-mrc-900">Comprendre, pas à pas</a>.

@@ -59,10 +59,10 @@
 </script>
 
 <svelte:head>
-  <title>Comprendre, pas à pas — MRC v5.5</title>
+  <title>Comprendre, pas à pas — MRC 5.x</title>
   <meta
     name="description"
-    content="Lecture en langage clair du Modèle de Registres de Communalité (MRC v5.5) : à quoi sert chaque objet, comment il s'articule aux autres, et des exemples concrets."
+    content="Lecture en langage clair du Modèle de Registres de Communalité (MRC 5.x) : à quoi sert chaque objet, comment il s'articule aux autres, et des exemples concrets."
   />
 </svelte:head>
 
@@ -71,7 +71,7 @@
 <div class="mx-auto max-w-6xl px-4 py-10">
   <!-- En-tête -->
   <header class="mb-8">
-    <p class="text-xs font-semibold uppercase tracking-wide text-mrc-500">Pédagogie · MRC v5.5</p>
+    <p class="text-xs font-semibold uppercase tracking-wide text-mrc-500">Pédagogie · MRC 5.x</p>
     <h1 class="mt-1 text-3xl font-bold text-mrc-900">Comprendre, pas à pas</h1>
     <p class="mt-3 max-w-3xl text-mrc-600">
       Une lecture en langage clair du Modèle de Registres de Communalité : à quoi sert chaque objet,
@@ -206,7 +206,7 @@
 
   <!-- Avertissement de régime -->
   <footer class="mt-10 rounded-xl border border-mrc-100 bg-slate-50 p-4 text-xs leading-relaxed text-mrc-500">
-    <b class="text-mrc-700">[LACUNES ET LIMITES]</b> Vulgarisation dérivée du set MRC v5.5. Les exemples
+    <b class="text-mrc-700">[LACUNES ET LIMITES]</b> Vulgarisation dérivée du set MRC 5.x. Les exemples
     concrets sont des illustrations pédagogiques (régime procédural, non calcul formel) : ils montrent la
     logique de traitement, pas un résultat chiffré certifié. Les exemples [K3] reprennent la structure du
     cas « bassins versants » mais les valeurs précises restent à recouper sur la note K3. Plusieurs sources

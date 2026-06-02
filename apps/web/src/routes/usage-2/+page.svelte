@@ -33,20 +33,20 @@
   }
 
   const PHASES: Phase[] = [
-    { id: 'probleme', num: 1, label: 'PROBLÈME', porteur: 'Coordinatrice d’enquête', role: 'humain',
+    { id: 'probleme', num: 1, label: 'PROBLÈME', porteur: "Coordinatrice d'enquête", role: 'humain',
       sortie: 'Énoncé du problème, périmètre, et inventaire des tiers affectés.',
       precondition: 'Inventaire des affectés non vide (InventaireNonVide).' },
-    { id: 'enquete', num: 2, label: 'ENQUÊTE', porteur: 'Agent d’extraction (IA) + humain', role: 'ia',
-      sortie: 'Propositions d’écriture (rouge, non validées) avec source citée.',
+    { id: 'enquete', num: 2, label: 'ENQUÊTE', porteur: "Agent d'extraction (IA) + humain", role: 'ia',
+      sortie: "Propositions d'écriture (rouge, non validées) avec source citée.",
       precondition: 'Sous-séquence interne : ingestion → staging → vérification. Aucune écriture opposable ici.' },
     { id: 'revision', num: 3, label: 'RÉVISION CONCEPTUELLE', porteur: 'Agent de vérification + humain', role: 'ia',
       sortie: 'Primitives stabilisées ; concepts de base déclarés (Couche 0).',
       precondition: 'Tout changement de base est tracé, sinon [CHANGEMENT DE BASE NON TRACÉ].' },
-    { id: 'deliberation', num: 4, label: 'DÉLIBÉRATION', porteur: 'Collectif d’enquête', role: 'collectif',
-      sortie: 'Désignation d’un porteur de dette ; arbitrage des propositions (ambre).',
+    { id: 'deliberation', num: 4, label: 'DÉLIBÉRATION', porteur: "Collectif d'enquête", role: 'collectif',
+      sortie: "Désignation d'un porteur de dette ; arbitrage des propositions (ambre).",
       precondition: 'BLOQUÉE si R-HERMENEUTIQUE > seuil (entités sans voix propre) ; pas de saut au niveau critique sans porteur (machine-états).' },
     { id: 'convention', num: 5, label: 'CONVENTION', porteur: 'Collectif + signataires', role: 'collectif',
-      sortie: 'Écritures validées (vert), signées, datées, opposables dans le registre d’enquête.',
+      sortie: "Écritures validées (vert), signées, datées, opposables dans le registre d'enquête.",
       precondition: 'Validation humaine explicite ; le LLM ne valide jamais (R-INCAPACITE-LLM-VALIDER).' },
     { id: 'mise_en_oeuvre', num: 6, label: 'MISE EN ŒUVRE', porteur: 'Porteurs désignés', role: 'humain',
       sortie: 'Obligations instrumentées + signaux ouverts suivis.',
@@ -57,10 +57,10 @@
   const CAS = [
     { id: 'milieu', titre: 'Commun écologique — nappe phréatique', fiche: 'F2 — Milieu',
       jouable: true,
-      resume: 'Une coopérative arbitre l’usage d’une nappe. La décision affecte des entités non-humaines (nappe, zones humides) qui ne parlent pas en leur nom — la phase DÉLIBÉRATION est donc verrouillée par R-HERMENEUTIQUE.' },
+      resume: "Une coopérative arbitre l'usage d'une nappe. La décision affecte des entités non-humaines (nappe, zones humides) qui ne parlent pas en leur nom — la phase DÉLIBÉRATION est donc verrouillée par R-HERMENEUTIQUE." },
     { id: 'compta', titre: 'Coopérative — écriture comptable', fiche: 'F8 — Comptable (entrée)',
       jouable: false,
-      resume: 'Une écriture comptable typée P-C-E-D-e-d est proposée par l’agent, mais jamais validée par le LLM. À venir.' },
+      resume: "Une écriture comptable typée P-C-E-D-e-d est proposée par l'agent, mais jamais validée par le LLM. À venir." },
     { id: 'affectif', titre: 'Dispositif de travail émotionnel', fiche: 'F1 / F4 — affectif',
       jouable: false,
       resume: 'Le système refuse de soumettre les verbatims au LLM sans consentement préalable (fiche T1). À venir.' }
@@ -78,10 +78,10 @@
   // Propositions d'écriture produites en phase ENQUÊTE (cas nappe)
   const ECRITURES_INIT: Ecriture[] = [
     { id: 'e1', type: 'acteur', fiche: 'F2', statut: 'rouge',
-      texte: 'Acteur non-humain : nappe phréatique, dotée d’un seuil d’entrée dans la communauté morale.',
+      texte: "Acteur non-humain : nappe phréatique, dotée d'un seuil d'entrée dans la communauté morale.",
       source: '« le niveau de la nappe a baissé de 1,8 m en cinq ans » (note de bassin, p. 3)' },
     { id: 'e2', type: 'interaction', fiche: 'F2', statut: 'rouge',
-      texte: 'Interaction : prélèvement agricole → nappe (mobilisation d’un capital non-humain).',
+      texte: "Interaction : prélèvement agricole → nappe (mobilisation d'un capital non-humain).",
       source: '« la coopérative prélève 220 000 m³/an » (délibération du 12 mars)' },
     { id: 'e3', type: 'ecriture', fiche: 'F2', statut: 'rouge',
       texte: 'Écriture : dette de care envers la nappe, contre-écriture du gain de production.',
@@ -110,10 +110,10 @@
   $: aNonHumainSansVoix = inventaire.some((e) => e.inclus && e.type === 'non-humain');
   $: deliberationBloquee = aNonHumainSansVoix && !representationProspective;
 
-  // Conditions de franchissement par phase (la machine d’états).
+  // Conditions de franchissement par phase (la machine d'états).
   // Tous les deps sont passés en paramètres pour que la déclaration réactive
   // $: garde = peutAvancer(...) les suive explicitement — Svelte 4 ne traque
-  // pas les variables lues à l’intérieur du corps d’une fonction appelée.
+  // pas les variables lues à l'intérieur du corps d'une fonction appelée.
   function peutAvancer(
     idx: number,
     _inventaireConfirme: boolean,
@@ -125,22 +125,22 @@
     _ecritures: Ecriture[]
   ): { ok: boolean; raison?: string } {
     switch (PHASES[idx].id) {
-      case ‘probleme’:
-        if (!_inventaireConfirme) return { ok: false, raison: "Confirmez l’inventaire des affectés avant de continuer." };
+      case 'probleme':
+        if (!_inventaireConfirme) return { ok: false, raison: "Confirmez l'inventaire des affectés avant de continuer." };
         if (!_inventaireNonVide) return { ok: false, raison: "[BLOCAGE] InventaireNonVide : la liste des entités affectées ne peut pas être vide." };
         return { ok: true };
-      case ‘enquete’:
-        if (!_enqueteLancee) return { ok: false, raison: "Lancez le staging pour produire les propositions d’écriture." };
+      case 'enquete':
+        if (!_enqueteLancee) return { ok: false, raison: "Lancez le staging pour produire les propositions d'écriture." };
         return { ok: true };
-      case ‘revision’:
+      case 'revision':
         if (!_basesStabilisees) return { ok: false, raison: "Déclarez les primitives de base (Couche 0) avant de continuer." };
         return { ok: true };
-      case ‘deliberation’:
-        if (_deliberationBloquee) return { ok: false, raison: "[BLOCAGE R-HERMENEUTIQUE] Des entités sans voix propre sont affectées : franchissez d’abord la représentation prospective." };
+      case 'deliberation':
+        if (_deliberationBloquee) return { ok: false, raison: "[BLOCAGE R-HERMENEUTIQUE] Des entités sans voix propre sont affectées : franchissez d'abord la représentation prospective." };
         if (!_porteurDette.trim()) return { ok: false, raison: "[BLOCAGE machine-états] Aucun porteur de dette désigné : pas de passage au niveau critique." };
         return { ok: true };
-      case ‘convention’:
-        if (_ecritures.some((e) => e.statut === ‘rouge’)) return { ok: false, raison: "Arbitrez chaque proposition (valider ou archiver) avant de clore la convention." };
+      case 'convention':
+        if (_ecritures.some((e) => e.statut === 'rouge')) return { ok: false, raison: "Arbitrez chaque proposition (valider ou archiver) avant de clore la convention." };
         return { ok: true };
       default:
         return { ok: true };
@@ -275,7 +275,7 @@
                 disabled={!inventaireNonVide || inventaireConfirme}
                 on:click={() => (inventaireConfirme = true)}
               >
-                {inventaireConfirme ? 'Inventaire confirmé ✓' : 'Confirmer l’inventaire'}
+                {inventaireConfirme ? 'Inventaire confirmé ✓' : "Confirmer l'inventaire"}
               </button>
 
             {:else if phase.id === 'enquete'}

@@ -4,220 +4,313 @@
 
   // ──────────────────────────────────────────────────────────────────────────
   // Usage 2 — Registre d'enquête contrôlé · démonstration interactive (vitrine).
-  // Séquence canonique : machine d'états à 6 phases C-ENQUETE (cf. note de
-  // révision des specs Usage 2 & 3, MRC v5.5, juin 2026).
-  // Aucune sortie n'est opposable : démonstration pédagogique, sans appel LLM.
+  //
+  // Journal cohérent avec les primitives de Couche 0 du MRC v5.5 (MRC_v5.3,
+  // déf. des 8 primitives) : ACTEUR, INTERACTION, ÉCRITURE sont trois registres
+  // DISTINCTS — une écriture (R1 débit/crédit) RÉFÉRENCE des acteurs et une
+  // interaction, elle n'est pas « un acteur ». Les SIGNAUX sont un registre à
+  // part (alertes de Couche 1/2).
+  //
+  // Cas Mar Menor : faits issus du rapport « Droits de la nature et gouvernance »
+  // (La Coop des Communs / GRET) et de la décomposition en 6 phases (enquête
+  // deweyenne, G-DEMO-EPISTEMIQUE / NT-G10). Régime : vulgarisation procédurale,
+  // non calcul formel. Aucune sortie n'est opposable.
   // ──────────────────────────────────────────────────────────────────────────
 
-  type Statut = 'rouge' | 'ambre' | 'vert' | 'archive';
-  type Role = 'humain' | 'ia' | 'collectif';
+  type Workflow = 'rouge' | 'ambre' | 'vert' | 'archive';
+  type TypeActeur = 'humain' | 'collectif' | 'organisation' | 'non-humain';
 
+  interface Acteur {
+    id: string;
+    nom: string;
+    type: TypeActeur;
+    role: string;
+    seuil?: string;        // seuilentreecommunautemorale (entités non-humaines)
+    source: string;
+    phase: number;         // phase à partir de laquelle l'acteur est inscrit
+  }
+  interface Interaction {
+    id: string;
+    de: string;            // id acteur source
+    vers: string;          // id acteur cible
+    nature: string;
+    source: string;
+    phase: number;
+  }
   interface Ecriture {
     id: string;
-    texte: string;
-    type: 'acteur' | 'interaction' | 'ecriture';
-    fiche: string;          // fiche-mode dominante (F1…F8)
-    source: string;         // extrait justificatif (cas fictif)
-    statut: Statut;
-    motif?: string;         // motif d'archivage / renvoi
-    signal?: string;        // signal MRC ouvert si l'écriture est validée
+    libelle: string;
+    sens: 'DÉBIT' | 'CRÉDIT';
+    acteurs: string[];     // acteurs référencés
+    interaction?: string;  // interaction référencée
+    regime: 'ACTORIEL' | 'SYSTÉMIQUE' | 'HYBRIDE';
+    statutDette: 'SYSTEMIQUE_NON_ATTRIBUEE' | 'EN_DELIBERATION' | 'ATTRIBUEE';
+    porteur?: string;
+    workflow: Workflow;
+    source: string;
+    signal?: string;       // signal ouvert si validée
+    requiertRepresentation?: boolean;
+    phase: number;
   }
-
-  interface Phase {
+  interface Signal {
+    id: string;
+    code: string;
+    libelle: string;
+    phase: number;
+  }
+  interface PhaseDef {
     id: string;
     num: number;
     label: string;
+    mrc: string;           // ancrage MRC / C-ENQUETE
     porteur: string;
-    role: Role;
+    periode: string;
     sortie: string;
-    precondition: string;
+  }
+  interface Cas {
+    id: string;
+    titre: string;
+    fiche: string;
+    jouable: boolean;
+    resume: string;
+    phases: PhaseDef[];
+    acteurs: Acteur[];
+    interactions: Interaction[];
+    ecritures: Ecriture[];
+    signaux: Signal[];
+    // entités affectées à inventorier (sous-ensemble des acteurs)
+    inventaire: { ref: string; defaut: boolean }[];
   }
 
-  const PHASES: Phase[] = [
-    { id: 'probleme', num: 1, label: 'PROBLÈME', porteur: "Coordinatrice d'enquête", role: 'humain',
-      sortie: 'Énoncé du problème, périmètre, et inventaire des tiers affectés.',
-      precondition: 'Inventaire des affectés non vide (InventaireNonVide).' },
-    { id: 'enquete', num: 2, label: 'ENQUÊTE', porteur: "Agent d'extraction (IA) + humain", role: 'ia',
-      sortie: "Propositions d'écriture (rouge, non validées) avec source citée.",
-      precondition: 'Sous-séquence interne : ingestion → staging → vérification. Aucune écriture opposable ici.' },
-    { id: 'revision', num: 3, label: 'RÉVISION CONCEPTUELLE', porteur: 'Agent de vérification + humain', role: 'ia',
-      sortie: 'Primitives stabilisées ; concepts de base déclarés (Couche 0).',
-      precondition: 'Tout changement de base est tracé, sinon [CHANGEMENT DE BASE NON TRACÉ].' },
-    { id: 'deliberation', num: 4, label: 'DÉLIBÉRATION', porteur: "Collectif d'enquête", role: 'collectif',
-      sortie: "Désignation d'un porteur de dette ; arbitrage des propositions (ambre).",
-      precondition: 'BLOQUÉE si R-HERMENEUTIQUE > seuil (entités sans voix propre) ; pas de saut au niveau critique sans porteur (machine-états).' },
-    { id: 'convention', num: 5, label: 'CONVENTION', porteur: 'Collectif + signataires', role: 'collectif',
-      sortie: "Écritures validées (vert), signées, datées, opposables dans le registre d'enquête.",
-      precondition: 'Validation humaine explicite ; le LLM ne valide jamais (R-INCAPACITE-LLM-VALIDER).' },
-    { id: 'mise_en_oeuvre', num: 6, label: 'MISE EN ŒUVRE', porteur: 'Porteurs désignés', role: 'humain',
-      sortie: 'Obligations instrumentées + signaux ouverts suivis.',
-      precondition: 'Horizon déclaré ; si irréversible → délibération préalable.' }
+  // ── CAS MAR MENOR ───────────────────────────────────────────────────────────
+  const MAR_MENOR: Cas = {
+    id: 'mar-menor',
+    titre: 'Mar Menor — une lagune devient sujet de droit',
+    fiche: 'F2 — Milieu · G-DEMO-EPISTEMIQUE',
+    jouable: true,
+    resume:
+      "Espagne, région de Murcie. Une lagune asphyxiée par l'agriculture intensive devient, en 2022, la première entité naturelle dotée d'une personnalité juridique en Europe — au terme d'une enquête collective citoyenne.",
+    phases: [
+      { id: 'rupture', num: 1, label: 'Rupture d’expérience', mrc: 'Expérience première (Dewey) · appelEntendu = TRUE (G-DEMO-EPISTEMIQUE)',
+        porteur: 'Habitant·es riverain·es', periode: '2016',
+        sortie: "La « soupe verte » rend le problème irréfutable : une rupture vécue, non un rapport, déclenche l'enquête." },
+      { id: 'public', num: 2, label: 'Constitution du public', mrc: 'Inclusion des affectés (exigence épistémique) · risqueEpistocratie',
+        porteur: 'Associations (Pacto por el Mar Menor, ANSE, SOS Mar Menor)', periode: '2016–2019',
+        sortie: 'Le public concerné se constitue ; on inventorie les entités affectées, humaines et non-humaines.' },
+      { id: 'formulation', num: 3, label: 'Formulation collective', mrc: 'ENQUETE_COLLECTIVE · C-FORMES-DELIBERATION',
+        porteur: 'Teresa Vicente + collectif (Plaza del Espejo)', periode: '2019–2020',
+        sortie: 'Le problème prend une forme juridique : les droits de la nature. On déclare les primitives de Couche 0.' },
+      { id: 'convention', num: 4, label: 'Convention', mrc: 'CONVENTION · R1 DÉBIT/CRÉDIT · REPRESENTATION-PROSPECTIVE',
+        porteur: 'État espagnol (Loi 19/2022) + tutelle', periode: '2020–2022',
+        sortie: 'Écriture collective opposable : la lagune devient sujet de droit ; une tutelle la représente.' },
+      { id: 'epreuve', num: 5, label: 'Mise à l’épreuve', mrc: 'ecartFormelRel ≥ seuil · [DÉCOUPLAGE DE RÉGIMES DÉTECTÉ]',
+        porteur: 'Administration régionale vs tutelle citoyenne', periode: '2023–2025',
+        sortie: 'Le plan de restauration de l’État ignore la personnalité juridique : découplage entre régimes.' },
+      { id: 'reevaluation', num: 6, label: 'Réévaluation', mrc: 'revueSubstitution · R-DEBLOCAGE-EXISTENTIEL · enquête jamais close',
+        porteur: 'Tutelle + justice (procès Topillo)', periode: '2025–2026',
+        sortie: 'L’obligation de réouverture est actée : sur un commun vivant, l’enquête ne se clôt pas.' }
+    ],
+    acteurs: [
+      { id: 'lagune', nom: 'Lagune Mar Menor (+ bassin versant)', type: 'non-humain', role: 'Écosystème-commun, sujet de droit', seuil: 'FINALITÉ-IMMANENTE', phase: 1,
+        source: 'Ley 19/2022 — « se reconoce como sujeto de derechos » (rapport, p. 9)' },
+      { id: 'vivant', nom: 'Espèces & générations futures (hippocampes)', type: 'non-humain', role: 'Tiers affectés sans voix propre', seuil: 'FINALITÉ-IMMANENTE', phase: 1,
+        source: 'Attachement aux populations d’hippocampes (rapport, contexte)' },
+      { id: 'habitants', nom: 'Habitant·es riverain·es', type: 'collectif', role: 'Public concerné (expérience première)', phase: 1,
+        source: '« soupe verte » 2016 — expérience directe (rapport)' },
+      { id: 'assos', nom: 'Associations (Pacto por el Mar Menor, ANSE, SOS Mar Menor)', type: 'organisation', role: 'Porteurs de l’enquête collective', phase: 2,
+        source: '55 000 manifestant·es à Carthagène, oct. 2019 (rapport)' },
+      { id: 'agro', nom: 'Agro-industrie du Campo de Cartagena (Fundación Ingenio)', type: 'organisation', role: 'Mobilisateur / source de pression', phase: 2,
+        source: 'Activités agro-industrielles, nitrates ; lobby Fundación Ingenio (rapport)' },
+      { id: 'admin', nom: 'Administration régionale de Murcie', type: 'organisation', role: 'Autorité ; préside le comité scientifique', phase: 2,
+        source: 'Comité d’asesoramiento científico présidé par l’administration (rapport)' },
+      { id: 'vicente', nom: 'Teresa Vicente (juriste)', type: 'humain', role: 'Promotrice de l’ILP, future tutrice', phase: 3,
+        source: 'Prix Goldman 2022 ; ILP Mar Menor (rapport)' },
+      { id: 'etat', nom: 'État espagnol (Congrès / Sénat)', type: 'organisation', role: 'Inscripteur de la convention (loi)', phase: 4,
+        source: 'Loi 19/2022 votée (3 oppositions / 266 sénateurs) (rapport)' },
+      { id: 'tutelle', nom: 'Tutelle de la Mar Menor (3 comités)', type: 'organisation', role: 'Représentant désigné de la lagune', phase: 4,
+        source: 'Loi 19/2022 : comités de représentants, scientifique, de suivi (rapport)' }
+    ],
+    interactions: [
+      { id: 'i-agro', de: 'agro', vers: 'lagune', nature: 'Pollution diffuse (nitrates) → eutrophisation', phase: 1,
+        source: 'Directive nitrates 1991 ; eutrophisation 2016 (rapport)' },
+      { id: 'i-attach', de: 'habitants', vers: 'lagune', nature: 'Usage & attachement (résonance)', phase: 1,
+        source: 'Hartmut Rosa, Résonance, cité (.md / rapport)' },
+      { id: 'i-evince', de: 'admin', vers: 'lagune', nature: 'Concentration du pouvoir épistémique (éviction de scientifiques)', phase: 2,
+        source: 'Comité consultatif présidé par l’administration, dès 2018 (rapport)' },
+      { id: 'i-ilp', de: 'assos', vers: 'etat', nature: 'Initiative législative populaire (639 286 signatures)', phase: 4,
+        source: 'ILP nov. 2020 – oct. 2021 (rapport, p. 33-34)' },
+      { id: 'i-loi', de: 'etat', vers: 'lagune', nature: 'Reconnaissance de personnalité juridique', phase: 4,
+        source: 'Ley 19/2022, de 30 de septiembre (rapport, p. 9)' },
+      { id: 'i-tutelle', de: 'tutelle', vers: 'lagune', nature: 'Représentation fiduciaire (tutelle)', phase: 4,
+        source: 'Tutelle : représentation en justice et arbitrage (rapport)' }
+    ],
+    ecritures: [
+      { id: 'e-dette', libelle: 'Dette écologique envers la lagune (contre-écriture des gains agro-industriels et touristiques)',
+        sens: 'CRÉDIT', acteurs: ['lagune', 'agro'], interaction: 'i-agro',
+        regime: 'SYSTÉMIQUE', statutDette: 'SYSTEMIQUE_NON_ATTRIBUEE', workflow: 'rouge', requiertRepresentation: true,
+        signal: 'R-CODEGRADATION — dégradation du milieu lagunaire',
+        source: 'Eutrophisation, anoxie 2019 (rapport)', phase: 4 },
+      { id: 'e-droit', libelle: 'Reconnaissance : la lagune devient sujet de droit (degré de communalité ~2 → 4, échelle Rochfeld)',
+        sens: 'CRÉDIT', acteurs: ['lagune', 'etat'], interaction: 'i-loi',
+        regime: 'HYBRIDE', statutDette: 'EN_DELIBERATION', workflow: 'rouge',
+        source: 'Ley 19/2022 (rapport) ; NT-G6 Communalité', phase: 4 },
+      { id: 'e-ecart', libelle: 'Écart : plan de restauration de l’État (675 M€) sans mention de la personnalité juridique',
+        sens: 'DÉBIT', acteurs: ['etat', 'tutelle'],
+        regime: 'SYSTÉMIQUE', statutDette: 'SYSTEMIQUE_NON_ATTRIBUEE', workflow: 'rouge',
+        signal: 'DÉCOUPLAGE DE RÉGIMES — plan d’État vs loi citoyenne',
+        source: 'Décret d’application fév. 2025 ; démission Vicente (rapport / .md)', phase: 5 },
+      { id: 'e-reouverture', libelle: 'Obligation de réouverture de l’enquête (échéance procès Topillo)',
+        sens: 'CRÉDIT', acteurs: ['tutelle', 'lagune'],
+        regime: 'SYSTÉMIQUE', statutDette: 'EN_DELIBERATION', workflow: 'rouge',
+        signal: 'enquêteInsatisfaisante (MOYEN) — réouverture actée',
+        source: 'Procès Topillo prévu 20 mai 2026 (rapport / .md)', phase: 6 }
+    ],
+    signaux: [
+      { id: 's-appel', code: 'appelEntendu = TRUE', libelle: 'Expérience première : la soupe verte rend le problème irréfutable.', phase: 1 },
+      { id: 's-episto', code: 'risqueEpistocratieÉlevé', libelle: 'Le comité scientifique, présidé par l’administration, concentre le pouvoir épistémique.', phase: 2 },
+      { id: 's-codeg', code: 'R-CODEGRADATION', libelle: 'Dégradation du milieu lagunaire (eutrophisation, anoxie).', phase: 4 },
+      { id: 's-horizon', code: 'ENGAGEMENT À HORIZON IRRÉVERSIBLE', libelle: 'Personnalité juridique : effets non annulables sur générations futures et espèces.', phase: 4 },
+      { id: 's-decouplage', code: 'DÉCOUPLAGE DE RÉGIMES DÉTECTÉ', libelle: 'Le régime institutionnel (plan État) et le régime juridico-politique (loi citoyenne) divergent.', phase: 5 },
+      { id: 's-reouverture', code: 'revueSubstitution', libelle: 'Sur un commun vivant, la convention doit être rouverte : l’enquête n’est jamais close.', phase: 6 }
+    ],
+    inventaire: [
+      { ref: 'lagune', defaut: true },
+      { ref: 'vivant', defaut: true },
+      { ref: 'habitants', defaut: true }
+    ]
+  };
+
+  const CAS: Cas[] = [
+    MAR_MENOR,
+    { id: 'compta', titre: 'Coopérative — écriture comptable (F8)', fiche: 'F8 — Comptable (entrée)', jouable: false,
+      resume: 'Une écriture comptable typée P-C-E-D-e-d est proposée par l’agent, mais jamais validée par le LLM. À venir.',
+      phases: [], acteurs: [], interactions: [], ecritures: [], signaux: [], inventaire: [] },
+    { id: 'affectif', titre: 'Dispositif de travail émotionnel (F1/F4)', fiche: 'F1 / F4 — affectif', jouable: false,
+      resume: 'Le système refuse de soumettre les verbatims au LLM sans consentement préalable (fiche T1). À venir.',
+      phases: [], acteurs: [], interactions: [], ecritures: [], signaux: [], inventaire: [] }
   ];
 
-  // ── Cas de démonstration ────────────────────────────────────────────────
-  const CAS = [
-    { id: 'milieu', titre: 'Commun écologique — nappe phréatique', fiche: 'F2 — Milieu',
-      jouable: true,
-      resume: "Une coopérative arbitre l'usage d'une nappe. La décision affecte des entités non-humaines (nappe, zones humides) qui ne parlent pas en leur nom — la phase DÉLIBÉRATION est donc verrouillée par R-HERMENEUTIQUE." },
-    { id: 'compta', titre: 'Coopérative — écriture comptable', fiche: 'F8 — Comptable (entrée)',
-      jouable: false,
-      resume: "Une écriture comptable typée P-C-E-D-e-d est proposée par l'agent, mais jamais validée par le LLM. À venir." },
-    { id: 'affectif', titre: 'Dispositif de travail émotionnel', fiche: 'F1 / F4 — affectif',
-      jouable: false,
-      resume: 'Le système refuse de soumettre les verbatims au LLM sans consentement préalable (fiche T1). À venir.' }
-  ];
-
-  // Inventaire initial des entités affectées (cas nappe)
-  const INVENTAIRE_INIT = [
-    { nom: 'Habitant·es de la commune', type: 'humain', inclus: true },
-    { nom: 'Maraîcher·ères en aval', type: 'humain', inclus: true },
-    { nom: 'Nappe phréatique', type: 'non-humain', inclus: true },
-    { nom: 'Zones humides connectées', type: 'non-humain', inclus: true },
-    { nom: 'Générations futures', type: 'non-humain', inclus: false }
-  ];
-
-  // Propositions d'écriture produites en phase ENQUÊTE (cas nappe)
-  const ECRITURES_INIT: Ecriture[] = [
-    { id: 'e1', type: 'acteur', fiche: 'F2', statut: 'rouge',
-      texte: "Acteur non-humain : nappe phréatique, dotée d'un seuil d'entrée dans la communauté morale.",
-      source: '« le niveau de la nappe a baissé de 1,8 m en cinq ans » (note de bassin, p. 3)' },
-    { id: 'e2', type: 'interaction', fiche: 'F2', statut: 'rouge',
-      texte: "Interaction : prélèvement agricole → nappe (mobilisation d'un capital non-humain).",
-      source: '« la coopérative prélève 220 000 m³/an » (délibération du 12 mars)' },
-    { id: 'e3', type: 'ecriture', fiche: 'F2', statut: 'rouge', signal: 'R-CARE — soin envers la nappe non encore attesté',
-      texte: 'Écriture : dette de care envers la nappe, contre-écriture du gain de production.',
-      source: 'R-CARE branche non-humain + R-CODEGRADATION (→ NT-G3)' },
-    { id: 'e4', type: 'ecriture', fiche: 'F2', statut: 'rouge', signal: 'R-CODEGRADATION — dégradation couplée travail / milieu',
-      texte: 'Écriture : co-dégradation travail maraîcher / milieu (signal R-CODEGRADATION).',
-      source: '« les maraîchers en aval signalent des sols plus secs » (compte-rendu atelier)' },
-    { id: 'e5', type: 'acteur', fiche: 'F2', statut: 'rouge',
-      texte: 'Acteur instrumental : compteur volumétrique (dispositif de mesure non déclaré).',
-      source: '[PLAUSIBLE, NON VÉRIFIÉ — instrument mentionné sans référence de calibration]' }
-  ];
-
-  // ── État ──────────────────────────────────────────────────────────────────
-  let casChoisi: string | null = null;
+  // ── État de session ─────────────────────────────────────────────────────────
+  let casId: string | null = null;
   let phaseIdx = 0;
-  let inventaire = INVENTAIRE_INIT.map((x) => ({ ...x }));
+
+  // état interactif
+  let appelReconnu = false;
+  let inventaire: { ref: string; inclus: boolean }[] = [];
   let inventaireConfirme = false;
-  let ecritures: Ecriture[] = ECRITURES_INIT.map((x) => ({ ...x }));
-  let enqueteLancee = false;
-  let basesStabilisees = false;
-  let representationProspective = false; // lève le blocage R-HERMENEUTIQUE
-  let porteurDette = '';
+  let basesDeclarees = false;
+  let representationAssuree = false;
+  let ecritures: Ecriture[] = [];
 
-  $: phase = PHASES[phaseIdx];
-  $: inventaireNonVide = inventaire.some((e) => e.inclus);
-  $: aNonHumainSansVoix = inventaire.some((e) => e.inclus && e.type === 'non-humain');
-  $: deliberationBloquee = aNonHumainSansVoix && !representationProspective;
+  $: cas = CAS.find((c) => c.id === casId) ?? null;
+  $: phases = cas?.phases ?? [];
+  $: phase = phases[phaseIdx];
+  $: numPhase = phase?.num ?? 0;
 
-  // Conditions de franchissement par phase (la machine d'états).
-  // Tous les deps sont passés en paramètres pour que la déclaration réactive
-  // $: garde = peutAvancer(...) les suive explicitement — Svelte 4 ne traque
-  // pas les variables lues à l'intérieur du corps d'une fonction appelée.
-  function peutAvancer(
-    idx: number,
-    _inventaireConfirme: boolean,
-    _inventaireNonVide: boolean,
-    _enqueteLancee: boolean,
-    _basesStabilisees: boolean,
-    _deliberationBloquee: boolean,
-    _porteurDette: string,
-    _ecritures: Ecriture[]
-  ): { ok: boolean; raison?: string } {
-    switch (PHASES[idx].id) {
-      case 'probleme':
-        if (!_inventaireConfirme) return { ok: false, raison: "Confirmez l'inventaire des affectés avant de continuer." };
-        if (!_inventaireNonVide) return { ok: false, raison: "[BLOCAGE] InventaireNonVide : la liste des entités affectées ne peut pas être vide." };
+  function choisir(c: Cas) {
+    if (!c.jouable) return;
+    casId = c.id;
+    phaseIdx = 0;
+    appelReconnu = false;
+    inventaire = c.inventaire.map((i) => ({ ref: i.ref, inclus: i.defaut }));
+    inventaireConfirme = false;
+    basesDeclarees = false;
+    representationAssuree = false;
+    ecritures = c.ecritures.map((e) => ({ ...e }));
+  }
+  function reset() {
+    if (cas) choisir(cas);
+  }
+  function acteur(id: string): Acteur | undefined {
+    return cas?.acteurs.find((a) => a.id === id);
+  }
+  function nomActeur(id: string): string {
+    return acteur(id)?.nom ?? id;
+  }
+
+  // registres filtrés par phase atteinte
+  $: acteursVisibles = (cas?.acteurs ?? []).filter((a) => a.phase <= numPhase);
+  $: interactionsVisibles = (cas?.interactions ?? []).filter((i) => i.phase <= numPhase);
+  $: ecrituresVisibles = ecritures.filter((e) => e.phase <= numPhase);
+  $: signauxVisibles = (cas?.signaux ?? []).filter((s) => s.phase <= numPhase);
+  $: inventaireNonVide = inventaire.some((i) => i.inclus);
+
+  // mécaniques
+  function reconnaitreAppel() { appelReconnu = true; }
+  function confirmerInventaire() { if (inventaireNonVide) inventaireConfirme = true; }
+  function declarerPrimitives() { basesDeclarees = true; }
+  function assurerRepresentation() {
+    representationAssuree = true;
+    // la dette systémique passe en délibération (machine d'états)
+    ecritures = ecritures.map((e) =>
+      e.requiertRepresentation && e.statutDette === 'SYSTEMIQUE_NON_ATTRIBUEE'
+        ? { ...e, statutDette: 'EN_DELIBERATION' }
+        : e
+    );
+  }
+  function valider(id: string) {
+    ecritures = ecritures.map((e) => {
+      if (e.id !== id) return e;
+      const attribue = e.requiertRepresentation && representationAssuree;
+      return {
+        ...e,
+        workflow: 'vert',
+        statutDette: attribue ? 'ATTRIBUEE' : e.statutDette,
+        porteur: attribue ? 'Tutelle de la Mar Menor (3 comités)' : e.porteur
+      };
+    });
+  }
+  function discuter(id: string) {
+    ecritures = ecritures.map((e) => (e.id === id ? { ...e, workflow: 'ambre' } : e));
+  }
+  function archiver(id: string) {
+    ecritures = ecritures.map((e) => (e.id === id ? { ...e, workflow: 'archive' } : e));
+  }
+
+  // garde de franchissement (machine d'enquête)
+  $: garde = ((): { ok: boolean; raison?: string } => {
+    if (!phase) return { ok: true };
+    switch (phase.id) {
+      case 'rupture':
+        return appelReconnu ? { ok: true } : { ok: false, raison: 'Reconnaissez l’expérience première (appelEntendu) pour continuer.' };
+      case 'public':
+        if (!inventaireConfirme) return { ok: false, raison: 'Confirmez l’inventaire des entités affectées.' };
+        if (!inventaireNonVide) return { ok: false, raison: '[BLOCAGE] InventaireNonVide : la liste ne peut pas être vide.' };
         return { ok: true };
-      case 'enquete':
-        if (!_enqueteLancee) return { ok: false, raison: "Lancez le staging pour produire les propositions d'écriture." };
+      case 'formulation':
+        return basesDeclarees ? { ok: true } : { ok: false, raison: 'Déclarez les primitives de Couche 0 et le régime d’obligation.' };
+      case 'convention': {
+        if (!representationAssuree) return { ok: false, raison: '[REPRESENTATION-PROSPECTIVE] La lagune ne parle pas en son nom : désignez d’abord une tutelle.' };
+        const rouges = ecrituresVisibles.filter((e) => e.workflow === 'rouge' || e.workflow === 'ambre');
+        if (rouges.length) return { ok: false, raison: `Arbitrez les ${rouges.length} écriture(s) restante(s) (valider ou archiver).` };
         return { ok: true };
-      case 'revision':
-        if (!_basesStabilisees) return { ok: false, raison: "Déclarez les primitives de base (Couche 0) avant de continuer." };
-        return { ok: true };
-      case 'deliberation':
-        if (_deliberationBloquee) return { ok: false, raison: "[BLOCAGE R-HERMENEUTIQUE] Des entités sans voix propre sont affectées : franchissez d'abord la représentation prospective." };
-        if (!_porteurDette.trim()) return { ok: false, raison: "[BLOCAGE machine-états] Aucun porteur de dette désigné : pas de passage au niveau critique." };
-        return { ok: true };
-      case 'convention':
-        if (_ecritures.some((e) => e.statut === 'rouge')) return { ok: false, raison: "Arbitrez chaque proposition (valider ou archiver) avant de clore la convention." };
-        return { ok: true };
+      }
       default:
         return { ok: true };
     }
-  }
+  })();
 
-  $: garde = peutAvancer(
-    phaseIdx,
-    inventaireConfirme,
-    inventaireNonVide,
-    enqueteLancee,
-    basesStabilisees,
-    deliberationBloquee,
-    porteurDette,
-    ecritures
-  );
-  $: stepsBar = PHASES.map((p) => ({ num: p.num, label: p.label }));
+  $: stepsBar = phases.map((p) => ({ num: p.num, label: p.label }));
 
-  function lancerStaging() {
-    enqueteLancee = true;
-    ecritures = ECRITURES_INIT.map((x) => ({ ...x }));
-  }
-  function valider(id: string) {
-    ecritures = ecritures.map((e) => (e.id === id ? { ...e, statut: 'vert', motif: undefined } : e));
-  }
-  function archiver(id: string) {
-    ecritures = ecritures.map((e) => (e.id === id ? { ...e, statut: 'archive', motif: 'renvoyée en staging' } : e));
-  }
-  function discuter(id: string) {
-    ecritures = ecritures.map((e) => (e.id === id ? { ...e, statut: 'ambre' } : e));
-  }
-
-  // Désigner un porteur en phase DÉLIBÉRATION fait passer la dette de
-  // SYSTÉMIQUE à ATTRIBUÉE (machine-états) : on produit alors une écriture
-  // d'attribution nommant ce porteur, à valider en phase CONVENTION.
-  const ID_PORTEUR = 'e-porteur';
-  function upsertEcriturePorteur() {
-    const nom = porteurDette.trim();
-    if (!nom) return;
-    const texte = `Écriture : attribution de la dette de care à « ${nom} » (porteur désigné en délibération).`;
-    const idx = ecritures.findIndex((e) => e.id === ID_PORTEUR);
-    if (idx === -1) {
-      ecritures = [
-        ...ecritures,
-        {
-          id: ID_PORTEUR, type: 'acteur', fiche: 'F2', statut: 'rouge', texte,
-          source: 'Désignation en phase DÉLIBÉRATION (machine-états : régime d’obligation SYSTÉMIQUE → ATTRIBUÉE).'
-        }
-      ];
-    } else if (ecritures[idx].statut === 'rouge') {
-      // le porteur a été renommé avant validation : on met à jour le texte
-      ecritures = ecritures.map((e) => (e.id === ID_PORTEUR ? { ...e, texte } : e));
-    }
-  }
-
-  // Déclenchée à l'entrée en phase CONVENTION (index 4) et au-delà.
-  $: if (phaseIdx >= 4) upsertEcriturePorteur();
-
+  // bilan (phase finale)
   $: bilan = {
-    opposables: ecritures.filter((e) => e.statut === 'vert').length,
-    archivees: ecritures.filter((e) => e.statut === 'archive').length,
-    signauxList: ecritures.filter((e) => e.statut === 'vert' && e.signal)
+    opposables: ecritures.filter((e) => e.workflow === 'vert').length,
+    archivees: ecritures.filter((e) => e.workflow === 'archive').length,
+    signauxOuverts: ecritures.filter((e) => e.workflow === 'vert' && e.signal)
   };
 
-  const statutMeta: Record<Statut, { label: string; cls: string; dot: string }> = {
+  const wf: Record<Workflow, { label: string; cls: string; dot: string }> = {
     rouge:   { label: 'Non validée', cls: 'border-red-200 bg-red-50 text-red-800', dot: 'bg-red-400' },
     ambre:   { label: 'En discussion', cls: 'border-amber-200 bg-amber-50 text-amber-800', dot: 'bg-amber-400' },
     vert:    { label: 'Validée — opposable', cls: 'border-emerald-200 bg-emerald-50 text-emerald-800', dot: 'bg-emerald-400' },
     archive: { label: 'Archivée', cls: 'border-slate-200 bg-slate-100 text-slate-500', dot: 'bg-slate-400' }
   };
-
-  function reset() {
-    phaseIdx = 0; inventaire = INVENTAIRE_INIT.map((x) => ({ ...x }));
-    inventaireConfirme = false; ecritures = ECRITURES_INIT.map((x) => ({ ...x }));
-    enqueteLancee = false; basesStabilisees = false; representationProspective = false; porteurDette = '';
-  }
+  const typeActeurCls: Record<TypeActeur, string> = {
+    'humain': 'bg-sky-100 text-sky-700',
+    'collectif': 'bg-sky-100 text-sky-700',
+    'organisation': 'bg-indigo-100 text-indigo-700',
+    'non-humain': 'bg-fuchsia-100 text-fuchsia-700'
+  };
 </script>
 
 <svelte:head>
@@ -226,27 +319,22 @@
 
 <div class="mx-auto max-w-6xl px-4 py-10">
 
-  <!-- En-tête -->
   <header class="mb-8">
     <div class="mb-1 text-xs font-medium uppercase tracking-wide text-amber-600">Usage 2 · Méthodologique</div>
     <h1 class="text-2xl font-bold text-mrc-900">Construire une enquête</h1>
     <p class="mt-3 max-w-3xl text-mrc-600">
-      Un registre d'enquête ne se génère pas en un clic : il se construit phase par phase, avec une
-      validation humaine explicite à chaque étape. Cette démonstration rejoue la machine d'états à
-      six phases. Aucune sortie n'est opposable — c'est une vitrine pédagogique.
+      Un registre d'enquête ne se génère pas en un clic : il se construit phase par phase, et son
+      journal distingue strictement <b>acteurs</b>, <b>interactions</b> et <b>écritures</b> — les
+      trois primitives de Couche 0 du MRC. Cette démonstration rejoue un cas réel. Aucune sortie
+      n'est opposable.
     </p>
   </header>
 
-  {#if !casChoisi}
-    <!-- Sélection du cas -->
+  {#if !cas}
     <h2 class="mb-3 text-lg font-semibold text-mrc-800">Choisir un cas d'enquête</h2>
     <div class="grid gap-4 md:grid-cols-3">
       {#each CAS as c}
-        <button
-          class="usage-card text-left {c.jouable ? '' : 'opacity-60'}"
-          on:click={() => c.jouable && (casChoisi = c.id)}
-          disabled={!c.jouable}
-        >
+        <button class="usage-card text-left {c.jouable ? '' : 'opacity-60'}" on:click={() => choisir(c)} disabled={!c.jouable}>
           <div class="mb-1 text-xs font-medium uppercase tracking-wide text-mrc-400">{c.fiche}</div>
           <h3 class="mb-2 font-semibold text-mrc-900">{c.titre}</h3>
           <p class="text-sm text-mrc-600">{c.resume}</p>
@@ -256,190 +344,195 @@
     </div>
 
   {:else}
-    <!-- Barre de phases + navigation déléguées au composant Stepper -->
-    <Stepper
-      steps={stepsBar}
-      bind:current={phaseIdx}
-      maxReached={phaseIdx}
-      canNext={garde.ok}
-      nextReason={garde.raison ?? ''}
-      accent="amber"
-    >
+    <div class="mb-4 flex items-center justify-between">
+      <div>
+        <h2 class="text-lg font-semibold text-mrc-900">{cas.titre}</h2>
+        <p class="text-xs text-mrc-500">{cas.fiche}</p>
+      </div>
+      <button class="text-xs text-mrc-500 underline hover:text-mrc-700" on:click={() => (casId = null)}>← Changer de cas</button>
+    </div>
+
+    <Stepper steps={stepsBar} bind:current={phaseIdx} maxReached={phaseIdx} canNext={garde.ok} nextReason={garde.raison ?? ''} accent="amber">
     <div class="grid gap-6 lg:grid-cols-3">
 
-      <!-- Panneau phase courante -->
+      <!-- Panneau phase -->
       <section class="lg:col-span-2 space-y-4">
         <div class="rounded-2xl border border-mrc-100 bg-white p-6 shadow-sm">
-          <div class="mb-2 text-xs font-medium uppercase tracking-wide text-amber-600">
-            Phase {phase.num} / 6
+          <div class="mb-2 flex items-baseline gap-2">
+            <span class="text-xs font-medium uppercase tracking-wide text-amber-600">Phase {phase.num} / {phases.length}</span>
+            <span class="text-xs text-mrc-400">· {phase.periode}</span>
           </div>
           <h2 class="text-xl font-bold text-mrc-900">{phase.label}</h2>
           <dl class="mt-3 space-y-1.5 text-sm">
+            <div><dt class="inline font-semibold text-mrc-700">Ancrage MRC : </dt><dd class="inline text-mrc-600">{phase.mrc}</dd></div>
             <div><dt class="inline font-semibold text-mrc-700">Porteur : </dt><dd class="inline text-mrc-600">{phase.porteur}</dd></div>
-            <div><dt class="inline font-semibold text-mrc-700">Sortie attendue : </dt><dd class="inline text-mrc-600">{phase.sortie}</dd></div>
-            <div><dt class="inline font-semibold text-mrc-700">Précondition : </dt><dd class="inline text-mrc-600">{phase.precondition}</dd></div>
+            <div><dt class="inline font-semibold text-mrc-700">Ce qui se joue : </dt><dd class="inline text-mrc-600">{phase.sortie}</dd></div>
           </dl>
 
-          <!-- Mécaniques propres à chaque phase -->
           <div class="mt-5 border-t border-mrc-100 pt-4">
+            {#if phase.id === 'rupture'}
+              <p class="mb-3 text-sm text-mrc-600">En 2016 la lagune vire à la « soupe verte ». Ce n'est pas un rapport mais une expérience directe qui ouvre l'enquête.</p>
+              <button class="rounded-lg bg-mrc-700 px-4 py-2 text-sm font-medium text-white hover:bg-mrc-800 disabled:opacity-40" disabled={appelReconnu} on:click={reconnaitreAppel}>
+                {appelReconnu ? 'Expérience première reconnue ✓' : 'Reconnaître l’expérience première (appelEntendu)'}
+              </button>
 
-            {#if phase.id === 'probleme'}
-              <p class="mb-2 text-sm font-medium text-mrc-700">Inventaire des entités affectées</p>
+            {:else if phase.id === 'public'}
+              <p class="mb-2 text-sm font-medium text-mrc-700">Inventaire des entités affectées (InventaireNonVide)</p>
               <div class="space-y-1.5">
-                {#each inventaire as e}
+                {#each inventaire as item}
+                  {@const a = acteur(item.ref)}
                   <label class="flex items-center gap-2 text-sm text-mrc-700">
-                    <input type="checkbox" bind:checked={e.inclus} disabled={inventaireConfirme} />
-                    <span>{e.nom}</span>
-                    <span class="rounded px-1.5 py-0.5 text-xs {e.type === 'non-humain' ? 'bg-fuchsia-100 text-fuchsia-700' : 'bg-sky-100 text-sky-700'}">{e.type}</span>
+                    <input type="checkbox" bind:checked={item.inclus} disabled={inventaireConfirme} />
+                    <span>{a?.nom}</span>
+                    {#if a}<span class="rounded px-1.5 py-0.5 text-xs {typeActeurCls[a.type]}">{a.type}</span>{/if}
+                    {#if a?.seuil}<span class="rounded bg-fuchsia-50 px-1.5 py-0.5 text-[10px] text-fuchsia-600">seuil : {a.seuil}</span>{/if}
                   </label>
                 {/each}
               </div>
-              {#if !inventaireNonVide}
-                <p class="mt-3 text-xs font-semibold text-red-600">[BLOCAGE] L'inventaire ne peut pas être vide.</p>
-              {/if}
-              <button
-                class="mt-4 rounded-lg bg-mrc-700 px-4 py-2 text-sm font-medium text-white hover:bg-mrc-800 disabled:opacity-40"
-                disabled={!inventaireNonVide || inventaireConfirme}
-                on:click={() => (inventaireConfirme = true)}
-              >
-                {inventaireConfirme ? 'Inventaire confirmé ✓' : "Confirmer l'inventaire"}
+              {#if !inventaireNonVide}<p class="mt-3 text-xs font-semibold text-red-600">[BLOCAGE] L'inventaire ne peut pas être vide.</p>{/if}
+              <button class="mt-4 rounded-lg bg-mrc-700 px-4 py-2 text-sm font-medium text-white hover:bg-mrc-800 disabled:opacity-40" disabled={!inventaireNonVide || inventaireConfirme} on:click={confirmerInventaire}>
+                {inventaireConfirme ? 'Inventaire confirmé ✓' : 'Confirmer l’inventaire'}
               </button>
 
-            {:else if phase.id === 'enquete'}
+            {:else if phase.id === 'formulation'}
               <p class="mb-3 text-sm text-mrc-600">
-                L'agent d'extraction propose des écritures à partir des documents ingérés. Toutes
-                sont <span class="font-medium text-red-600">non validées</span> : aucune n'est opposable à ce stade.
+                On stabilise les <b>primitives de Couche 0</b> — acteur, interaction, écriture — et on déclare
+                le <b>régime d'obligation</b>. Ici la dette envers la lagune est <b>SYSTÉMIQUE</b> : elle existe
+                sans porteur attribué (les tiers affectés ne peuvent pas la réclamer).
               </p>
-              <button
-                class="rounded-lg bg-mrc-700 px-4 py-2 text-sm font-medium text-white hover:bg-mrc-800 disabled:opacity-40"
-                disabled={enqueteLancee}
-                on:click={lancerStaging}
-              >
-                {enqueteLancee ? 'Staging produit ✓' : 'Lancer le staging LLM'}
+              <button class="rounded-lg bg-mrc-700 px-4 py-2 text-sm font-medium text-white hover:bg-mrc-800 disabled:opacity-40" disabled={basesDeclarees} on:click={declarerPrimitives}>
+                {basesDeclarees ? 'Primitives & régime déclarés ✓' : 'Déclarer les primitives (Couche 0) + régime SYSTÉMIQUE'}
               </button>
-
-            {:else if phase.id === 'revision'}
-              <p class="mb-3 text-sm text-mrc-600">
-                Avant d'arbitrer, on stabilise les concepts de base (acteurs, unités, relations). Un
-                concept qui change de sens en cours d'enquête doit être tracé.
-              </p>
-              <button
-                class="rounded-lg bg-mrc-700 px-4 py-2 text-sm font-medium text-white hover:bg-mrc-800 disabled:opacity-40"
-                disabled={basesStabilisees}
-                on:click={() => (basesStabilisees = true)}
-              >
-                {basesStabilisees ? 'Primitives déclarées ✓' : 'Déclarer les primitives (Couche 0)'}
-              </button>
-
-            {:else if phase.id === 'deliberation'}
-              {#if deliberationBloquee}
-                <div class="mb-3 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">
-                  <p class="font-semibold">[BLOCAGE R-HERMENEUTIQUE]</p>
-                  <p class="mt-1">Des entités non-humaines, qui ne peuvent pas parler en leur nom, sont affectées.
-                  La délibération est verrouillée tant qu'une représentation prospective n'est pas assurée.</p>
-                  <button
-                    class="mt-2 rounded-lg bg-amber-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-amber-700"
-                    on:click={() => (representationProspective = true)}
-                  >
-                    Désigner une représentation prospective
-                  </button>
-                </div>
-              {:else}
-                <p class="mb-2 text-xs font-medium text-emerald-700">✓ Représentation prospective assurée — délibération déverrouillée.</p>
-              {/if}
-              <label class="block text-sm font-medium text-mrc-700">Porteur de la dette (acteur identifié)</label>
-              <input
-                class="mt-1 w-full rounded-lg border border-mrc-200 px-3 py-2 text-sm"
-                placeholder="ex. Coopérative agricole + Agence de bassin"
-                bind:value={porteurDette}
-                disabled={deliberationBloquee}
-              />
-              <p class="mt-1 text-xs text-mrc-500">Sans porteur désigné, la machine d'états interdit le passage au niveau critique.</p>
 
             {:else if phase.id === 'convention'}
-              <p class="text-sm text-mrc-600">
-                Chaque proposition doit être <span class="font-medium text-emerald-700">validée</span> (elle devient opposable)
-                ou <span class="font-medium text-slate-600">archivée</span>. Le LLM ne valide jamais —
-                c'est un acte humain assumé. Utilisez le journal à droite.
-              </p>
-              {#if ecritures.some((e) => e.statut === 'rouge')}
-                <p class="mt-2 text-xs font-semibold text-red-600">Propositions encore non arbitrées : {ecritures.filter((e) => e.statut === 'rouge').length}</p>
+              {#if !representationAssuree}
+                <div class="mb-3 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">
+                  <p class="font-semibold">[REPRESENTATION-PROSPECTIVE]</p>
+                  <p class="mt-1">La lagune et les générations futures ne peuvent pas parler en leur nom. Avant toute écriture opposable, il faut désigner une représentation (tutelle).</p>
+                  <button class="mt-2 rounded-lg bg-amber-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-amber-700" on:click={assurerRepresentation}>Désigner la tutelle de la Mar Menor</button>
+                </div>
+              {:else}
+                <p class="mb-2 text-xs font-medium text-emerald-700">✓ Tutelle désignée — la dette systémique passe EN_DELIBERATION puis pourra être ATTRIBUÉE.</p>
               {/if}
+              <p class="text-sm text-mrc-600">Validez ou archivez chaque écriture dans le journal. Le LLM ne valide jamais : c'est un acte humain (R-INCAPACITE-LLM-VALIDER).</p>
 
-            {:else if phase.id === 'mise_en_oeuvre'}
-              <p class="mb-3 text-sm text-mrc-600">L'enquête est close. Bilan de session :</p>
+            {:else if phase.id === 'epreuve'}
+              <p class="text-sm text-mrc-600">
+                La loi n'est développée qu'en 2025 ; Teresa Vicente démissionne, jugeant l'esprit de la loi dénaturé.
+                Le plan de restauration (675 M€) ne mentionne pas la personnalité juridique : le journal inscrit une
+                écriture d'écart et lève un signal de <b>découplage de régimes</b>.
+              </p>
+
+            {:else if phase.id === 'reevaluation'}
+              <p class="mb-3 text-sm text-mrc-600">L'enquête reste ouverte (procès Topillo, 2026 ; 85 % de couverture végétale retrouvée en 2024). Bilan de session :</p>
               <div class="grid grid-cols-3 gap-3 text-center">
-                <div class="rounded-lg border border-emerald-200 bg-emerald-50 p-3">
-                  <div class="text-2xl font-bold text-emerald-700">{bilan.opposables}</div>
-                  <div class="text-xs text-emerald-700">écritures opposables</div>
-                </div>
-                <div class="rounded-lg border border-slate-200 bg-slate-50 p-3">
-                  <div class="text-2xl font-bold text-slate-600">{bilan.archivees}</div>
-                  <div class="text-xs text-slate-600">propositions archivées</div>
-                </div>
-                <div class="rounded-lg border border-amber-200 bg-amber-50 p-3">
-                  <div class="text-2xl font-bold text-amber-700">{bilan.signauxList.length}</div>
-                  <div class="text-xs text-amber-700">signaux ouverts</div>
-                </div>
+                <div class="rounded-lg border border-emerald-200 bg-emerald-50 p-3"><div class="text-2xl font-bold text-emerald-700">{bilan.opposables}</div><div class="text-xs text-emerald-700">écritures opposables</div></div>
+                <div class="rounded-lg border border-slate-200 bg-slate-50 p-3"><div class="text-2xl font-bold text-slate-600">{bilan.archivees}</div><div class="text-xs text-slate-600">propositions archivées</div></div>
+                <div class="rounded-lg border border-amber-200 bg-amber-50 p-3"><div class="text-2xl font-bold text-amber-700">{bilan.signauxOuverts.length}</div><div class="text-xs text-amber-700">signaux ouverts</div></div>
               </div>
-
-              {#if bilan.signauxList.length}
+              {#if bilan.signauxOuverts.length}
                 <div class="mt-4 rounded-lg border border-amber-200 bg-amber-50 p-3">
                   <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-amber-700">Signaux ouverts — à suivre</p>
                   <ul class="space-y-1.5">
-                    {#each bilan.signauxList as e}
-                      <li class="text-sm text-amber-900">
-                        <span class="font-medium">{e.signal}</span>
-                        <span class="block text-xs text-amber-700/80">{e.texte}</span>
-                      </li>
+                    {#each bilan.signauxOuverts as e}
+                      <li class="text-sm text-amber-900"><span class="font-medium">{e.signal}</span><span class="block text-xs text-amber-700/80">{e.libelle}</span></li>
                     {/each}
                   </ul>
                 </div>
-              {:else}
-                <p class="mt-4 text-sm text-mrc-500">Aucun signal ouvert : aucune écriture porteuse de signal n'a été validée.</p>
               {/if}
-
-              <p class="mt-4 text-xs text-mrc-500">
-                Engagement à horizon potentiellement irréversible (capitaux non-humains, générations
-                futures) : toute annulation ultérieure produira une nouvelle écriture, jamais une suppression.
-              </p>
-              <button class="mt-4 rounded-lg border border-mrc-200 px-4 py-2 text-sm font-medium text-mrc-700 hover:bg-mrc-50" on:click={reset}>
-                Recommencer l'enquête
-              </button>
+              <p class="mt-4 text-xs text-mrc-500">[ENGAGEMENT À HORIZON IRRÉVERSIBLE] La personnalité juridique engage des effets non annulables : une annulation produirait une nouvelle écriture, jamais une suppression.</p>
+              <button class="mt-4 rounded-lg border border-mrc-200 px-4 py-2 text-sm font-medium text-mrc-700 hover:bg-mrc-50" on:click={reset}>Recommencer l'enquête</button>
             {/if}
           </div>
         </div>
       </section>
 
-      <!-- Journal d'enquête -->
+      <!-- Journal : 4 registres distincts -->
       <aside class="space-y-3">
         <MrcStatusBadge statut={bilan.opposables > 0 ? 'valide' : 'non-valide'} />
+
+        <!-- ACTEURS -->
         <div class="rounded-2xl border border-mrc-100 bg-white p-4 shadow-sm">
-          <h3 class="mb-3 text-sm font-semibold text-mrc-800">Journal d'enquête</h3>
-          {#if !enqueteLancee}
-            <p class="text-sm text-mrc-400">Les propositions apparaîtront après le staging (phase ENQUÊTE).</p>
+          <h3 class="mb-2 text-sm font-semibold text-mrc-800">Acteurs <span class="font-normal text-mrc-400">· {acteursVisibles.length}</span></h3>
+          {#if !acteursVisibles.length}
+            <p class="text-xs text-mrc-400">Les acteurs s'inscrivent au fil des phases.</p>
+          {:else}
+            <div class="space-y-1.5">
+              {#each acteursVisibles as a}
+                <div class="rounded-lg border border-mrc-100 p-2 text-xs">
+                  <div class="flex items-center gap-1.5">
+                    <span class="rounded px-1.5 py-0.5 text-[10px] {typeActeurCls[a.type]}">{a.type}</span>
+                    <span class="font-medium text-mrc-800">{a.nom}</span>
+                  </div>
+                  <p class="mt-0.5 text-mrc-500">{a.role}{a.seuil ? ` · seuil : ${a.seuil}` : ''}</p>
+                </div>
+              {/each}
+            </div>
+          {/if}
+        </div>
+
+        <!-- INTERACTIONS -->
+        <div class="rounded-2xl border border-mrc-100 bg-white p-4 shadow-sm">
+          <h3 class="mb-2 text-sm font-semibold text-mrc-800">Interactions <span class="font-normal text-mrc-400">· {interactionsVisibles.length}</span></h3>
+          {#if !interactionsVisibles.length}
+            <p class="text-xs text-mrc-400">Aucune interaction inscrite à ce stade.</p>
+          {:else}
+            <div class="space-y-1.5">
+              {#each interactionsVisibles as i}
+                <div class="rounded-lg border border-purple-100 bg-purple-50/40 p-2 text-xs">
+                  <p class="font-medium text-purple-900">{nomActeur(i.de)} <span class="text-purple-500">→</span> {nomActeur(i.vers)}</p>
+                  <p class="mt-0.5 text-mrc-600">{i.nature}</p>
+                </div>
+              {/each}
+            </div>
+          {/if}
+        </div>
+
+        <!-- ÉCRITURES -->
+        <div class="rounded-2xl border border-mrc-100 bg-white p-4 shadow-sm">
+          <h3 class="mb-2 text-sm font-semibold text-mrc-800">Écritures <span class="font-normal text-mrc-400">· {ecrituresVisibles.length}</span></h3>
+          {#if !ecrituresVisibles.length}
+            <p class="text-xs text-mrc-400">Les écritures (R1 débit/crédit) apparaissent à partir de la Convention.</p>
           {:else}
             <div class="space-y-2">
-              {#each ecritures as e}
-                <div class="rounded-lg border p-3 text-xs {statutMeta[e.statut].cls}">
+              {#each ecrituresVisibles as e}
+                <div class="rounded-lg border p-3 text-xs {wf[e.workflow].cls}">
                   <div class="flex items-center justify-between gap-2">
-                    <span class="rounded bg-white/60 px-1.5 py-0.5 font-medium">{e.type}</span>
-                    <span class="flex items-center gap-1">
-                      <span class="h-2 w-2 rounded-full {statutMeta[e.statut].dot}"></span>
-                      {statutMeta[e.statut].label}
-                    </span>
+                    <span class="rounded bg-white/70 px-1.5 py-0.5 font-semibold">{e.sens}</span>
+                    <span class="flex items-center gap-1"><span class="h-2 w-2 rounded-full {wf[e.workflow].dot}"></span>{wf[e.workflow].label}</span>
                   </div>
-                  <p class="mt-1.5 font-medium">{e.texte}</p>
-                  <p class="mt-1 italic opacity-80">{e.source}</p>
-                  {#if phase.id === 'convention' && e.statut !== 'vert' && e.statut !== 'archive'}
+                  <p class="mt-1.5 font-medium">{e.libelle}</p>
+                  <p class="mt-1 text-[11px] opacity-80">
+                    Régime : {e.regime} · dette : {e.statutDette}{e.porteur ? ` · porteur : ${e.porteur}` : ''}
+                  </p>
+                  <p class="mt-0.5 text-[11px] opacity-70">Acteurs : {e.acteurs.map(nomActeur).join(', ')}{e.interaction ? ' · via interaction' : ''}</p>
+                  <p class="mt-0.5 italic opacity-70">{e.source}</p>
+                  {#if phase.id === 'convention' && (e.workflow === 'rouge' || e.workflow === 'ambre') && e.phase <= numPhase}
                     <div class="mt-2 flex gap-1.5">
-                      <button class="rounded bg-emerald-600 px-2 py-1 text-xs font-medium text-white hover:bg-emerald-700" on:click={() => valider(e.id)}>Valider</button>
-                      {#if e.statut === 'rouge'}
+                      <button class="rounded bg-emerald-600 px-2 py-1 text-xs font-medium text-white hover:bg-emerald-700 disabled:opacity-40" disabled={!representationAssuree && e.requiertRepresentation} on:click={() => valider(e.id)}>Valider</button>
+                      {#if e.workflow === 'rouge'}
                         <button class="rounded bg-amber-500 px-2 py-1 text-xs font-medium text-white hover:bg-amber-600" on:click={() => discuter(e.id)}>Discuter</button>
                       {/if}
                       <button class="rounded border border-slate-300 px-2 py-1 text-xs font-medium text-slate-600 hover:bg-slate-100" on:click={() => archiver(e.id)}>Archiver</button>
                     </div>
                   {/if}
+                </div>
+              {/each}
+            </div>
+          {/if}
+        </div>
+
+        <!-- SIGNAUX -->
+        <div class="rounded-2xl border border-mrc-100 bg-white p-4 shadow-sm">
+          <h3 class="mb-2 text-sm font-semibold text-mrc-800">Signaux <span class="font-normal text-mrc-400">· {signauxVisibles.length}</span></h3>
+          {#if !signauxVisibles.length}
+            <p class="text-xs text-mrc-400">Aucun signal levé à ce stade.</p>
+          {:else}
+            <div class="space-y-1.5">
+              {#each signauxVisibles as s}
+                <div class="rounded-lg border border-amber-100 bg-amber-50/50 p-2 text-xs">
+                  <p class="font-semibold text-amber-800">🚨 {s.code}</p>
+                  <p class="mt-0.5 text-mrc-600">{s.libelle}</p>
                 </div>
               {/each}
             </div>
@@ -451,7 +544,10 @@
   {/if}
 
   <p class="mt-10 border-t border-mrc-100 pt-4 text-xs text-mrc-400">
-    Démonstration interactive — séquence 6 phases (note de révision specs Usage 2 & 3, MRC v5.5).
-    Cas fictif anonymisé. Aucune écriture n'est opposable ; aucune donnée n'est conservée.
+    Cas Mar Menor — faits issus du rapport « Droits de la nature et gouvernance » (La Coop des Communs / GRET)
+    et d'une décomposition en 6 phases (enquête deweyenne, G-DEMO-EPISTEMIQUE / NT-G10). Démonstration
+    procédurale, non calcul formel. Aucune écriture n'est opposable ; aucune donnée n'est conservée.
+    <br />[LACUNE] La correspondance phases historiques ↔ objets MRC est construite en mode procédural ;
+    les faits 2025-2026 ont le statut de sources primaires du corpus, non de faits indépendamment vérifiés ici.
   </p>
 </div>

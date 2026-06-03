@@ -19,7 +19,7 @@
   // ──────────────────────────────────────────────────────────────────────────
 
   type Workflow = 'rouge' | 'ambre' | 'vert' | 'archive';
-  type TypeActeur = 'humain' | 'collectif' | 'organisation' | 'non-humain';
+  type TypeActeur = 'humain' | 'collectif' | 'organisation' | 'non-humain' | 'instrumental';
 
   interface Acteur {
     id: string;
@@ -293,21 +293,130 @@
     porteurAttribution: 'Instance de dialogue sur le métier (encadrement + direction)'
   };
 
+  // ── CAS CARE / IDEA4 — Exploitation B (comptabilité écologique, F8) ──────────
+  const CARE: Cas = {
+    id: 'care',
+    titre: 'Exploitation B — comptabiliser ce qui compte (CARE/IDEA4)',
+    fiche: 'F8 — Comptable / capitaux · CARE-IDEA4',
+    jouable: true,
+    resume:
+      "Ferme bovin-lait bio, 144 ha, Bretagne. L'expérimentation CARE/IDEA4 double la comptabilité classique pour rendre visibles les dettes envers les capitaux naturels et humains — et les rembourser.",
+    phases: [
+      { id: 'rupture', num: 1, label: 'Rupture d’expérience', mrc: 'Expérience première · appel_entendu (G-DEMO-EPISTEMIQUE)',
+        porteur: 'Exploitant·es (3 UTA)', periode: 'amont',
+        sortie: 'La comptabilité classique invisibilise la dégradation des capitaux naturels et humains : ce qui est capital n’est pas compté.' },
+      { id: 'public', num: 2, label: 'Constitution du public concerné', mrc: 'Inclusion des affectés · InventaireNonVide · limites planétaires',
+        porteur: 'Collectif CARE/IDEA4 (Fermes d’Avenir, conseillers, experts)', periode: '2023-2024',
+        sortie: 'On inventorie les capitaux affectés — sol, eau, biodiversité, atmosphère, troupeau, humains — avec leur état de préservation.' },
+      { id: 'formulation', num: 3, label: 'Formulation collective', mrc: 'ENQUETE_COLLECTIVE + OBSERVATIONNELLE · catégorie de base V^CARE · IDEA4 (53 indicateurs)',
+        porteur: 'Agriculteur·rice + comité scientifique', periode: '2023-2024',
+        sortie: 'On définit ce qui est capital et comment le compter ; on déclare les primitives de Couche 0 et le régime d’obligation.' },
+      { id: 'convention', num: 4, label: 'Convention', mrc: 'R1 DÉBIT/CRÉDIT · F8 (P-C-E-D-e-d) · source_valuemetre déclarée',
+        porteur: 'Comité de pilotage CARE/IDEA4', periode: '2022 (exercice)',
+        sortie: 'Comptes intégrés : dettes N et H inscrites, remboursements constatés. Les écritures deviennent opposables après validation humaine.' },
+      { id: 'epreuve', num: 5, label: 'Mise à l’épreuve', mrc: 'écart 32 651,70 € · R-PRIORITE-CREANCIERS (non formalisée v5.3) · [DÉCOUPLAGE]',
+        porteur: 'Exploitation vs créanciers NH', periode: '2022',
+        sortie: 'Les coûts de préservation non réalisés (32 651,70 €) dégradent le résultat CARE ; la priorité aux créanciers NH n’est pas garantie.' },
+      { id: 'reevaluation', num: 6, label: 'Réévaluation', mrc: 'R-CARE_chronique · suivi pluri-annuel · engagement long (salaire décent)',
+        porteur: 'Exploitation + accompagnement', periode: '2022 →',
+        sortie: 'Le suivi annuel des capitaux est obligatoire ; l’obligation de salaire décent court sur 25 ans (2 901 312 €). L’enquête ne se clôt pas.' }
+    ],
+    acteurs: [
+      { id: 'exploitants', nom: 'Exploitant·es (Denis, Damien, Fabrice — 3 UTA)', type: 'collectif', role: 'Décideurs de la ferme, juges légitimes du travail', phase: 1,
+        source: 'Fiche pédagogique Exploitation B (Fermes d’Avenir)' },
+      { id: 'salaries', nom: 'Salarié·es (temps plein + saisonnier)', type: 'collectif', role: 'Capital humain mobilisé ; droit au salaire décent', seuil: 'salaire décent / bien-être', phase: 1,
+        source: 'Bilan CARE — dettes humaines (fiche)' },
+      { id: 'sol', nom: 'Sol agricole', type: 'non-humain', role: 'Capital naturel (fertilité, MO, vie du sol)', seuil: 'bon état écologique (IDEA4)', phase: 1,
+        source: 'Capitaux naturels, net 8 959,2 € sur 62 828,9 € brut (fiche)' },
+      { id: 'eau', nom: 'Ressource en eau / nappe', type: 'non-humain', role: 'Capital naturel (qualité, quantité)', seuil: 'bon état (limites planétaires)', phase: 1,
+        source: 'Capitaux naturels — eau (fiche, p.6)' },
+      { id: 'biodiversite', nom: 'Biodiversité parcellaire', type: 'non-humain', role: 'Capital naturel (faune, flore, habitats)', seuil: 'présence d’espèces clés', phase: 1,
+        source: 'Capitaux naturels — biodiversité (fiche)' },
+      { id: 'atmosphere', nom: 'Atmosphère', type: 'non-humain', role: 'Capital naturel (qualité de l’air, climat)', seuil: 'limites planétaires', phase: 1,
+        source: 'Capitaux naturels — atmosphère (fiche)' },
+      { id: 'troupeau', nom: 'Troupeau (125 UGB)', type: 'non-humain', role: 'Capital naturel (bien-être, santé animale)', seuil: 'bien-être animal', phase: 1,
+        source: 'Capitaux naturels — troupeau (fiche)' },
+      { id: 'conseillers', nom: 'Conseillers agricoles (Fermes d’Avenir)', type: 'organisation', role: 'Accompagnement de la stratégie de préservation', phase: 2,
+        source: 'Projet CARE/IDEA4, Fermes d’Avenir' },
+      { id: 'idea4', nom: 'Valuemètre IDEA4 (53 indicateurs)', type: 'instrumental', role: 'Mesure l’état de préservation ; déclare sa source', phase: 2,
+        source: 'IDEA4 v4 — outil libre, comité scientifique' },
+      { id: 'comptables', nom: 'Comptables / experts d’évaluation', type: 'organisation', role: 'Intègrent les capitaux N&H aux comptes', phase: 2,
+        source: 'Méthode CARE — intégration comptable (fiche)' },
+      { id: 'banque', nom: 'Banque / financeurs', type: 'organisation', role: 'Apprécient la triple performance', phase: 4,
+        source: 'Rôles des acteurs du territoire (fiche)' },
+      { id: 'collectivites', nom: 'Collectivités & élus (territoire / bassin versant)', type: 'organisation', role: 'Dialogue territorial, aides selon coûts de préservation', phase: 4,
+        source: 'CARE/IDEA4 comme outil de dialogue (fiche)' }
+    ],
+    interactions: [
+      { id: 'i-prelev', de: 'exploitants', vers: 'sol', nature: 'Mise en culture : prélèvement productif → obligation de restauration', phase: 1,
+        source: 'R1 — DÉBIT actif sol / CRÉDIT dette sol (Annexe K §K.3.4)' },
+      { id: 'i-emploi', de: 'exploitants', vers: 'salaries', nature: 'Emploi : mobilisation du capital humain → obligation de salaire décent', phase: 1,
+        source: 'R1 — dette salaires décents long terme (Annexe K §K.3.4)' },
+      { id: 'i-mesure', de: 'idea4', vers: 'sol', nature: 'Mesure de l’état de préservation (régime attentionnel)', phase: 3,
+        source: '53 indicateurs IDEA4 (fiche)' },
+      { id: 'i-accomp', de: 'conseillers', vers: 'exploitants', nature: 'Accompagnement de la feuille de route de remboursement', phase: 2,
+        source: 'Rôle des conseillers (fiche)' },
+      { id: 'i-dialogue', de: 'collectivites', vers: 'exploitants', nature: 'Dialogue territorial sur les biens communs (bassin versant)', phase: 4,
+        source: 'Outil de dialogue territorial (fiche)' }
+    ],
+    ecritures: [
+      { id: 'e-dette-n', libelle: 'Dette envers les capitaux naturels 2022 : 54 119,70 € ; remboursement 52 473 € → écart 1 646,70 €',
+        sens: 'CRÉDIT', acteurs: ['sol', 'eau', 'biodiversite', 'atmosphere', 'troupeau'], interaction: 'i-prelev',
+        regime: 'SYSTÉMIQUE', statutDette: 'SYSTEMIQUE_NON_ATTRIBUEE', workflow: 'rouge', requiertRepresentation: true,
+        signal: 'signal_ecologie_superficielle — coûts de préservation non réalisés',
+        source: 'Bilan CARE 2022 (fiche, p.7)', phase: 4 },
+      { id: 'e-dette-h', libelle: 'Dette envers les capitaux humains 2022 (annualisée) : 157 785,50 € ; remboursement 126 780,50 € → écart 31 005 €',
+        sens: 'CRÉDIT', acteurs: ['salaries'], interaction: 'i-emploi',
+        regime: 'ACTORIEL', statutDette: 'ATTRIBUEE', porteur: 'Exploitation (employeur)', workflow: 'rouge',
+        source: 'Bilan CARE 2022 (fiche, p.6-7)', phase: 4 },
+      { id: 'e-ecart', libelle: 'Valuemètre composite : coûts de préservation non réalisés = 32 651,70 € → résultat CARE 69 207,30 € (vs 101 859 € classique)',
+        sens: 'DÉBIT', acteurs: ['exploitants'], interaction: 'i-mesure',
+        regime: 'SYSTÉMIQUE', statutDette: 'EN_DELIBERATION', workflow: 'rouge',
+        signal: 'irreversibilite_changement_base (latent, ÉLEVÉ)',
+        source: 'Compte de résultat CARE 2022 (fiche, p.7 ; Annexe K §K.1.2)', phase: 4 },
+      { id: 'e-priorite', libelle: 'Règle R-PRIORITE-CREANCIERS : pas de distribution avant remboursement des dettes NH (non formalisée en v5.3 — le cas en révèle le besoin)',
+        sens: 'DÉBIT', acteurs: ['exploitants', 'banque'],
+        regime: 'SYSTÉMIQUE', statutDette: 'SYSTEMIQUE_NON_ATTRIBUEE', workflow: 'rouge',
+        signal: 'DÉCOUPLAGE DE RÉGIMES — comptabilité classique vs CARE',
+        source: 'Annexe K §K.3.4 (Piste 3) ; F8 §8.7', phase: 5 },
+      { id: 'e-long', libelle: 'Engagement long : salaire décent restant à verser sur la carrière = 2 901 312 € (25 ans) ; suivi pluri-annuel obligatoire',
+        sens: 'CRÉDIT', acteurs: ['salaries'],
+        regime: 'ACTORIEL', statutDette: 'ATTRIBUEE', porteur: 'Exploitation (employeur)', workflow: 'rouge',
+        signal: 'R-CARE_chronique — à tester sur la trajectoire pluri-annuelle',
+        source: 'Bilan CARE — dette humaine long terme (fiche, p.6)', phase: 6 }
+    ],
+    signaux: [
+      { id: 's-appel', code: 'appel_entendu = VRAI', libelle: 'L’exploitant ajuste effectivement ses pratiques selon les indicateurs IDEA4 (capitaux N et H).', phase: 1 },
+      { id: 's-eco', code: 'signal_ecologie_superficielle (MOYEN)', libelle: 'Écart de 32 651,70 € : des coûts de préservation restent non réalisés.', phase: 4 },
+      { id: 's-codeg', code: 'codegradation_calculable (à tester)', libelle: 'Travail × milieu : la pression économique peut dégrader simultanément capitaux humains et naturels.', phase: 5 },
+      { id: 's-irrev', code: 'irreversibilite_changement_base (ÉLEVÉ, latent)', libelle: 'Si la comptabilité financière publiée évolue, le changement de base doit être tracé.', phase: 5 },
+      { id: 's-chronique', code: 'R-CARE_chronique', libelle: 'La dette est-elle réellement réduite d’année en année ? Suivi pluri-annuel requis.', phase: 6 }
+    ],
+    inventaire: [
+      { ref: 'sol', defaut: true },
+      { ref: 'eau', defaut: true },
+      { ref: 'biodiversite', defaut: true },
+      { ref: 'atmosphere', defaut: true },
+      { ref: 'troupeau', defaut: true },
+      { ref: 'salaries', defaut: true }
+    ],
+    prealable: {
+      titre: 'SOURCE DU VALUEMÈTRE DÉCLARÉE',
+      texte: 'Un chiffre comptable n’est pas neutre : tout valuemètre (ici IDEA4) doit déclarer sa source et sa convention d’attribution avant qu’une écriture devienne opposable, sinon c’est un instrument performatif non gouverné (NT-ARCH §7 ; F8 §8.7).',
+      bouton: 'Déclarer la source du valuemètre (IDEA4, comité scientifique)',
+      ok: '✓ Source du valuemètre déclarée — les écritures comptables peuvent être validées par le comité (jamais par un LLM).'
+    },
+    porteurAttribution: 'Comité de pilotage CARE/IDEA4 (validation humaine)'
+  };
+
   // Unification du nommage : le libellé affiché de chaque phase vient de la
   // source unique (lib/enquete-phases). Les ancrages MRC et descriptions
   // restent propres à chaque cas.
-  for (const c of [MAR_MENOR, SOINS]) {
+  for (const c of [MAR_MENOR, SOINS, CARE]) {
     for (const p of c.phases) p.label = LABEL_PHASE[p.id] ?? p.label;
   }
 
-  const VIDE = { titre: '', texte: '', bouton: '', ok: '' };
-  const CAS: Cas[] = [
-    MAR_MENOR,
-    SOINS,
-    { id: 'compta', titre: 'Coopérative — écriture comptable (F8)', fiche: 'F8 — Comptable (entrée)', jouable: false,
-      resume: 'Une écriture comptable typée P-C-E-D-e-d est proposée par l’agent, mais jamais validée par le LLM. À venir.',
-      phases: [], acteurs: [], interactions: [], ecritures: [], signaux: [], inventaire: [], prealable: VIDE, porteurAttribution: '' }
-  ];
+  const CAS: Cas[] = [MAR_MENOR, SOINS, CARE];
 
   // ── État de session ─────────────────────────────────────────────────────────
   let casId: string | null = null;
@@ -428,7 +537,8 @@
     'humain': 'bg-sky-100 text-sky-700',
     'collectif': 'bg-sky-100 text-sky-700',
     'organisation': 'bg-indigo-100 text-indigo-700',
-    'non-humain': 'bg-fuchsia-100 text-fuchsia-700'
+    'non-humain': 'bg-fuchsia-100 text-fuchsia-700',
+    'instrumental': 'bg-slate-200 text-slate-700'
   };
 </script>
 
@@ -694,6 +804,24 @@
       <p>
         [LACUNES] Correspondance épisodes d'intervention ↔ objets MRC construite en mode procédural, non calcul formel.
         Le « pouvoir d'agir » (clinique de l'activité) et la primitive MRC ne sont pas formellement équivalents.
+      </p>
+    {:else if cas.id === 'care'}
+      <p>
+        <b class="text-mrc-600">Source des faits et chiffres.</b> Fiche pédagogique « Exploitation B —
+        CARE/IDEA 4 », Fermes d'Avenir (2023/2024) ; Guide CARE V4F, Fermes d'Avenir. Cadre théorique :
+        J. Richard, D. Bensadon &amp; A. Rambaud, <i>Comptabilité financière</i> (Dunod, 2018/2024) ;
+        A. Rambaud (2019), comptabilité CARE ; L. Dumeaux (2025), thèse Paris-Dauphine PSL, juste prix écologique.
+      </p>
+      <p>
+        <b class="text-mrc-600">Lecture MRC.</b> P. Musseau-Milesi, <i>MRC v5.3 — Annexe K, Cas n°1 : Exploitation B
+        (CARE/IDEA4)</i>, La Coop des Communs, 2026 (lecture F8 · P-C-E-D-e-d · Couche 0) — couche interprétative
+        distincte des faits comptables.
+      </p>
+      <p>
+        [LACUNES] Les chiffres sont ceux de l'exercice 2022 (fiche Fermes d'Avenir), non revérifiés ici.
+        R-PRIORITE-CREANCIERS et source_valuemetre n'étaient pas formalisés en v5.3 — le cas en révèle le besoin.
+        F8 relève principalement de l'Usage 3 (notarié) ; en Usage 2, l'écriture comptable est proposée et validée
+        par un comité humain, jamais par un LLM (R-INCAPACITE-LLM-VALIDER).
       </p>
     {/if}
     <p>Démonstration ; aucune écriture n'est opposable, aucune donnée n'est conservée.</p>

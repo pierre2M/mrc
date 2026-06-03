@@ -482,7 +482,7 @@
 
           <div class="mt-5 border-t border-mrc-100 pt-4">
             {#if phase.id === 'rupture'}
-              <p class="mb-3 text-sm text-mrc-600">En 2016 la lagune vire à la « soupe verte ». Ce n'est pas un rapport mais une expérience directe qui ouvre l'enquête.</p>
+              <p class="mb-3 text-sm text-mrc-600">{phase.sortie} Ce n'est pas un rapport mais une expérience directe qui ouvre l'enquête.</p>
               <button class="rounded-lg bg-mrc-700 px-4 py-2 text-sm font-medium text-white hover:bg-mrc-800 disabled:opacity-40" disabled={appelReconnu} on:click={reconnaitreAppel}>
                 {appelReconnu ? 'Expérience première reconnue ✓' : 'Reconnaître l’expérience première (appelEntendu)'}
               </button>
@@ -508,7 +508,7 @@
             {:else if phase.id === 'formulation'}
               <p class="mb-3 text-sm text-mrc-600">
                 On stabilise les <b>primitives de Couche 0</b> — acteur, interaction, écriture — et on déclare
-                le <b>régime d'obligation</b>. Ici la dette envers la lagune est <b>SYSTÉMIQUE</b> : elle existe
+                le <b>régime d'obligation</b>. Ici la dette est <b>SYSTÉMIQUE</b> : elle existe
                 sans porteur attribué (les tiers affectés ne peuvent pas la réclamer).
               </p>
               <button class="rounded-lg bg-mrc-700 px-4 py-2 text-sm font-medium text-white hover:bg-mrc-800 disabled:opacity-40" disabled={basesDeclarees} on:click={declarerPrimitives}>
@@ -529,13 +529,12 @@
 
             {:else if phase.id === 'epreuve'}
               <p class="text-sm text-mrc-600">
-                La loi n'est développée qu'en 2025 ; Teresa Vicente démissionne, jugeant l'esprit de la loi dénaturé.
-                Le plan de restauration (675 M€) ne mentionne pas la personnalité juridique : le journal inscrit une
-                écriture d'écart et lève un signal de <b>découplage de régimes</b>.
+                {phase.sortie} Le journal inscrit une <b>écriture d'écart</b> et lève un signal de
+                <b>découplage de régimes</b> (voir le journal).
               </p>
 
             {:else if phase.id === 'reevaluation'}
-              <p class="mb-3 text-sm text-mrc-600">L'enquête reste ouverte (procès Topillo, 2026 ; 85 % de couverture végétale retrouvée en 2024). Bilan de session :</p>
+              <p class="mb-3 text-sm text-mrc-600">{phase.sortie} L'enquête reste ouverte — bilan de session :</p>
               <div class="grid grid-cols-3 gap-3 text-center">
                 <div class="rounded-lg border border-emerald-200 bg-emerald-50 p-3"><div class="text-2xl font-bold text-emerald-700">{bilan.opposables}</div><div class="text-xs text-emerald-700">écritures opposables</div></div>
                 <div class="rounded-lg border border-slate-200 bg-slate-50 p-3"><div class="text-2xl font-bold text-slate-600">{bilan.archivees}</div><div class="text-xs text-slate-600">propositions archivées</div></div>
@@ -551,7 +550,7 @@
                   </ul>
                 </div>
               {/if}
-              <p class="mt-4 text-xs text-mrc-500">[ENGAGEMENT À HORIZON IRRÉVERSIBLE] La personnalité juridique engage des effets non annulables : une annulation produirait une nouvelle écriture, jamais une suppression.</p>
+              <p class="mt-4 text-xs text-mrc-500">Sur un commun vivant, l'enquête ne se clôt pas : une écriture validée n'est jamais supprimée — une révision produit une nouvelle écriture liée, jamais un effacement.</p>
               <button class="mt-4 rounded-lg border border-mrc-200 px-4 py-2 text-sm font-medium text-mrc-700 hover:bg-mrc-50" on:click={reset}>Recommencer l'enquête</button>
             {/if}
           </div>

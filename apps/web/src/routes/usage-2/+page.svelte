@@ -1,6 +1,7 @@
 <script lang="ts">
   import MrcStatusBadge from '$lib/components/MrcStatusBadge.svelte';
   import Stepper from '$lib/components/Stepper.svelte';
+  import { LABEL_PHASE } from '$lib/enquete-phases';
 
   // ──────────────────────────────────────────────────────────────────────────
   // Usage 2 — Registre d'enquête contrôlé · démonstration interactive (vitrine).
@@ -291,6 +292,13 @@
     },
     porteurAttribution: 'Instance de dialogue sur le métier (encadrement + direction)'
   };
+
+  // Unification du nommage : le libellé affiché de chaque phase vient de la
+  // source unique (lib/enquete-phases). Les ancrages MRC et descriptions
+  // restent propres à chaque cas.
+  for (const c of [MAR_MENOR, SOINS]) {
+    for (const p of c.phases) p.label = LABEL_PHASE[p.id] ?? p.label;
+  }
 
   const VIDE = { titre: '', texte: '', bouton: '', ok: '' };
   const CAS: Cas[] = [

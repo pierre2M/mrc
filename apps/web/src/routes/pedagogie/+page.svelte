@@ -26,6 +26,15 @@
     return !!o && 'layer' in o;
   }
 
+  // Pas du parcours (index 0-based) où un lien vers une enquête réelle (Usage 2)
+  // est pertinent — le mécanisme abstrait y a un équivalent concret jouable.
+  const liensParcours: Record<number, string> = {
+    1: 'Voir une écriture débit/crédit dans une enquête réelle',
+    2: 'Voir la machine d’états (délibération → attribution) à l’œuvre',
+    3: 'Voir l’inventaire des affectés et la représentation prospective',
+    7: 'Parcourir une enquête collective complète (Mar Menor, soignant·es)'
+  };
+
   const couleurs: Record<Layer, string> = {
     0: 'sky',
     1: 'teal',
@@ -294,6 +303,12 @@
           {/if}
         {/each}
       </div>
+
+      {#if liensParcours[pas]}
+        <a href="/usage-2" class="mt-5 inline-flex items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-4 py-2.5 text-sm font-medium text-amber-800 transition hover:border-amber-400">
+          📋 {liensParcours[pas]} →
+        </a>
+      {/if}
     </div>
   </Stepper>
   {/if}

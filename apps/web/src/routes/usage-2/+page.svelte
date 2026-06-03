@@ -80,6 +80,9 @@
     signaux: Signal[];
     // entités affectées à inventorier (sous-ensemble des acteurs)
     inventaire: { ref: string; defaut: boolean }[];
+    // préalable obligatoire à la phase Convention (donne voix aux sans-voix)
+    prealable: { titre: string; texte: string; bouton: string; ok: string };
+    porteurAttribution: string;
   }
 
   // ── CAS MAR MENOR ───────────────────────────────────────────────────────────
@@ -177,17 +180,125 @@
       { ref: 'lagune', defaut: true },
       { ref: 'vivant', defaut: true },
       { ref: 'habitants', defaut: true }
-    ]
+    ],
+    prealable: {
+      titre: 'REPRESENTATION-PROSPECTIVE',
+      texte: 'La lagune et les générations futures ne peuvent pas parler en leur nom. Avant toute écriture opposable, il faut désigner une représentation (tutelle).',
+      bouton: 'Désigner la tutelle de la Mar Menor',
+      ok: '✓ Tutelle désignée — la dette systémique passe EN_DELIBERATION puis pourra être ATTRIBUÉE.'
+    },
+    porteurAttribution: 'Tutelle de la Mar Menor (3 comités)'
   };
 
+  // ── CAS SOINS — clinique de l'activité (Musseau-Milesi 2026) ─────────────────
+  const SOINS: Cas = {
+    id: 'soins',
+    titre: 'Soignant·es — reconquérir le pouvoir d’agir',
+    fiche: 'F1 — Travail · clinique de l’activité',
+    jouable: true,
+    resume:
+      "Établissement public (Ehpad + foyer d’accueil médicalisé), 2014-2022. Face à un climat social dégradé, une intervention en clinique de l’activité institue un dialogue sur la qualité du travail : les soignant·es reprennent la main sur leur activité.",
+    phases: [
+      { id: 'rupture', num: 1, label: 'Rupture d’expérience', mrc: 'Expérience première · appelEntendu = TRUE (G-DEMO-EPISTEMIQUE)',
+        porteur: 'Soignant·es de première ligne (AMP)', periode: 'amont',
+        sortie: "Climat social dégradé, perte de la possibilité de « bien faire son travail » : la plainte signale un empêchement, non un simple problème de conditions." },
+      { id: 'public', num: 2, label: 'Constitution du collectif', mrc: 'Inclusion des affectés · volontariat · validation ARS',
+        porteur: 'Volontaires + psychologues du travail', periode: '2014',
+        sortie: 'Un collectif de volontaires se constitue avec les intervenants ; on inventorie qui est affecté (soignant·es, résidents, encadrement).' },
+      { id: 'formulation', num: 3, label: 'Autoconfrontations', mrc: 'ENQUETE_COLLECTIVE · C-FORMES-DELIBERATION · réel de l’activité',
+        porteur: 'Collectif de volontaires (à l’écart de la hiérarchie)', periode: '2014-2020',
+        sortie: 'Séquences filmées confrontées entre pairs : la plainte devient problème concret à résoudre. On déclare les primitives de Couche 0.' },
+      { id: 'convention', num: 4, label: 'Migration en comités', mrc: 'CONVENTION · R1 DÉBIT/CRÉDIT · diagnostics du travail réel',
+        porteur: 'Encadrement + direction + syndicats', periode: '2018-2022',
+        sortie: 'Les diagnostics migrent en comités de pilotage : la contradiction est inscrite et l’organisation des soins révisée (coopération conflictuelle).' },
+      { id: 'epreuve', num: 5, label: 'Mise à l’épreuve', mrc: 'ecartFormelRel ≥ seuil · [DÉCOUPLAGE DE RÉGIMES DÉTECTÉ]',
+        porteur: 'Logique gestionnaire vs pouvoir d’agir', periode: 'récurrent',
+        sortie: 'Les remèdes gestionnaires (revalorisations, procédures de contrôle) restent sans effet, voire se retournent contre les soignant·es.' },
+      { id: 'reevaluation', num: 6, label: 'Réévaluation', mrc: 'pérennisation · enquête jamais close',
+        porteur: 'Référent-métier + instance de dialogue', periode: '2022→',
+        sortie: 'Institution d’un·e référent-métier élu·e : les problèmes circulent et ne sont pas oubliés.' }
+    ],
+    acteurs: [
+      { id: 'amp', nom: 'Soignant·es de première ligne (AMP)', type: 'collectif', role: 'Porteurs du réel de l’activité', phase: 1,
+        source: 'Musseau-Milesi 2026, Soins Cadres nº 164' },
+      { id: 'residents', nom: 'Résident·es de l’Ehpad', type: 'collectif', role: 'Personnes soignées (autonomie en jeu), sans voix dans la logique gestionnaire', seuil: 'capabilité / autonomie', phase: 1,
+        source: 'Dialogue filmé « on fait à leur place » (Clot et al., cité)' },
+      { id: 'volontaires', nom: 'Collectif de volontaires', type: 'collectif', role: 'Engagé dans les autoconfrontations', phase: 2,
+        source: 'Cadre réglé de confrontations sur la qualité du travail' },
+      { id: 'psy', nom: 'Psychologues du travail (clinique de l’activité)', type: 'organisation', role: 'Tiers méthodologique (intervenants)', phase: 2,
+        source: 'Intervention 2014-2022 (Zittoun & Larchevêque, cités)' },
+      { id: 'ars', nom: 'Agence régionale de santé (ARS)', type: 'organisation', role: 'Validateur de la démarche', phase: 2,
+        source: 'Proposition validée par l’ARS malgré son caractère singulier' },
+      { id: 'encadrement', nom: 'Encadrement', type: 'organisation', role: 'Niveau intermédiaire de l’organisation', phase: 4,
+        source: 'Comités de pilotage (article)' },
+      { id: 'direction', nom: 'Direction de l’établissement', type: 'organisation', role: 'Décideur de l’organisation des soins', phase: 4,
+        source: 'Instance de dialogue sur le métier (article)' },
+      { id: 'syndicats', nom: 'Organisations syndicales', type: 'organisation', role: 'Partie prenante du dialogue', phase: 4,
+        source: 'Dialogue incluant les organisations syndicales (article)' },
+      { id: 'referent', nom: 'Référent-métier (soignante élue)', type: 'humain', role: 'Garant·e que le réel du travail ne soit pas évacué', phase: 6,
+        source: 'Fonction instituée en fin d’intervention (article)' }
+    ],
+    interactions: [
+      { id: 'i-gestion', de: 'direction', vers: 'amp', nature: 'Logique gestionnaire (financement PASA par inscriptions) → « faire plus vite »', phase: 1,
+        source: 'Pérennisation financière du PASA par les inscriptions (article)' },
+      { id: 'i-empechement', de: 'amp', vers: 'residents', nature: 'Empêchement : « on accroche les manteaux à leur place » (atteinte à l’autonomie)', phase: 3,
+        source: 'Autoconfrontation filmée (Clot et al., cité)' },
+      { id: 'i-autoconf', de: 'volontaires', vers: 'volontaires', nature: 'Autoconfrontation croisée sur le travail bien fait', phase: 3,
+        source: 'Séquences d’activité filmées et discutées entre pairs' },
+      { id: 'i-migration', de: 'psy', vers: 'encadrement', nature: 'Migration des diagnostics en comités de pilotage', phase: 4,
+        source: 'Diagnostics du travail réel adressés à la hiérarchie (article)' },
+      { id: 'i-referent', de: 'referent', vers: 'direction', nature: 'Circulation instituée des problèmes (instance de dialogue)', phase: 6,
+        source: 'Fonction de référent-métier (article)' }
+    ],
+    ecritures: [
+      { id: 'e-empechement', libelle: 'Empêchement reconnu : « on fait à leur place » — contradiction entre moyens alloués au degré de dépendance et temps réellement nécessaire',
+        sens: 'CRÉDIT', acteurs: ['amp', 'residents'], interaction: 'i-empechement',
+        regime: 'SYSTÉMIQUE', statutDette: 'SYSTEMIQUE_NON_ATTRIBUEE', workflow: 'rouge', requiertRepresentation: true,
+        signal: 'R-ACTIVITE-EMPECHEE — capacité bloquée, discussion professionnelle à rouvrir',
+        source: 'Dialogue filmé au PASA (Clot et al., cité)', phase: 4 },
+      { id: 'e-revision', libelle: 'Révision de l’organisation des soins au plus haut niveau (le regard de première ligne devient critère)',
+        sens: 'CRÉDIT', acteurs: ['encadrement', 'direction'], interaction: 'i-migration',
+        regime: 'HYBRIDE', statutDette: 'EN_DELIBERATION', workflow: 'rouge',
+        source: 'Coopération conflictuelle (Oddone ; Clot, cités)', phase: 4 },
+      { id: 'e-ecart', libelle: 'Écart : remèdes gestionnaires (revalorisations, inflation de procédures de contrôle) sans effet, voire contre-productifs',
+        sens: 'DÉBIT', acteurs: ['direction', 'amp'],
+        regime: 'SYSTÉMIQUE', statutDette: 'SYSTEMIQUE_NON_ATTRIBUEE', workflow: 'rouge',
+        signal: 'DÉCOUPLAGE DE RÉGIMES — logique gestionnaire vs pouvoir d’agir',
+        source: 'Inflation des procédures de contrôle (article, introduction)', phase: 5 },
+      { id: 'e-referent', libelle: 'Institution du référent-métier : obligation de circulation et de non-oubli des problèmes du travail réel',
+        sens: 'CRÉDIT', acteurs: ['referent', 'direction'], interaction: 'i-referent',
+        regime: 'ACTORIEL', statutDette: 'ATTRIBUEE', porteur: 'Référent-métier élu·e', workflow: 'rouge',
+        signal: 'pérennisation — le réel du travail ne doit pas être évacué',
+        source: 'Fonction de référent-métier (article, conclusion)', phase: 6 }
+    ],
+    signaux: [
+      { id: 's-appel', code: 'appelEntendu = TRUE', libelle: 'Décès faute de qualité, climat social dégradé : l’empêchement de bien faire devient irréfutable.', phase: 1 },
+      { id: 's-empeche', code: 'R-ACTIVITE-EMPECHEE', libelle: 'Capacité d’agir bloquée + discussion professionnelle absente : priorité au déblocage du métier.', phase: 4 },
+      { id: 's-affectif', code: 'G-AFFECTIF — pouvoir d’être affecté', libelle: 'Le dialogue provoque des émotions intenses : signe que l’activité est affectée et peut se transformer.', phase: 4 },
+      { id: 's-decouplage', code: 'DÉCOUPLAGE DE RÉGIMES DÉTECTÉ', libelle: 'La logique gestionnaire (contrôle) et le développement du pouvoir d’agir ne produisent pas le même résultat.', phase: 5 },
+      { id: 's-perennisation', code: 'enquête jamais close', libelle: 'Sur le travail vivant, la critique pratique de l’organisation doit rester ouverte (référent-métier garant).', phase: 6 }
+    ],
+    inventaire: [
+      { ref: 'amp', defaut: true },
+      { ref: 'residents', defaut: true },
+      { ref: 'volontaires', defaut: true }
+    ],
+    prealable: {
+      titre: 'DIALOGUE À L’ÉCART DE LA HIÉRARCHIE',
+      texte: 'Le réel du travail des soignant·es n’a pas voix dans la logique gestionnaire descendante. Avant toute écriture opposable, le dialogue doit d’abord se tenir entre pairs (autoconfrontations), à l’écart de la hiérarchie.',
+      bouton: 'Instituer le dialogue entre pairs',
+      ok: '✓ Dialogue institué — les diagnostics peuvent migrer vers les comités et la contradiction être attribuée.'
+    },
+    porteurAttribution: 'Instance de dialogue sur le métier (encadrement + direction)'
+  };
+
+  const VIDE = { titre: '', texte: '', bouton: '', ok: '' };
   const CAS: Cas[] = [
     MAR_MENOR,
+    SOINS,
     { id: 'compta', titre: 'Coopérative — écriture comptable (F8)', fiche: 'F8 — Comptable (entrée)', jouable: false,
       resume: 'Une écriture comptable typée P-C-E-D-e-d est proposée par l’agent, mais jamais validée par le LLM. À venir.',
-      phases: [], acteurs: [], interactions: [], ecritures: [], signaux: [], inventaire: [] },
-    { id: 'affectif', titre: 'Dispositif de travail émotionnel (F1/F4)', fiche: 'F1 / F4 — affectif', jouable: false,
-      resume: 'Le système refuse de soumettre les verbatims au LLM sans consentement préalable (fiche T1). À venir.',
-      phases: [], acteurs: [], interactions: [], ecritures: [], signaux: [], inventaire: [] }
+      phases: [], acteurs: [], interactions: [], ecritures: [], signaux: [], inventaire: [], prealable: VIDE, porteurAttribution: '' }
   ];
 
   // ── État de session ─────────────────────────────────────────────────────────
@@ -256,7 +367,7 @@
         ...e,
         workflow: 'vert',
         statutDette: attribue ? 'ATTRIBUEE' : e.statutDette,
-        porteur: attribue ? 'Tutelle de la Mar Menor (3 comités)' : e.porteur
+        porteur: attribue ? (cas?.porteurAttribution ?? e.porteur) : e.porteur
       };
     });
   }
@@ -280,7 +391,7 @@
       case 'formulation':
         return basesDeclarees ? { ok: true } : { ok: false, raison: 'Déclarez les primitives de Couche 0 et le régime d’obligation.' };
       case 'convention': {
-        if (!representationAssuree) return { ok: false, raison: '[REPRESENTATION-PROSPECTIVE] La lagune ne parle pas en son nom : désignez d’abord une tutelle.' };
+        if (!representationAssuree) return { ok: false, raison: `[${cas?.prealable.titre ?? 'PRÉALABLE'}] Préalable requis avant toute écriture opposable.` };
         const rouges = ecrituresVisibles.filter((e) => e.workflow === 'rouge' || e.workflow === 'ambre');
         if (rouges.length) return { ok: false, raison: `Arbitrez les ${rouges.length} écriture(s) restante(s) (valider ou archiver).` };
         return { ok: true };
@@ -407,12 +518,12 @@
             {:else if phase.id === 'convention'}
               {#if !representationAssuree}
                 <div class="mb-3 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-800">
-                  <p class="font-semibold">[REPRESENTATION-PROSPECTIVE]</p>
-                  <p class="mt-1">La lagune et les générations futures ne peuvent pas parler en leur nom. Avant toute écriture opposable, il faut désigner une représentation (tutelle).</p>
-                  <button class="mt-2 rounded-lg bg-amber-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-amber-700" on:click={assurerRepresentation}>Désigner la tutelle de la Mar Menor</button>
+                  <p class="font-semibold">[{cas.prealable.titre}]</p>
+                  <p class="mt-1">{cas.prealable.texte}</p>
+                  <button class="mt-2 rounded-lg bg-amber-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-amber-700" on:click={assurerRepresentation}>{cas.prealable.bouton}</button>
                 </div>
               {:else}
-                <p class="mb-2 text-xs font-medium text-emerald-700">✓ Tutelle désignée — la dette systémique passe EN_DELIBERATION puis pourra être ATTRIBUÉE.</p>
+                <p class="mb-2 text-xs font-medium text-emerald-700">{cas.prealable.ok}</p>
               {/if}
               <p class="text-sm text-mrc-600">Validez ou archivez chaque écriture dans le journal. Le LLM ne valide jamais : c'est un acte humain (R-INCAPACITE-LLM-VALIDER).</p>
 
@@ -543,23 +654,42 @@
     </Stepper>
   {/if}
 
+  {#if cas}
   <div class="mt-10 border-t border-mrc-100 pt-4 text-xs text-mrc-400 space-y-1.5">
-    <p>
-      <b class="text-mrc-600">Source des faits.</b> Thomas Fabre, « La lagune de Mar Menor en Espagne »
-      (Section 1), in D. Bourg, T. Fabre &amp; E. Zürcher, <i>Droits de la nature et gouvernance — En quoi
-      l'institution « Droits de la nature » améliore-t-elle la gouvernance environnementale ?</i>,
-      responsables scientifiques D. Bourg &amp; S. Swaton, La Coop des Communs / Fondation Zoein,
-      étude réalisée nov. 2023 – déc. 2025.
-    </p>
-    <p>
-      <b class="text-mrc-600">Décomposition en 6 phases.</b> Lecture deweyenne de l'enquête collective
-      (G-DEMO-EPISTEMIQUE / NT-G10, MRC v5.5) — couche interprétative distincte des faits, non imputable à T. Fabre.
-    </p>
-    <p>
-      [LACUNES] Correspondance phases historiques ↔ objets MRC construite en mode procédural, non calcul formel.
-      Les faits 2025-2026 (décret d'application, démission de la tutrice, procès Topillo) ont le statut de sources
-      primaires du corpus Fabre, non de faits indépendamment vérifiés ici. Démonstration ; aucune écriture
-      n'est opposable, aucune donnée n'est conservée.
-    </p>
+    {#if cas.id === 'mar-menor'}
+      <p>
+        <b class="text-mrc-600">Source des faits.</b> Thomas Fabre, « La lagune de Mar Menor en Espagne »
+        (Section 1), in D. Bourg, T. Fabre &amp; E. Zürcher, <i>Droits de la nature et gouvernance — En quoi
+        l'institution « Droits de la nature » améliore-t-elle la gouvernance environnementale ?</i>,
+        responsables scientifiques D. Bourg &amp; S. Swaton, La Coop des Communs / Fondation Zoein,
+        étude réalisée nov. 2023 – déc. 2025.
+      </p>
+      <p>
+        <b class="text-mrc-600">Décomposition en 6 phases.</b> Lecture deweyenne de l'enquête collective
+        (G-DEMO-EPISTEMIQUE / NT-G10, MRC v5.5) — couche interprétative distincte des faits, non imputable à T. Fabre.
+      </p>
+      <p>
+        [LACUNES] Correspondance phases historiques ↔ objets MRC construite en mode procédural, non calcul formel.
+        Les faits 2025-2026 (décret d'application, démission de la tutrice, procès Topillo) ont le statut de sources
+        primaires du corpus Fabre, non de faits indépendamment vérifiés ici.
+      </p>
+    {:else if cas.id === 'soins'}
+      <p>
+        <b class="text-mrc-600">Source des faits.</b> Pierre Musseau-Milesi, « Le pouvoir d'agir des soignants au
+        risque du dialogue sur la qualité du travail », <i>Soins Cadres</i>, nº 164, mars-avril 2026, Elsevier Masson.
+        L'intervention citée (établissement public, Ehpad + foyer d'accueil médicalisé, 2014-2022) est documentée
+        par Zittoun &amp; Larchevêque ; cadre théorique : clinique de l'activité (Y. Clot et al.).
+      </p>
+      <p>
+        <b class="text-mrc-600">Décomposition en 6 phases.</b> Lecture en enquête collective (G-DEMO-EPISTEMIQUE,
+        F1 Mode travail, R-ACTIVITE-EMPECHEE, MRC v5.5) — couche interprétative distincte du texte source.
+      </p>
+      <p>
+        [LACUNES] Correspondance épisodes d'intervention ↔ objets MRC construite en mode procédural, non calcul formel.
+        Le « pouvoir d'agir » (clinique de l'activité) et la primitive MRC ne sont pas formellement équivalents.
+      </p>
+    {/if}
+    <p>Démonstration ; aucune écriture n'est opposable, aucune donnée n'est conservée.</p>
   </div>
+  {/if}
 </div>

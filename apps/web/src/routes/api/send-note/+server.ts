@@ -32,40 +32,49 @@ export const POST: RequestHandler = async ({ request }) => {
   }
 
   const resendKey = env.RESEND_API_KEY;
+  const fromAddress = env.RESEND_FROM || 'MRC <onboarding@resend.dev>';
 
-  if (resendKey) {
-    // Convert plain text to HTML paragraphs
-    const htmlBody = note.texte
-      .split('\n\n')
-      .filter((p) => p.trim())
-      .map((p) => `<p>${p.replace(/\n/g, '<br>')}</p>`)
-      .join('\n');
+  if (!resendKey) {
+    return jsonResp({ error: 'Service email non configuré.' }, 503);
+  }
 
-    const html = [
-      `<h2>${note.titre}</h2>`,
-      `<hr>`,
-      htmlBody,
-      `<hr>`,
-      `<p style="color:#666;font-size:12px;">Note théorique MRC — Modèle de Registres de Communalité · La Coop des Communs</p>`,
-    ].join('\n');
+  const htmlBody = note.texte
+    .split('\n\n')
+    .filter((p) => p.trim())
+    .map((p) => `<p>${p.replace(/\n/g, '<br>')}</p>`)
+    .join('\n');
 
-    try {
-      await fetch('https://api.resend.com/emails', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${resendKey}`,
-        },
-        body: JSON.stringify({
-          from: 'MRC <onboarding@resend.dev>',
-          to: [email],
-          subject: note.titre,
-          html,
-        }),
-      });
-    } catch {
-      // Don't block the user if email delivery fails
-    }
+  const html = [
+    `<h2>${note.titre}</h2>`,
+    `<hr>`,
+    htmlBody,
+    `<hr>`,
+    `<p style="color:#666;font-size:12px;">Note théorique MRC — Modèle de Registres de Communalité · La Coop des Communs</p>`,
+  ].join('\n');
+
+  let resendRes: Response;
+  try {
+    resendRes = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${resendKey}`,
+      },
+      body: JSON.stringify({
+        from: fromAddress,
+        to: [email],
+        subject: note.titre,
+        html,
+      }),
+    });
+  } catch {
+    return jsonResp({ error: 'Erreur réseau lors de l\'envoi.' }, 502);
+  }
+
+  if (!resendRes.ok) {
+    const detail = await resendRes.json().catch(() => ({}));
+    const msg = (detail as { message?: string }).message || `Erreur Resend ${resendRes.status}`;
+    return jsonResp({ error: msg }, 502);
   }
 
   return jsonResp({ ok: true });

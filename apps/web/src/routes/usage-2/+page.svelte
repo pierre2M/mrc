@@ -543,11 +543,23 @@
     </Stepper>
   {/if}
 
-  <p class="mt-10 border-t border-mrc-100 pt-4 text-xs text-mrc-400">
-    Cas Mar Menor — faits issus du rapport « Droits de la nature et gouvernance » (La Coop des Communs / GRET)
-    et d'une décomposition en 6 phases (enquête deweyenne, G-DEMO-EPISTEMIQUE / NT-G10). Démonstration
-    procédurale, non calcul formel. Aucune écriture n'est opposable ; aucune donnée n'est conservée.
-    <br />[LACUNE] La correspondance phases historiques ↔ objets MRC est construite en mode procédural ;
-    les faits 2025-2026 ont le statut de sources primaires du corpus, non de faits indépendamment vérifiés ici.
-  </p>
+  <div class="mt-10 border-t border-mrc-100 pt-4 text-xs text-mrc-400 space-y-1.5">
+    <p>
+      <b class="text-mrc-600">Source des faits.</b> Thomas Fabre, « La lagune de Mar Menor en Espagne »
+      (Section 1), in D. Bourg, T. Fabre &amp; E. Zürcher, <i>Droits de la nature et gouvernance — En quoi
+      l'institution « Droits de la nature » améliore-t-elle la gouvernance environnementale ?</i>,
+      responsables scientifiques D. Bourg &amp; S. Swaton, La Coop des Communs / Fondation Zoein,
+      étude réalisée nov. 2023 – déc. 2025.
+    </p>
+    <p>
+      <b class="text-mrc-600">Décomposition en 6 phases.</b> Lecture deweyenne de l'enquête collective
+      (G-DEMO-EPISTEMIQUE / NT-G10, MRC v5.5) — couche interprétative distincte des faits, non imputable à T. Fabre.
+    </p>
+    <p>
+      [LACUNES] Correspondance phases historiques ↔ objets MRC construite en mode procédural, non calcul formel.
+      Les faits 2025-2026 (décret d'application, démission de la tutrice, procès Topillo) ont le statut de sources
+      primaires du corpus Fabre, non de faits indépendamment vérifiés ici. Démonstration ; aucune écriture
+      n'est opposable, aucune donnée n'est conservée.
+    </p>
+  </div>
 </div>

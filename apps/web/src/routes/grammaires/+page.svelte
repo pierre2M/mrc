@@ -184,7 +184,9 @@ Un registre qui prétend être neutre sur la justice choisit de ne pas voir ce q
       question: "Comment concevoir un registre qui soit lui-même un dispositif de démocratie épistémique — où la diversité des savoirs améliore la qualité des décisions collectives ?",
       apport: "G10 pose que la légitimité d'un registre dépend de sa capacité à intégrer des savoirs hétérogènes sans les réduire à un seul cadre. Elle active les signaux de parité délibérative et d'injustice herméneutique comme conditions de validité, non comme considérations optionnelles.",
       tensions: "En tension productive avec G4 (Performativité) sur la notion de savoir légitime, et avec G7 (Justice) sur les conditions d'entrée dans la délibération.",
-      signal: 'parité_délibérative, TOKEN_MARGINAL_NON_ENTENDU, diversité_épistémique'
+      signal: 'parité_délibérative, TOKEN_MARGINAL_NON_ENTENDU, diversité_épistémique',
+      lien: '/usage-2',
+      lienLabel: 'Voir G10 à l’œuvre : une enquête collective (Usage 2) →'
     },
     {
       id: 'g11',
@@ -380,6 +382,12 @@ Un registre qui prétend être neutre sur la justice choisit de ne pas voir ce q
               <p class="mt-4 text-xs text-mrc-400 italic">
                 Note théorique complète disponible dans le corpus MRC interne — vulgarisation site-vitrine à venir.
               </p>
+            {/if}
+
+            {#if g.lien}
+              <a href={g.lien} class="mt-4 inline-flex items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-4 py-2 text-sm font-medium text-amber-800 transition hover:border-amber-400">
+                📋 {g.lienLabel}
+              </a>
             {/if}
 
             <!-- Lien "plus de contenu" -->

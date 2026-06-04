@@ -40,9 +40,9 @@
     },
     {
       titre: 'Praticiens et collectifs',
-      description: 'Démonstrateur interactif en trois modes (Découverte, Analyse, Expert), exemples d\'analyse sur document réel.',
-      href: '/usage-1',
-      cta: 'Essayer le démonstrateur →'
+      description: 'Démonstrateur conversationnel (Usage 1) et enquêtes collectives jouables sur cas réels — Mar Menor, pouvoir d\'agir des soignant·es (Usage 2).',
+      href: '/usage-2',
+      cta: 'Parcourir une enquête collective →'
     },
     {
       titre: 'Partenaires institutionnels',

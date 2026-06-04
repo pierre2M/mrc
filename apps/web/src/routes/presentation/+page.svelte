@@ -1,4 +1,6 @@
 <script>
+  import { SEQUENCE_ENQUETE } from '$lib/enquete-phases';
+
   const sections = [
     {
       id: 'registre',
@@ -58,7 +60,7 @@ Les grammaires ne s'excluent pas — elles s'articulent et entrent en tension pr
       titre: 'Les trois usages du MRC',
       items: [
         { nom: 'Usage 1 — Démonstrateur conversationnel', desc: 'Un LLM applique la grille MRC à un document ou répond à des questions sur le MRC en trois modes : Découverte (questions sur le MRC et ses grammaires), Analyse (esquisse vulgarisée des acteurs et tensions), Expert (journal MRC si le document le permet). Toutes les sorties sont des brouillons interprétatifs, non opposables.' },
-        { nom: 'Usage 2 — Registre d\'enquête contrôlé', desc: 'Un collectif construit progressivement un registre via une chaîne agents + humains, avec validation délibérative explicite à chaque étape. Les phases C-ENQUETE-V5 structurent la progression : PROBLÈME → ENQUÊTE → RÉVISION_CONCEPTUELLE → DÉLIBÉRATION → CONVENTION → MISE_EN_ŒUVRE.' },
+        { nom: 'Usage 2 — Registre d\'enquête contrôlé', desc: `Un collectif construit progressivement un registre via une chaîne agents + humains, avec validation délibérative explicite à chaque étape. Six phases d'enquête collective structurent la progression : ${SEQUENCE_ENQUETE}. (Démonstration interactive disponible.)`, lien: '/usage-2', lienLabel: 'Essayer la démonstration →' },
         { nom: 'Usage 3 — Infrastructure organisationnelle ou notariée', desc: 'Plusieurs acteurs tiennent des registres symétriques interopérables — y compris des acteurs non-humains. Le registre est alors opposable : les écritures sont validées, les identifiants sont persistants, les obligations sont traçables.' }
       ]
     },
@@ -128,6 +130,9 @@ Les grammaires ne s'excluent pas — elles s'articulent et entrent en tension pr
             <div class="rounded-lg bg-mrc-50 p-4">
               <dt class="font-semibold text-mrc-800">{item.nom}</dt>
               <dd class="mt-1 text-sm text-mrc-600">{item.desc}</dd>
+              {#if item.lien}
+                <a href={item.lien} class="mt-2 inline-block text-sm font-medium text-mrc-700 underline hover:text-mrc-900">{item.lienLabel}</a>
+              {/if}
             </div>
           {/each}
         </dl>

@@ -8,3 +8,6 @@ export const LABEL_PHASE: Record<string, string> = {
   epreuve:      "Mise à l'épreuve",
   reevaluation: 'Réévaluation',
 };
+
+// Séquence canonique des 6 phases — utilisée dans la présentation textuelle.
+export const SEQUENCE_ENQUETE = Object.values(LABEL_PHASE).join(' → ');

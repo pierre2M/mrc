@@ -5,7 +5,7 @@
     {
       id: 1,
       titre: 'Découvrir et interroger',
-      accroche: 'Posez des questions sur le MRC, ses grammaires ou le régime de vérifiabilité-cohérence. Testez le démonstrateur en mode Découverte ou Analyse.',
+      accroche: 'Posez des questions sur le MRC, ses grammaires et ses concepts. Testez le démonstrateur pour explorer des situations concrètes.',
       niveau: 'Heuristique',
       href: '/usage-1',
       icon: '🔍',
@@ -14,7 +14,7 @@
     {
       id: 2,
       titre: 'Construire une enquête',
-      accroche: 'Suivez la chronologie d\'un registre d\'enquête contrôlé : ingestion, staging, vérification, validation délibérative.',
+      accroche: 'Suivez les étapes d\'une enquête collective sur un cas réel — des premières observations jusqu\'à la validation par les acteurs concernés.',
       niveau: 'Méthodologique',
       href: '/usage-2',
       icon: '📋',
@@ -23,7 +23,7 @@
     {
       id: 3,
       titre: 'Tenir un registre opposable',
-      accroche: 'Naviguez dans des registres symétriques entre acteurs hétérogènes — humains, organisations, non-humains.',
+      accroche: 'Naviguez dans des registres entre différents types d\'acteurs — personnes, organisations, entités naturelles.',
       niveau: 'Infrastructurel',
       href: '/usage-3',
       icon: '⚖️',
@@ -34,19 +34,19 @@
   const publics = [
     {
       titre: 'Chercheurs et académiques',
-      description: 'Dix grammaires transversales avec fiches, bibliographie BibTeX, notes théoriques (NT) versionnées, régime vérifiabilité-cohérence.',
+      description: 'Douze grammaires transversales avec fiches et bibliographie, notes théoriques versionnées, accès aux sources primaires.',
       href: '/grammaires',
       cta: 'Accéder aux grammaires →'
     },
     {
       titre: 'Praticiens et collectifs',
-      description: 'Démonstrateur conversationnel (Usage 1) et enquêtes collectives jouables sur cas réels — Mar Menor, pouvoir d\'agir des soignant·es (Usage 2).',
+      description: 'Démonstrateur conversationnel et enquêtes collectives sur cas réels — Mar Menor, pouvoir d\'agir des soignant·es.',
       href: '/usage-2',
       cta: 'Parcourir une enquête collective →'
     },
     {
       titre: 'Partenaires institutionnels',
-      description: 'Principes de gouvernance, conformité RGPD, R-INCAPACITE-LLM-VALIDER, articulation avec vos propres référentiels.',
+      description: 'Principes de gouvernance, conformité RGPD, limites d\'usage de l\'IA, articulation avec vos propres référentiels.',
       href: '/gouvernance',
       cta: 'Lire la note de gouvernance →'
     }
@@ -54,7 +54,7 @@
 </script>
 
 <svelte:head>
-  <title>Registres de communalité — MRC v5.x</title>
+  <title>Modèle des Registres de Communalité — MRC v5.5</title>
 </svelte:head>
 
 <!-- Hero -->
@@ -68,14 +68,15 @@
     </div>
 
     <h1 class="text-3xl font-bold tracking-tight text-mrc-900 md:text-4xl">
-      Le MRC est un modèle pour décrire<br class="hidden md:block" />
-      ce qui fait <em class="font-normal not-italic text-mrc-600">communalité</em>
+      Le MRC est un modèle pour rendre lisibles<br class="hidden md:block" />
+      les obligations qui font tenir un collectif
     </h1>
 
     <p class="mt-4 text-base text-mrc-600 md:text-lg">
-      Entre des humains, des organisations, des vivants non-humains et des dispositifs techniques.
-      Il opère en régime de vérifiabilité-cohérence : chaque énoncé est ancré dans une source déclarée
-      ou explicitement marqué comme inférence.
+      Dans toute organisation, des ressources circulent, du travail est fourni, des engagements
+      sont pris ou esquivés — souvent sans trace. Un <strong>registre de communalité</strong> rend
+      ces échanges visibles et délibérables, pour des humains, des organisations et des entités
+      naturelles. La <strong>communalité</strong>, c'est la gouvernance démocratique de ces relations.
     </p>
 
     <div class="mt-8 flex flex-wrap justify-center gap-3">
@@ -90,27 +91,6 @@
       </a>
     </div>
 
-  </div>
-</section>
-
-<!-- Trois distinctions fondamentales -->
-<section class="border-b border-mrc-100 bg-mrc-50 py-10">
-  <div class="mx-auto max-w-3xl px-4">
-    <p class="text-center text-sm font-medium text-mrc-500 mb-6 uppercase tracking-wide">Trois distinctions fondamentales</p>
-    <div class="grid gap-4 md:grid-cols-3 text-sm">
-      <div class="rounded-lg bg-white p-4 border border-mrc-100">
-        <p class="font-semibold text-mrc-800 mb-1">Analyser ≠ valider</p>
-        <p class="text-mrc-600">Un LLM peut produire une esquisse MRC. Il ne peut pas valider une écriture. La validation est toujours humaine et délibérative.</p>
-      </div>
-      <div class="rounded-lg bg-white p-4 border border-mrc-100">
-        <p class="font-semibold text-mrc-800 mb-1">Esquisse ≠ registre</p>
-        <p class="text-mrc-600">Les sorties du démonstrateur sont des brouillons interprétatifs. Un registre MRC opposable nécessite des acteurs nommés, des interactions traçables, une délibération.</p>
-      </div>
-      <div class="rounded-lg bg-white p-4 border border-mrc-100">
-        <p class="font-semibold text-mrc-800 mb-1">Plausible ≠ vérifiable</p>
-        <p class="text-mrc-600">Le MRC distingue ce qui est ancré dans une source déclarée, ce qui est inféré, et ce qui est simplement [PLAUSIBLE, NON VÉRIFIÉ].</p>
-      </div>
-    </div>
   </div>
 </section>
 
@@ -146,6 +126,27 @@
           <a href={p.href} class="text-sm font-medium text-mrc-600 hover:text-mrc-900">{p.cta}</a>
         </div>
       {/each}
+    </div>
+  </div>
+</section>
+
+<!-- À garder en tête -->
+<section class="border-t border-mrc-100 bg-white py-10">
+  <div class="mx-auto max-w-3xl px-4">
+    <p class="text-center text-sm font-medium text-mrc-400 mb-6 uppercase tracking-wide">Pour bien utiliser ce site</p>
+    <div class="grid gap-4 md:grid-cols-3 text-sm">
+      <div class="rounded-lg bg-mrc-50 p-4 border border-mrc-100">
+        <p class="font-semibold text-mrc-800 mb-1">Analyser ≠ valider</p>
+        <p class="text-mrc-600">Le démonstrateur produit des esquisses. Il ne valide rien. La validation est toujours humaine et délibérative.</p>
+      </div>
+      <div class="rounded-lg bg-mrc-50 p-4 border border-mrc-100">
+        <p class="font-semibold text-mrc-800 mb-1">Esquisse ≠ registre</p>
+        <p class="text-mrc-600">Un registre MRC opposable nécessite des acteurs nommés, des interactions traçables et une délibération collective — pas seulement une sortie IA.</p>
+      </div>
+      <div class="rounded-lg bg-mrc-50 p-4 border border-mrc-100">
+        <p class="font-semibold text-mrc-800 mb-1">Plausible ≠ vérifiable</p>
+        <p class="text-mrc-600">Le MRC distingue ce qui est ancré dans une source déclarée, ce qui est inféré, et ce qui semble vrai sans pouvoir être vérifié.</p>
+      </div>
     </div>
   </div>
 </section>

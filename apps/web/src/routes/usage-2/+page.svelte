@@ -191,7 +191,7 @@
     porteurAttribution: 'Tutelle de la Mar Menor (3 comités)'
   };
 
-  // ── CAS SOINS — clinique de l'activité (Musseau-Milesi 2026) ─────────────────
+  // ── CAS SOINS — clinique de l'activité (Musseau J. 2026) ────────────────────
   const SOINS: Cas = {
     id: 'soins',
     titre: 'Soignant·es — reconquérir le pouvoir d’agir',
@@ -221,13 +221,13 @@
     ],
     acteurs: [
       { id: 'amp', nom: 'Soignant·es de première ligne (AMP)', type: 'collectif', role: 'Porteurs du réel de l’activité', phase: 1,
-        source: 'Musseau-Milesi 2026, Soins Cadres nº 164' },
+        source: 'Musseau J., Soins Cadres nº 164, mars-avril 2026' },
       { id: 'residents', nom: 'Résident·es de l’Ehpad', type: 'collectif', role: 'Personnes soignées (autonomie en jeu), sans voix dans la logique gestionnaire', seuil: 'capabilité / autonomie', phase: 1,
         source: 'Dialogue filmé « on fait à leur place » (Clot et al., cité)' },
       { id: 'volontaires', nom: 'Collectif de volontaires', type: 'collectif', role: 'Engagé dans les autoconfrontations', phase: 2,
         source: 'Cadre réglé de confrontations sur la qualité du travail' },
       { id: 'psy', nom: 'Psychologues du travail (clinique de l’activité)', type: 'organisation', role: 'Tiers méthodologique (intervenants)', phase: 2,
-        source: 'Intervention 2014-2022 (Zittoun & Larchevêque, cités)' },
+        source: 'Zittoun M. & Clot Y., Psychol Trav Organ 2020;26(1):56–70' },
       { id: 'ars', nom: 'Agence régionale de santé (ARS)', type: 'organisation', role: 'Validateur de la démarche', phase: 2,
         source: 'Proposition validée par l’ARS malgré son caractère singulier' },
       { id: 'encadrement', nom: 'Encadrement', type: 'organisation', role: 'Niveau intermédiaire de l’organisation', phase: 4,
@@ -792,10 +792,11 @@
       </p>
     {:else if cas.id === 'soins'}
       <p>
-        <b class="text-mrc-600">Source des faits.</b> Pierre Musseau-Milesi, « Le pouvoir d'agir des soignants au
+        <b class="text-mrc-600">Source des faits.</b> Musseau J., « Le pouvoir d'agir des soignants au
         risque du dialogue sur la qualité du travail », <i>Soins Cadres</i>, nº 164, mars-avril 2026, Elsevier Masson.
-        L'intervention citée (établissement public, Ehpad + foyer d'accueil médicalisé, 2014-2022) est documentée
-        par Zittoun &amp; Larchevêque ; cadre théorique : clinique de l'activité (Y. Clot et al.).
+        L'intervention dans l'Ehpad (2014-2022) est documentée par : Zittoun M. &amp; Clot Y., « Une intervention
+        dans un Ehpad. L'animation réciproque de la discussion », <i>Psychologie du Travail et des Organisations</i>,
+        2020, 26(1), 56–70 ; cadre théorique : clinique de l'activité (Y. Clot et al.).
       </p>
       <p>
         <b class="text-mrc-600">Décomposition en 6 phases.</b> Lecture en enquête collective (G-DEMO-EPISTEMIQUE,

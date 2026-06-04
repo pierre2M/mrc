@@ -4,11 +4,11 @@
   // ─────────────────────────────────────────────────────────────────────────────
   // Usage 3 — Registres symétriques opposables · cas BÉTONORD (anonymisé)
   //
-  // Entreprise source : Alkern (béton préfabriqué, ~250 M€ CA, ~50 sites).
+  // Entreprise source : anonymisée sous le nom BÉTONORD (secteur béton préfabriqué).
   // Toutes les données chiffrées sont auto-déclarées [PLAUSIBLE, NON VÉRIFIÉ].
-  // Sources : verbatims Xavier Janin × Entreprises Engagées, Produrable 2025 ;
-  //           évaluation EcoVadis Alkern France SAS, déc. 2025 ;
-  //           site groupe.alkern.fr/alkern-et-la-rse/ (consulté 4 juin 2026).
+  // Source : témoignages publics recueillis lors du salon Produrable 2025.
+  // Construction fictive — ne reflète pas des faits réels, ne cherche pas à décrire
+  // la situation réelle de l'entreprise source.
   //
   // Structure : navigation non-linéaire entre registres parallèles.
   // F8 est le dispositif principal (Fiche Mode comptable étendu, Couche 2 MRC v5.5).
@@ -84,7 +84,7 @@
     {
       id: 'e1', num: 1,
       libelle: 'Eau site #7 — de 12 à 2 litres par tonne',
-      description: '« On a une usine qui est passée de 12 litres par tonne de béton à deux. Parce que la CSRD nous a posé la question. » (Janin, Produrable 2025)',
+      description: '« On a une usine qui est passée de 12 litres par tonne de béton à deux. Parce que la CSRD nous a posé la question. » (dirigeant·e, Produrable 2025)',
       typageF8: 'e → d', modeMRC: 'F2 Milieu',
       registrePorteur: 'r-site07',
       registresConcernes: ['r-nappe'],
@@ -92,7 +92,7 @@
       statutDette: 'ATTRIBUEE', workflow: 'vert',
       requiertRepresentationNH: false,
       prioriteCreancier: 2,
-      sourceDeclaree: 'Verbatim Janin V2, Produrable 2025 [PLAUSIBLE, NON VÉRIFIÉ]',
+      sourceDeclaree: 'Verbatim Produrable 2025 [PLAUSIBLE, NON VÉRIFIÉ]',
       esrsDatapoint: 'ESRS E3-4 · Consommation d\'eau (withdrawal from water-stressed areas)',
       comptesCARE: 'NH-EAU · Actif naturel eau · Mouvement M5 (réduction charge)',
       signal: undefined,
@@ -109,7 +109,7 @@
     {
       id: 'e2', num: 2,
       libelle: 'Reporting CO₂ aux clients distributeurs',
-      description: '« On est les premiers l\'année dernière à avoir fait un reporting à nos clients : vous m\'avez acheté X millions d\'euros et X tonnes de CO₂. » (Janin, Produrable 2025)',
+      description: '« On est les premiers l\'année dernière à avoir fait un reporting à nos clients : vous m\'avez acheté X millions d\'euros et X tonnes de CO₂. » (dirigeant·e, Produrable 2025)',
       typageF8: 'C + E', modeMRC: 'F8',
       registrePorteur: 'r-dg',
       registresConcernes: ['r-matpro'],
@@ -117,7 +117,7 @@
       statutDette: 'ATTRIBUEE', workflow: 'vert',
       requiertRepresentationNH: false,
       prioriteCreancier: null,
-      sourceDeclaree: 'Verbatim Janin V3, Produrable 2025 [SOURCE DÉCLARÉE]',
+      sourceDeclaree: 'Verbatim Produrable 2025 [SOURCE DÉCLARÉE]',
       esrsDatapoint: 'ESRS E1-6 · GHG scope 3 aval + G1-1 Transparence',
       comptesCARE: 'CC-TRANSPARENCE-CHAINE · Actif informationnel scope 3 · Mouvement M9',
       signal: undefined,
@@ -135,7 +135,7 @@
     {
       id: 'e3', num: 3,
       libelle: 'Granulats recyclés — −3 000 t/an de prélèvement vierge',
-      description: '« Est-ce qu\'on peut mettre plus de granulats recyclés dans nos produits ? On va ralentir notre intensité sur les carrières. » (Janin, Produrable 2025)',
+      description: '« Est-ce qu\'on peut mettre plus de granulats recyclés dans nos produits ? On va ralentir notre intensité sur les carrières. » (dirigeant·e, Produrable 2025)',
       typageF8: 'D + C', modeMRC: 'F2 + F8',
       registrePorteur: 'r-dg',
       registresConcernes: ['r-carrieres', 'r-carrex'],
@@ -143,7 +143,7 @@
       statutDette: 'ATTRIBUEE', workflow: 'vert',
       requiertRepresentationNH: false,
       prioriteCreancier: 2,
-      sourceDeclaree: 'Verbatim Janin V9, Produrable 2025 [PLAUSIBLE, NON VÉRIFIÉ]',
+      sourceDeclaree: 'Verbatim Produrable 2025 [PLAUSIBLE, NON VÉRIFIÉ]',
       esrsDatapoint: 'ESRS E4-6 · Impacts biodiversité + E5-1 Utilisation ressources',
       comptesCARE: 'NH-GRANULATS · Réduction dette naturelle · Mouvement M7',
       signal: 'R-CODEGRADATION_régrès si ratio < 5% sur 2 exercices',
@@ -160,7 +160,7 @@
     {
       id: 'e4', num: 4,
       libelle: 'Prêt ESG CRÉDIVERT — taux indexé sur indicateurs',
-      description: '« Mon directeur financier est ravi. Les banques vous demandent EcoVadis, ça coche une case. Les entreprises qui n\'ont pas ça paient un taux plus élevé. » (Janin, Produrable 2025)',
+      description: '« Mon directeur financier est ravi. Les banques vous demandent EcoVadis, ça coche une case. Les entreprises qui n\'ont pas ça paient un taux plus élevé. » (dirigeant·e, Produrable 2025)',
       typageF8: 'e + D', modeMRC: 'F8',
       registrePorteur: 'r-creditvert',
       registresConcernes: ['r-dg'],
@@ -168,7 +168,7 @@
       statutDette: 'ATTRIBUEE', workflow: 'vert',
       requiertRepresentationNH: false,
       prioriteCreancier: 5,
-      sourceDeclaree: 'Verbatim Janin V17, Produrable 2025 [PLAUSIBLE, NON VÉRIFIÉ]',
+      sourceDeclaree: 'Verbatim Produrable 2025 [PLAUSIBLE, NON VÉRIFIÉ]',
       esrsDatapoint: 'ESRS G1-3 · Financement durable + E1-6 (conditions ESG)',
       comptesCARE: 'DF-ESG · Dette financière conditionnelle · Mouvement M2',
       signal: 'R-PRIORITE-CREANCIERS_VIOLEE si distribution avant attestation NH',
@@ -186,7 +186,7 @@
     {
       id: 'e5', num: 5,
       libelle: 'Intensité carbone — 1,2 kg CO₂ par euro généré',
-      description: '« On est les seuls à communiquer sur notre intensité carbone : 1,2 kg de CO₂ par euro généré. 92% en scope 3. » (Janin, Produrable 2025)',
+      description: '« On est les seuls à communiquer sur notre intensité carbone : 1,2 kg de CO₂ par euro généré. 92% en scope 3. » (dirigeant·e, Produrable 2025)',
       typageF8: 'P → D', modeMRC: 'F8',
       registrePorteur: 'r-rse',
       registresConcernes: ['r-atmosphere', 'r-calpex'],
@@ -194,7 +194,7 @@
       statutDette: 'EN_DELIBERATION', workflow: 'ambre',
       requiertRepresentationNH: false,
       prioriteCreancier: 3,
-      sourceDeclaree: 'Verbatim Janin V1, Produrable 2025 + FDES + BGS [PLAUSIBLE, NON VÉRIFIÉ]',
+      sourceDeclaree: 'Verbatim Produrable 2025 + FDES + BGS [PLAUSIBLE, NON VÉRIFIÉ]',
       esrsDatapoint: 'ESRS E1-6 · GHG scope 1/2/3 par activité et par intensité',
       comptesCARE: 'NH-ATMOSPHERE · Passif CARE : dette atmosphérique · valuemètre CO₂ × SCC · Mouvement M1',
       signal: 'porteur_scope3_manquant — CALPEX doit désigner un porteur sous 6 mois',
@@ -212,7 +212,7 @@
     {
       id: 'e6', num: 6,
       libelle: 'REP PMCB — membre fondateur MINÉROVALO',
-      description: 'Alkern membre fondateur de l\'éco-organisme pour la REP PMCB (décret 2021-1941). Objectif : 90% valorisation inertes d\'ici 2028. 4 000+ points de reprise, 10+ M t valorisées. (site groupe.alkern.fr)',
+      description: 'Membre fondateur de l\'éco-organisme REP PMCB (décret 2021-1941). Objectif : 90% valorisation inertes d\'ici 2028. 4 000+ points de reprise, 10+ M t valorisées.',
       typageF8: 'C + D', modeMRC: 'F8',
       registrePorteur: 'r-dg',
       registresConcernes: ['r-minervalo', 'r-carrieres'],
@@ -220,7 +220,7 @@
       statutDette: 'ATTRIBUEE', workflow: 'vert',
       requiertRepresentationNH: false,
       prioriteCreancier: null,
-      sourceDeclaree: 'Site groupe.alkern.fr · décret n° 2021-1941 du 31/12/2021 [SOURCE DÉCLARÉE, vérifiable]',
+      sourceDeclaree: 'Décret n° 2021-1941 du 31/12/2021 [SOURCE DÉCLARÉE, vérifiable] · données entreprise [PLAUSIBLE, NON VÉRIFIÉ]',
       esrsDatapoint: 'ESRS E5-1 · Économie circulaire — flux entrants/sortants de ressources',
       comptesCARE: 'CC-MINERAUX · Contribution communale · Mouvement M9',
       signal: 'taux_substitution_effectif_non_mesuré — la REP garantit la reprise, pas la substitution carrières',
@@ -238,7 +238,7 @@
     {
       id: 'e7', num: 7,
       libelle: 'Gamme Re-Matière® — 100% granulats recyclés',
-      description: 'Gamme produits fabriqués à partir de granulats de déconstruction (partenariat DÉCONSTROCK) et de coquilles Saint-Jacques. Zéro granulat vierge sur ce périmètre. (site groupe.alkern.fr)',
+      description: 'Gamme produits fabriqués à partir de granulats de déconstruction et de matériaux biosourcés. Zéro granulat vierge sur ce périmètre.',
       typageF8: 'D + C', modeMRC: 'F2 + F8',
       registrePorteur: 'r-dg',
       registresConcernes: ['r-carrieres', 'r-deconstrock'],
@@ -246,7 +246,7 @@
       statutDette: 'ATTRIBUEE', workflow: 'vert',
       requiertRepresentationNH: false,
       prioriteCreancier: 2,
-      sourceDeclaree: 'Site groupe.alkern.fr — gamme Re-Source® [SOURCE DÉCLARÉE] · volume gamme non public [PLAUSIBLE, NON VÉRIFIÉ]',
+      sourceDeclaree: 'Données entreprise [PLAUSIBLE, NON VÉRIFIÉ]',
       esrsDatapoint: 'ESRS E4-6 · Impacts biodiversité + E5-1 Ressources',
       comptesCARE: 'NH-GRANULATS · Réduction dette naturelle = ZÉRO sur périmètre gamme · Mouvement M7',
       signal: 'volume_Re-Matière_non_mesuré — réduction NH attestée mais non quantifiée',
@@ -263,7 +263,7 @@
     {
       id: 'e8', num: 8,
       libelle: 'Taux de rebut — « aucune fierté à jeter un parpaing »',
-      description: '« 50 000 parpaings jetés : super papa, tu as bien bossé. On a mis en place des indicateurs rebut dans chaque usine — tableau de bord mensuel. » (Janin, Produrable 2025)',
+      description: '« 50 000 parpaings jetés : super papa, tu as bien bossé. On a mis en place des indicateurs rebut dans chaque usine — tableau de bord mensuel. » (dirigeant·e, Produrable 2025)',
       typageF8: 'E → réduction P', modeMRC: 'F1 + F8',
       registrePorteur: 'r-collab',
       registresConcernes: ['r-carrieres', 'r-atmosphere'],
@@ -271,7 +271,7 @@
       statutDette: 'EN_DELIBERATION', workflow: 'ambre',
       requiertRepresentationNH: false,
       prioriteCreancier: null,
-      sourceDeclaree: 'Transcription Janin, Produrable 2025 [SOURCE DÉCLARÉE] · traduction NH estimée [PLAUSIBLE, NON VÉRIFIÉ]',
+      sourceDeclaree: 'Verbatim Produrable 2025 [SOURCE DÉCLARÉE] · traduction NH estimée [PLAUSIBLE, NON VÉRIFIÉ]',
       esrsDatapoint: 'ESRS E1-6 (scope 3 gaspillage matière) + S1-9 Santé et sécurité',
       comptesCARE: 'CH-REBUT · corrélat NH-GRANULATS + NH-ATMOSPHERE · Mouvement M5',
       signal: 'rebut_non_traduit_en_écriture_NH — indicateur suivi mais non converti en dette NH',
@@ -288,7 +288,7 @@
     {
       id: 'e9', num: 9,
       libelle: 'Ruissellement CO₂ — plan de progrès imposé aux transporteurs PME',
-      description: '« On impose à nos transporteurs de nous donner leur plan de progrès sur les émissions de CO₂. Ce n\'est pas des ETI, c\'est des PME. Ils disent : comment je fais ? Alors on les aide. » (Janin, Produrable 2025)',
+      description: '« On impose à nos transporteurs de nous donner leur plan de progrès sur les émissions de CO₂. Ce n\'est pas des ETI, c\'est des PME. Ils disent : comment je fais ? Alors on les aide. » (dirigeant·e, Produrable 2025)',
       typageF8: 'E + D', modeMRC: 'F8',
       registrePorteur: 'r-dg',
       registresConcernes: ['r-transbol'],
@@ -296,7 +296,7 @@
       statutDette: 'EN_DELIBERATION', workflow: 'ambre',
       requiertRepresentationNH: false,
       prioriteCreancier: null,
-      sourceDeclaree: 'Transcription Janin, Produrable 2025 [SOURCE DÉCLARÉE]',
+      sourceDeclaree: 'Verbatim Produrable 2025 [SOURCE DÉCLARÉE]',
       esrsDatapoint: 'ESRS E1-6 · scope 3 catégorie 4 (transport aval)',
       comptesCARE: 'NH-ATMOSPHERE-S3 · Engagement réduction scope 3 · Mouvement M3',
       signal: 'ruissellement_scope3_non_quantifié — plans exigés mais agrégation non calculée',
@@ -314,7 +314,7 @@
     {
       id: 'e10', num: 10,
       libelle: 'Index H/F 85/100 — dette sociale résiduelle (0/10 hautes rémunérations)',
-      description: 'Index égalité H/F Alkern 2025 : 85/100. Décomposition : 35/40 + 20/20 + 15/15 + 15/15 = 85 — mais 0/10 sur les 10 plus hautes rémunérations. (site groupe.alkern.fr)',
+      description: 'Index égalité H/F 2025 : 85/100. Décomposition : 35/40 + 20/20 + 15/15 + 15/15 = 85 — mais 0/10 sur les 10 plus hautes rémunérations.',
       typageF8: 'C + D sociale', modeMRC: 'F1',
       registrePorteur: 'r-drh',
       registresConcernes: ['r-collab'],
@@ -322,7 +322,7 @@
       statutDette: 'EN_DELIBERATION', workflow: 'ambre',
       requiertRepresentationNH: false,
       prioriteCreancier: 4,
-      sourceDeclaree: 'Site groupe.alkern.fr — publication légale obligatoire [SOURCE DÉCLARÉE, vérifiable]',
+      sourceDeclaree: 'Publication légale obligatoire [SOURCE DÉCLARÉE, vérifiable]',
       esrsDatapoint: 'ESRS S1-16 · Gender pay gap + S1-17 Violence et harcèlement',
       comptesCARE: 'CH-EQUITE (4 indicateurs vert) + DS-HAUTES-REMUN (0/10) · Mouvement M1 pour dette',
       signal: 'hautes_rémunérations_inégales — plan d\'action formalisé manquant',
@@ -452,7 +452,7 @@
       Un registre opposable n'est pas une base de données : chaque écriture inscrite par un acteur
       produit des <strong>contre-écritures miroir</strong> dans les registres des acteurs concernés
       et témoins — au même hash, avec des perspectives différentes. Ce cas illustre une entreprise
-      de béton préfabriqué (cas anonymisé, <span class="italic">source&nbsp;: Alkern, Produrable&nbsp;2025</span>)
+      de béton préfabriqué — <span class="italic">cas fictif construit à partir de témoignages publics (Produrable 2025), ne reflétant pas des faits réels</span>
       avec ses parties prenantes internes, externes et non-humaines.
     </p>
     <div class="mt-4 flex flex-wrap gap-2 text-xs text-mrc-500">
@@ -922,7 +922,7 @@
 
   <!-- ── PIED DE PAGE ── -->
   <footer class="mt-12 border-t border-mrc-100 pt-6 text-xs text-mrc-400 space-y-1.5">
-    <div><strong class="text-mrc-600">(a) Faits :</strong> verbatims Xavier Janin × Entreprises Engagées (Produrable 2025) ; évaluation EcoVadis Alkern France SAS (déc. 2025) ; site groupe.alkern.fr/alkern-et-la-rse/. Les données chiffrées sont auto-déclarées [PLAUSIBLE, NON VÉRIFIÉ].</div>
+    <div><strong class="text-mrc-600">(a) Sources :</strong> témoignages publics recueillis lors du salon Produrable 2025, dans le cadre de la session animée par Entreprises Engagées. <strong>Ce cas est une construction fictive à des fins pédagogiques — il ne cherche pas à refléter des faits réels ni à décrire la situation réelle de l'entreprise source.</strong> Les données chiffrées sont illustratives [PLAUSIBLE, NON VÉRIFIÉ].</div>
     <div><strong class="text-mrc-600">(b) Décomposition en registres symétriques :</strong> couche interprétative MRC — mise en forme par Pierre Musseau-Milesi / La Coop des Communs, 2026. Non opposable : les écritures sont des propositions illustratives.</div>
     <div>Modèle de Registres de Communalité v5.5 · Fiche F8 Mode comptable étendu · R-PRIORITE-CREANCIERS · <a href="/documentation" class="underline hover:text-mrc-600">Documentation →</a></div>
   </footer>

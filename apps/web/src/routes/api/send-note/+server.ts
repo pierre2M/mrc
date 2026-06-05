@@ -49,7 +49,7 @@ export const POST: RequestHandler = async ({ request }) => {
     `<hr>`,
     htmlBody,
     `<hr>`,
-    `<p style="color:#666;font-size:12px;">Note théorique MRC — Modèle de Registres de Communalité · La Coop des Communs</p>`,
+    `<p style="color:#666;font-size:12px;">Note théorique MRC — Modèle de Registres de Communalité</p>`,
   ].join('\n');
 
   let resendRes: Response;

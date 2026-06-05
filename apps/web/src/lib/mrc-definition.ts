@@ -7,7 +7,7 @@ export const MRC_DEFINITION = `
 ## Le Modèle de Registres de Communalité (MRC v5.x)
 
 Le MRC est un outil théorique et pratique développé par Pierre Musseau-Milesi
-(La Coop des Communs, 2026) pour analyser comment des collectifs produisent,
+(2026) pour analyser comment des collectifs produisent,
 maintiennent et transmettent des ressources communes à travers leurs écrits et pratiques.
 Il opère en régime de vérifiabilité-cohérence : tout énoncé est soit ancré dans une
 source déclarée, soit marqué comme inférence ou [PLAUSIBLE, NON VÉRIFIÉ].

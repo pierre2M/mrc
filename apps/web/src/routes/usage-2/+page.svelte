@@ -13,7 +13,7 @@
   // part (alertes de Couche 1/2).
   //
   // Cas Mar Menor : faits issus du rapport « Droits de la nature et gouvernance »
-  // (La Coop des Communs / GRET) et de la décomposition en 6 phases (enquête
+  // (Fondation Zoein / GRET) et de la décomposition en 6 phases (enquête
   // deweyenne, G-DEMO-EPISTEMIQUE / NT-G10). Régime : vulgarisation procédurale,
   // non calcul formel. Aucune sortie n'est opposable.
   // ──────────────────────────────────────────────────────────────────────────
@@ -778,7 +778,7 @@
         <b class="text-mrc-600">Source des faits.</b> Thomas Fabre, « La lagune de Mar Menor en Espagne »
         (Section 1), in D. Bourg, T. Fabre &amp; E. Zürcher, <i>Droits de la nature et gouvernance — En quoi
         l'institution « Droits de la nature » améliore-t-elle la gouvernance environnementale ?</i>,
-        responsables scientifiques D. Bourg &amp; S. Swaton, La Coop des Communs / Fondation Zoein,
+        responsables scientifiques D. Bourg &amp; S. Swaton, Fondation Zoein,
         étude réalisée nov. 2023 – déc. 2025.
       </p>
       <p>
@@ -815,7 +815,7 @@
       </p>
       <p>
         <b class="text-mrc-600">Lecture MRC.</b> P. Musseau-Milesi, <i>MRC v5.3 — Annexe K, Cas n°1 : Exploitation B
-        (CARE/IDEA4)</i>, La Coop des Communs, 2026 (lecture F8 · P-C-E-D-e-d · Couche 0) — couche interprétative
+        (CARE/IDEA4)</i>, 2026 (lecture F8 · P-C-E-D-e-d · Couche 0) — couche interprétative
         distincte des faits comptables.
       </p>
       <p>

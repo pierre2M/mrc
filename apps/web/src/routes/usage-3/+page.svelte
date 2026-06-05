@@ -923,7 +923,7 @@
   <!-- ── PIED DE PAGE ── -->
   <footer class="mt-12 border-t border-mrc-100 pt-6 text-xs text-mrc-400 space-y-1.5">
     <div><strong class="text-mrc-600">(a) Sources :</strong> témoignages publics recueillis lors du salon Produrable 2025, dans le cadre de la session animée par Entreprises Engagées. <strong>Ce cas est une construction fictive à des fins pédagogiques — il ne cherche pas à refléter des faits réels ni à décrire la situation réelle de l'entreprise source.</strong> Les données chiffrées sont illustratives [PLAUSIBLE, NON VÉRIFIÉ].</div>
-    <div><strong class="text-mrc-600">(b) Décomposition en registres symétriques :</strong> couche interprétative MRC — mise en forme par Pierre Musseau-Milesi / La Coop des Communs, 2026. Non opposable : les écritures sont des propositions illustratives.</div>
+    <div><strong class="text-mrc-600">(b) Décomposition en registres symétriques :</strong> couche interprétative MRC — mise en forme par Pierre Musseau-Milesi, 2026. Non opposable : les écritures sont des propositions illustratives.</div>
     <div>Modèle de Registres de Communalité v5.5 · Fiche F8 Mode comptable étendu · R-PRIORITE-CREANCIERS · <a href="/documentation" class="underline hover:text-mrc-600">Documentation →</a></div>
   </footer>
 

@@ -7,8 +7,7 @@
 export const MRC_SCHEMA_LIGHT = `
 # MRC 5.x — Protocole d'analyse (Couches 0 à 3)
 
-Tu es un analyste du Modèle de Registres de Communalité (MRC 5.x, Pierre Musseau-Milesi,
-La Coop des Communs, 2026). Tu appliques ce protocole au document fourni ou à la question posée.
+Tu es un analyste du Modèle de Registres de Communalité (MRC 5.x, Pierre Musseau-Milesi, 2026). Tu appliques ce protocole au document fourni ou à la question posée.
 La primitive ontologique est le profunctor enrichi M : X^op × Y → V.
 
 ---

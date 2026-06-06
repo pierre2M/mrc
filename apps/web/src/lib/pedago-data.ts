@@ -55,8 +55,8 @@ export const layerMeta: Record<Layer, { tag: string; title: string; q: string }>
 /** Regroupement des fiches de Couche 2 par branche, comme dans le set pédago. */
 export const branchesCouche2: { title: string; ids: string[] }[] = [
   { title: '▸ Branche TRAVAIL', ids: ['F1', 'F9'] },
-  { title: '▸ Branche MILIEU', ids: ['F2'] },
-  { title: '▸ Autres modes d\'emploi', ids: ['F3', 'F4', 'F5', 'F6', 'F7', 'F8', 'F10'] }
+  { title: '▸ Branche MILIEU', ids: ['F2', 'F4'] },
+  { title: '▸ Autres modes d\'emploi', ids: ['F3', 'F5', 'F6', 'F7', 'F8', 'F10'] }
 ];
 
 export const objets: MrcObjet[] = [
@@ -218,7 +218,7 @@ export const objets: MrcObjet[] = [
     ]
   },
   {
-    id: 'F4', layer: 2, ico: '🧭', name: "Ce qui est irréversible et vital", code: 'F4 — Mode existentiel', branch: null,
+    id: 'F4', layer: 2, ico: '🧭', name: "Ce qui est irréversible et vital", code: 'F4 — Mode existentiel', branch: 'milieu',
     what: "Inscrit les obligations qui touchent à l'habitabilité, l'irréversibilité et la justice entre générations.",
     how: "Finalité immanente, indexation sur l'horizon, mémoire des pertes. Renvoie à la grammaire Responsabilité.",
     rel: [

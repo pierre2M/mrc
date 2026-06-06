@@ -2,6 +2,7 @@
   import '../app.css';
   import Nav from '$lib/components/Nav.svelte';
   import Footer from '$lib/components/Footer.svelte';
+  import FeedbackBanner from '$lib/components/FeedbackBanner.svelte';
 </script>
 
 <svelte:head>
@@ -9,6 +10,7 @@
 </svelte:head>
 
 <div class="flex min-h-screen flex-col">
+  <FeedbackBanner />
   <Nav />
   <main class="flex-1">
     <slot />

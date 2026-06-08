@@ -61,7 +61,7 @@ Les grammaires ne s'excluent pas — elles s'articulent et entrent en tension pr
       items: [
         { nom: 'Usage 1 — Démonstrateur conversationnel', desc: 'Un LLM applique la grille MRC à un document ou répond à des questions sur le MRC en trois modes : Découverte (questions sur le MRC et ses grammaires), Analyse (esquisse vulgarisée des acteurs et tensions), Expert (journal MRC si le document le permet). Toutes les sorties sont des brouillons interprétatifs, non opposables.' },
         { nom: 'Usage 2 — Registre d\'enquête contrôlé', desc: `Un collectif construit progressivement un registre via une chaîne agents + humains, avec validation délibérative explicite à chaque étape. Six phases d'enquête collective structurent la progression : ${SEQUENCE_ENQUETE}. (Démonstration interactive disponible.)`, lien: '/usage-2', lienLabel: 'Essayer la démonstration →' },
-        { nom: 'Usage 3 — Infrastructure organisationnelle ou notariée', desc: 'Plusieurs acteurs tiennent des registres symétriques interopérables — y compris des acteurs non-humains. Le registre est alors opposable : les écritures sont validées, les identifiants sont persistants, les obligations sont traçables.' }
+        { nom: 'Usage 3 — Registres symétriques opposables', desc: 'Plusieurs acteurs — humains, organisationnels et non-humains — tiennent des registres parallèles sur le même fait économique. Chaque écriture est inscrite par un acteur, co-signée par ses créanciers et témoins au même hash, avec des perspectives différentes. Le cas illustre une entreprise de béton préfabriqué (cas fictif construit à partir de témoignages publics, Produrable 2025) via la Fiche F8 — Mode comptable étendu.', lien: '/usage-3', lienLabel: 'Explorer le cas →' }
       ]
     },
     {
